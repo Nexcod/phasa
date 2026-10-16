@@ -35,6 +35,8 @@ jobs:
           name: phasa-chrome-zip
           path: .output/*.zip
           if-no-files-found: error
+          # .output starts with a dot; upload-artifact skips hidden paths by default.
+          include-hidden-files: true
 
   e2e:
     runs-on: ubuntu-latest
