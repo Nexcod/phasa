@@ -1,0 +1,70 @@
+{
+  "extName": {
+    "message": "Phasa — learn Thai from videos",
+    "description": "Extension name shown in the Chrome Web Store and toolbar. Must not contain the YouTube trademark."
+  },
+  "extDescription": {
+    "message": "Interactive Thai subtitles for YouTube: word lookups, romanization, tones and known-word tracking.",
+    "description": "Extension description in the manifest."
+  },
+  "actionTitle": {
+    "message": "Open Phasa side panel",
+    "description": "Tooltip of the toolbar button."
+  },
+  "overlayBadge": {
+    "message": "Phasa",
+    "description": "Small label in the video overlay."
+  },
+  "statusConnecting": {
+    "message": "Connecting…",
+    "description": "Shown while a page connects to the extension background."
+  },
+  "statusConnected": {
+    "message": "Connected · database v$VERSION$",
+    "description": "Shown when the background is reachable.",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "statusError": {
+    "message": "Background unavailable: $ERROR$",
+    "description": "Shown when the background cannot be reached.",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "disconnected"
+      }
+    }
+  },
+  "sidepanelTitle": {
+    "message": "Phasa",
+    "description": "Side panel heading."
+  },
+  "sidepanelEmpty": {
+    "message": "Open a video with Thai subtitles to see its transcript here.",
+    "description": "Side panel empty state."
+  },
+  "optionsTitle": {
+    "message": "Phasa settings",
+    "description": "Options page heading."
+  },
+  "optionsSectionOnboarding": {
+    "message": "Known words",
+    "description": "Options page section: onboarding of known words."
+  },
+  "optionsSectionData": {
+    "message": "Import and export",
+    "description": "Options page section: data import and export."
+  },
+  "optionsSectionAccount": {
+    "message": "AI account",
+    "description": "Options page section: Sign in with ChatGPT / API key."
+  },
+  "comingSoon": {
+    "message": "Coming in a later version.",
+    "description": "Placeholder for sections that are not implemented yet."
+  }
+}

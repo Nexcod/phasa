@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Phasa SIWC spike</title>
+    <style>
+      body {
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+        margin: 24px;
+        max-width: 900px;
+      }
+      button {
+        margin: 0 6px 6px 0;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 12px;
+        white-space: pre-wrap;
+        max-height: 45vh;
+        overflow: auto;
+      }
+      #output {
+        min-height: 3em;
+        border: 1px solid #ddd;
+        padding: 8px;
+        white-space: pre-wrap;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #111;
+          color: #eee;
+        }
+        pre {
+          background: #1d1d1d;
+        }
+        #output {
+          border-color: #333;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sign in with ChatGPT — spike</h1>
+    <pre id="state">…</pre>
+    <p>
+      <button data-cmd="signIn" data-mode="A1">Sign in (A1: DNR redirect)</button>
+      <button data-cmd="signIn" data-mode="A2">Sign in (A2: webNavigation)</button>
+      <button data-cmd="refresh">Refresh token</button>
+      <button data-cmd="expire">Mark access token expired</button>
+      <button data-cmd="signOut">Sign out</button>
+      <button data-cmd="forget">Forget everything</button>
+    </p>
+    <p>
+      <button data-cmd="models">List models</button>
+      <select id="model"></select>
+    </p>
+    <p>
+      <input
+        id="prompt"
+        size="70"
+        value="Explain the Thai word น้ำ in the sentence: ขอน้ำเปล่าหนึ่งขวดครับ"
+      />
+      <button data-cmd="respond">Stream</button>
+      <button data-cmd="respond" data-structured="1">Stream (json_schema)</button>
+      <button data-cmd="respond" data-long="1">Long stream (SW lifetime)</button>
+    </p>
+    <div id="output"></div>
+    <h2>Log</h2>
+    <pre id="log"></pre>
+    <script type="module" src="spike.js"></script>
+  </body>
+</html>

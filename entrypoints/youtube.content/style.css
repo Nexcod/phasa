@@ -1,0 +1,32 @@
+@import '../../src/ui/theme.css';
+
+/* The shadow host is reset with `all: initial` by WXT, so it stays static and
+   this layer is positioned against #movie_player (position: relative). */
+.phasa-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  font-family: var(--phasa-font-ui);
+}
+
+.phasa-chip {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: auto;
+}
+
+.phasa-chip__status {
+  margin: 0;
+  opacity: 0.85;
+}

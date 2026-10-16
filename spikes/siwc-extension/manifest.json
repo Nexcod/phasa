@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Phasa spike: Sign in with ChatGPT",
+  "version": "0.0.1",
+  "description": "Phase 0 spike: loopback OAuth redirect capture (A1 DNR / A2 webNavigation), /v1/models, streaming /v1/responses from the service worker.",
+  "permissions": ["storage", "declarativeNetRequestWithHostAccess", "webNavigation", "tabs"],
+  "host_permissions": [
+    "https://auth.openai.com/*",
+    "https://api.openai.com/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": { "service_worker": "sw.js", "type": "module" },
+  "action": { "default_title": "Open SIWC spike" },
+  "web_accessible_resources": [
+    {
+      "resources": ["callback.html"],
+      "matches": ["https://auth.openai.com/*", "http://127.0.0.1/*"]
+    }
+  ]
+}

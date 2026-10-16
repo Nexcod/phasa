@@ -1,0 +1,10 @@
+.output
+.wxt
+node_modules
+pnpm-lock.yaml
+data
+playwright-report
+test-results
+tests/fixtures
+# Source plan, kept as written.
+docs/plan.md

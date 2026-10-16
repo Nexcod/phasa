@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Phasa spike: captions",
+  "version": "0.0.1",
+  "description": "Phase 0 spike: observe the player's /api/timedtext requests and probe PoToken reuse.",
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["main.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    }
+  ]
+}

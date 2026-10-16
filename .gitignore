@@ -1,0 +1,19 @@
+node_modules
+.output
+.wxt
+*.log
+.DS_Store
+
+# Playwright
+playwright-report
+test-results
+blob-report
+/playwright/.cache
+
+# Downloaded dictionary/corpus sources (scripts fetch them); built data lives in data/build
+data/raw
+
+# Local spike captures (may contain cookies-bound URLs); summarize results in docs/spikes.md
+spikes/**/captures
+.env
+.env.*
