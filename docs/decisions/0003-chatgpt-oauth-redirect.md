@@ -32,8 +32,8 @@ code exchange → ID token verified against `https://auth.openai.com/.well-known
 - Phase 5 manifest additions: `declarativeNetRequestWithHostAccess`; host permissions
   `https://auth.openai.com/*`, `https://api.openai.com/*`, `http://127.0.0.1/*`; the callback page in
   `web_accessible_resources` for `https://auth.openai.com/*` and `http://127.0.0.1/*`.
-- A2 stays a documented fallback (pre-flight capture works); it would add `webNavigation`, so it is not
-  shipped unless A1 breaks.
+- A2 stays a fallback (it worked live too); it would add `webNavigation`, so it is not shipped unless
+  A1 breaks.
 - C (API key) is always offered. B only if OpenAI starts rejecting A.
 
 ## Consequences
@@ -44,5 +44,9 @@ code exchange → ID token verified against `https://auth.openai.com/.well-known
   refresh at a time.
 - The consent screen lets the user rename the agent and calls it unverified; our pre-sign-in copy must
   prepare the user for both.
-- To confirm (non-blocking): whether reauthorization with `id_token_hint` can skip consent, and A2's
-  live behaviour — docs/spikes.md §2.
+- Every sign-in, including reauthorization with `id_token_hint`, shows the account chooser and
+  consent. Reauthorization kept the issued `client_id` (the kit rejects a different one).
+- A2 also completed a live sign-in, so the fallback is proven, not just designed.
+- The service worker can restart while the user is on OpenAI's pages: the attempt lives in
+  `chrome.storage.session`, the callback page reaches the SW with a one-shot message, and UI pages
+  must re-subscribe to SW events after a restart.

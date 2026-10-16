@@ -9,12 +9,12 @@ All four spikes concluded on 2026-10-16; the remaining items in the table are no
 Phase 1 (scaffold) was built in parallel at the owner's request and accepted on 2026-10-16 (see
 README → Status).
 
-| #   | Spike                          | Status                            | Blocking item                                        |
-| --- | ------------------------------ | --------------------------------- | ---------------------------------------------------- |
-| 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos  | — (pot lifetime > 7 min, logged-out: non-blocking)   |
-| 2   | Sign in with ChatGPT           | **Done** — A1 verified end-to-end | — (reauth/A2 completion: clarification pending)      |
-| 3   | Segmentation baseline          | **Done (preliminary)**            | Real-subtitle gold set (≥ 200 cues) in phase 3       |
-| 4   | Data licenses                  | **Done** — one item to confirm    | Confirm Volubilis license inside the release archive |
+| #   | Spike                          | Status                           | Blocking item                                        |
+| --- | ------------------------------ | -------------------------------- | ---------------------------------------------------- |
+| 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos | — (pot lifetime > 7 min, logged-out: non-blocking)   |
+| 2   | Sign in with ChatGPT           | **Done** — A1 and A2 work live   | —                                                    |
+| 3   | Segmentation baseline          | **Done (preliminary)**           | Real-subtitle gold set (≥ 200 cues) in phase 3       |
+| 4   | Data licenses                  | **Done** — one item to confirm   | Confirm Volubilis license inside the release archive |
 
 ---
 
@@ -196,22 +196,28 @@ Stream events seen: `response.created`, `response.in_progress`, `response.output
 (undocumented), `response.completed`. The SW stayed alive for the whole 117 s stream while the page's
 port was open.
 
-**Reauthorization and A2**
+**Reauthorization and A2** (owner's report; the page log missed these callbacks, see below)
 
-- Step 7, A1 again while signed in (`id_token_hint` + `login_hint` sent): OpenAI showed a consent
-  screen again. No callback was logged afterwards — _pending: was the flow completed?_
-- Step 8, after Sign out, A2 (`login_hint` only): consent screen again. No loopback capture was logged
-  — _pending: was the flow completed?_
+- Step 7, A1 again while signed in (`id_token_hint` + `login_hint` sent): the account chooser and the
+  same screens as on the first sign-in, then "Connected ✓". The kit rejects a callback whose
+  `client_id` differs from the saved one, so the reauthorization kept the existing registration.
+- Step 8, after Sign out, A2 (`login_hint` only): the same screens, then "Connected ✓". The owner
+  noticed no difference from A1.
+- Neither callback appeared in the spike page's log. Most likely the service worker was stopped while
+  the owner was on OpenAI's pages (> 30 s without extension events), the page lost its port, and the
+  callback ran in a fresh service-worker instance that restored the attempt from
+  `chrome.storage.session` and logged only to its own console. Not verified, but consistent with
+  both flows ending in "Connected ✓".
 
-| Check                      | A1                                          | A2                                          |
-| -------------------------- | ------------------------------------------- | ------------------------------------------- |
-| Code captured              | ✅ live (first registration)                | ✅ pre-flight only; live result pending     |
-| User-visible result        | our "Connected ✓" page                      | pending                                     |
-| Re-sign-in without consent | ❌ consent shown again (completion pending) | ❌ consent shown again (completion pending) |
-| `/v1/models`               | ✅                                          | — same tokens                               |
-| Streaming from SW          | ✅ incl. 117 s                              | —                                           |
-| `json_schema` honored      | ✅                                          | —                                           |
-| Refresh + rotation         | ✅                                          | —                                           |
+| Check                      | A1                                         | A2                                            |
+| -------------------------- | ------------------------------------------ | --------------------------------------------- |
+| Code captured              | ✅ live (first registration and reauth)    | ✅ live (after sign-out)                      |
+| User-visible result        | our "Connected ✓" page                     | our "Connected ✓" page, no difference from A1 |
+| Re-sign-in without consent | ❌ account chooser and consent shown again | ❌ account chooser and consent shown again    |
+| `/v1/models`               | ✅                                         | — same tokens                                 |
+| Streaming from SW          | ✅ incl. 117 s                             | —                                             |
+| `json_schema` honored      | ✅                                         | —                                             |
+| Refresh + rotation         | ✅                                         | —                                             |
 
 ### Conclusions → [ADR 0003](decisions/0003-chatgpt-oauth-redirect.md) (Accepted: A1)
 
@@ -224,8 +230,13 @@ port was open.
    before choosing a default (the list has no "fast" marker).
 4. Sign-out can revoke the refresh token at the discovered `revocation_endpoint`; parameters to verify
    in phase 5.
-5. Expect a consent screen on every sign-in for now; the UI should say so. The OpenAI screen says the
-   agent is unverified — explain that in our pre-sign-in copy.
+5. Every sign-in shows the account chooser and consent, even with `id_token_hint`; the UI should say
+   so. The OpenAI screen says the agent is unverified — explain that in our pre-sign-in copy.
+6. The service worker can restart during sign-in. Keep the attempt (`state`, `nonce`, PKCE verifier)
+   in `chrome.storage.session`, as the kit does, and let pages re-subscribe to SW events after a
+   restart: `src/messaging` reconnects only on the next request today.
+
+---
 
 ## 3. Segmentation spike
 
