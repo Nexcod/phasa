@@ -8,7 +8,7 @@ estimates, optional AI explanations via Sign in with ChatGPT.
 
 | Phase (docs/plan.md §12)   | Status                                                                                                                                                                            |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 — spikes and decisions   | 3 of 4 done; the Sign in with ChatGPT spike needs a live run — see [docs/spikes.md](docs/spikes.md)                                                                               |
+| 0 — spikes and decisions   | All four spikes concluded 2026-10-16: captions, Sign in with ChatGPT (A1), segmentation, data licenses — see [docs/spikes.md](docs/spikes.md)                                     |
 | 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green |
 | 2 — captions and rendering | Not started                                                                                                                                                                       |
 

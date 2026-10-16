@@ -7,7 +7,7 @@ usually a spike), **Accepted**, **Superseded by NNNN**. Never rewrite an accepte
 | --------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------- |
 | [0001](0001-stack-and-scaffold.md)            | Stack, repository layout, permissions policy                      | Accepted                                  |
 | [0002](0002-captions-source.md)               | Captions: player's own timedtext request + refetch with its `pot` | Accepted                                  |
-| [0003](0003-chatgpt-oauth-redirect.md)        | Capturing the loopback OAuth redirect without a listener          | Proposed — SIWC spike                     |
+| [0003](0003-chatgpt-oauth-redirect.md)        | Capture the loopback OAuth redirect with a DNR rule (A1)          | Accepted                                  |
 | [0004](0004-dictionary-and-frequency-data.md) | Dictionary and frequency data sources                             | Accepted (Volubilis pending confirmation) |
 | [0005](0005-segmentation-convention.md)       | Word unit = dictionary headword; tokenizer pipeline on top of ICU | Accepted                                  |
 | [0006](0006-license.md)                       | AGPL-3.0-or-later for all code; DCO, no CLA                       | Accepted                                  |

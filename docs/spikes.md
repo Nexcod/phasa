@@ -5,15 +5,16 @@ Status as of 2026-10-16. Decisions that follow from these results live in
 all four spikes concluded, OAuth variant chosen, captions source chosen, data
 sources chosen.
 
-Phase 0 stays open until the Sign in with ChatGPT spike runs. Phase 1 (scaffold) was built in
-parallel at the owner's request and accepted on 2026-10-16 (see README → Status).
+All four spikes concluded on 2026-10-16; the remaining items in the table are non-blocking follow-ups.
+Phase 1 (scaffold) was built in parallel at the owner's request and accepted on 2026-10-16 (see
+README → Status).
 
-| #   | Spike                          | Status                                 | Blocking item                                        |
-| --- | ------------------------------ | -------------------------------------- | ---------------------------------------------------- |
-| 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos       | — (pot lifetime > 7 min, logged-out: non-blocking)   |
-| 2   | Sign in with ChatGPT           | **Docs verified, kit ready** — not run | Run the kit with a ChatGPT Plus/Pro account          |
-| 3   | Segmentation baseline          | **Done (preliminary)**                 | Real-subtitle gold set (≥ 200 cues) in phase 3       |
-| 4   | Data licenses                  | **Done** — one item to confirm         | Confirm Volubilis license inside the release archive |
+| #   | Spike                          | Status                            | Blocking item                                        |
+| --- | ------------------------------ | --------------------------------- | ---------------------------------------------------- |
+| 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos  | — (pot lifetime > 7 min, logged-out: non-blocking)   |
+| 2   | Sign in with ChatGPT           | **Done** — A1 verified end-to-end | — (reauth/A2 completion: clarification pending)      |
+| 3   | Segmentation baseline          | **Done (preliminary)**            | Real-subtitle gold set (≥ 200 cues) in phase 3       |
+| 4   | Data licenses                  | **Done** — one item to confirm    | Confirm Volubilis license inside the release archive |
 
 ---
 
@@ -146,31 +147,85 @@ The preview docs match plan §8 with these additions/corrections:
 | Structured output                | `text.format: json_schema` is **not mentioned** in the preview pages.                                                                                                                                                                                                                                                                                                                                                                         | Must be tested (kit button "Stream (json_schema)").                                                    |
 | Eligibility                      | Open-source and locally hosted apps; paid/remotely hosted → interest form.                                                                                                                                                                                                                                                                                                                                                                    | Unchanged.                                                                                             |
 
-### Protocol for the live run
+### Pre-flight (Playwright, no OpenAI traffic)
 
-1. Load `spikes/siwc-extension` unpacked; click its toolbar icon → spike page.
-2. **Sign in (A1)**. Record: does the consent screen show "Phasa"? Does the tab land on `callback.html`
-   "Connected ✓"? Log lines: issued `client_id`, token fields, granted scope, ID-token checks, OIDC discovery.
-3. **List models** → **Stream** → **Stream (json_schema)** → **Long stream** (watch that the SW stays alive
-   while the page port is open; note `firstDeltaMs`/`totalMs`).
-4. **Mark access token expired** → **Stream** (forces refresh; check `rotated refresh_token: true`).
-5. **Sign out** → **Sign in (A1)** again: is the consent screen skipped (`id_token_hint`/`login_hint`)?
-6. **Forget everything** → **Sign in (A2)**: does A2 capture the code? What does the user see?
-7. If both fail: evaluate option B (native messaging helper) — size, install UX.
+The kit loads, the spike page renders, and both capture paths work: with a deliberately wrong `state`,
+a navigation to `http://127.0.0.1:1455/auth/callback?code=…` landed on `callback.html` via the DNR rule
+(A1) and via `webNavigation.onBeforeNavigate` (A2), and stopped at "state mismatch" before any request
+to OpenAI.
 
-Fill in:
+### Live run — 2026-10-16, Chrome, ChatGPT plan account (owner)
 
-| Check                      | A1  | A2  |
-| -------------------------- | --- | --- |
-| Code captured              |     |     |
-| User-visible result        |     |     |
-| Re-sign-in without consent |     |     |
-| `/v1/models` works         |     |     |
-| Streaming from SW          |     |     |
-| `json_schema` honored      |     |     |
-| Refresh + rotation         |     |     |
+Log times are local (UTC+7). Email and issued `client_id` are omitted here on purpose.
 
----
+**Consent flow on first registration (A1)** — three OpenAI screens, then our page:
+
+1. "Use ChatGPT to sign in to Phasa" — account chooser.
+2. "Connect your Phasa to ChatGPT — First, what should we call your agent?" — a name field pre-filled
+   from `agent_name_hint` ("Phasa"). **The user can rename the agent here.**
+3. "Connect Phasa to ChatGPT" — two grants: _Access your basic profile information_ and _Use your
+   ChatGPT plan: Allow Phasa to consume usage from your ChatGPT Plan's limits_, with the note "OpenAI
+   has not verified this agent or its name". The app shows a generic robot icon.
+4. `callback.html`: "Connected ✓ — Connected as …".
+
+**Protocol facts**
+
+| Item                  | Observed                                                                                                                                                                                                                                                                                       |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Callback params       | `code`, `scope`, `state`, `client_id` (issued `oaiapp_…`)                                                                                                                                                                                                                                      |
+| Granted scope         | `chatgpt.tokens.use.direct email offline_access openid profile resource.invoke`                                                                                                                                                                                                                |
+| Token response        | `access_token` (JWT, ~2.1 KB), `refresh_token` (opaque `rt.1.…`, ~200 chars), `id_token`, `token_type`, `expires_in: 3600`, `scope`, `earliest_refresh_at`                                                                                                                                     |
+| `earliest_refresh_at` | 54 min after issue (≈ 6 min before expiry). A refresh 4 min after issue **succeeded** → advisory, not enforced                                                                                                                                                                                 |
+| OIDC discovery        | `issuer` `https://auth.openai.com`, `jwks_uri` `https://auth.openai.com/.well-known/jwks.json`, `revocation_endpoint` `https://auth.openai.com/api/accounts/oauth/revoke` — answers the two gaps in the docs                                                                                   |
+| ID token              | RS256, verified with WebCrypto against the JWKS; `iss`, `aud` = issued client id, `exp`, `nonce` all OK. Claims: `iss sub aud nonce auth_time email email_verified name sid https://api.openai.com/auth iat exp jti at_hash`                                                                   |
+| Refresh               | `grant_type=refresh_token` works; **refresh token rotated**; the refresh response also carries `id_token` and `earliest_refresh_at`                                                                                                                                                            |
+| `/v1/models`          | top-level `models`; 7 visible: GPT-6.1-Sol, GPT-6-Astra, GPT-6-Sol, GPT-6-Luna, GPT-5.6-Sol, GPT-5.6-Terra, GPT-5.6-Luna. Entries carry `slug`, `display_name`, `visibility`, `priority`, `supported_in_api`, `context_window`, reasoning levels, service tiers… — **no explicit "fast" flag** |
+| `x-request-id`        | not readable from the SW (`null`) — find the right header for support logs in phase 5                                                                                                                                                                                                          |
+
+**Inference (model GPT-6.1-Sol, the first listed)**
+
+| Request                              | Terminal                         | First delta |     Total | Deltas |
+| ------------------------------------ | -------------------------------- | ----------: | --------: | -----: |
+| Plain                                | `response.completed`             |       4.6 s |     8.8 s |    157 |
+| `text.format: json_schema` (strict)  | `response.completed`, JSON valid |       6.3 s |     9.7 s |    113 |
+| Long (~900-word story + translation) | `response.completed`             |      11.6 s | **117 s** |   3714 |
+| Plain, right after a refresh         | `response.completed`             |       6.2 s |    10.9 s |    154 |
+
+Stream events seen: `response.created`, `response.in_progress`, `response.output_item.added/done`,
+`response.content_part.added/done`, `response.output_text.delta/done`, `response.metadata`
+(undocumented), `response.completed`. The SW stayed alive for the whole 117 s stream while the page's
+port was open.
+
+**Reauthorization and A2**
+
+- Step 7, A1 again while signed in (`id_token_hint` + `login_hint` sent): OpenAI showed a consent
+  screen again. No callback was logged afterwards — _pending: was the flow completed?_
+- Step 8, after Sign out, A2 (`login_hint` only): consent screen again. No loopback capture was logged
+  — _pending: was the flow completed?_
+
+| Check                      | A1                                          | A2                                          |
+| -------------------------- | ------------------------------------------- | ------------------------------------------- |
+| Code captured              | ✅ live (first registration)                | ✅ pre-flight only; live result pending     |
+| User-visible result        | our "Connected ✓" page                      | pending                                     |
+| Re-sign-in without consent | ❌ consent shown again (completion pending) | ❌ consent shown again (completion pending) |
+| `/v1/models`               | ✅                                          | — same tokens                               |
+| Streaming from SW          | ✅ incl. 117 s                              | —                                           |
+| `json_schema` honored      | ✅                                          | —                                           |
+| Refresh + rotation         | ✅                                          | —                                           |
+
+### Conclusions → [ADR 0003](decisions/0003-chatgpt-oauth-redirect.md) (Accepted: A1)
+
+1. **A1 works end-to-end** without a loopback listener: registration, code exchange, ID-token
+   verification, models, streaming, structured output, refresh with rotation.
+2. `text.format: json_schema` works on this route → use it for `explainWord`/`translateCue`; keep zod
+   validation as a guard, the retry path becomes a fallback.
+3. Latency: 4.6–6.3 s to the first token on the first-listed model. The word popup must show the local
+   dictionary instantly and stream AI text into it; cache answers; measure the Luna models in phase 5
+   before choosing a default (the list has no "fast" marker).
+4. Sign-out can revoke the refresh token at the discovered `revocation_endpoint`; parameters to verify
+   in phase 5.
+5. Expect a consent screen on every sign-in for now; the UI should say so. The OpenAI screen says the
+   agent is unverified — explain that in our pre-sign-in copy.
 
 ## 3. Segmentation spike
 
