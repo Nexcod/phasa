@@ -158,9 +158,11 @@ test.describe('captions and rendering', () => {
 
     // Typing in a text field is left alone.
     await page.locator('#search').fill('');
+    // Space/Space let the video run for a moment, so compare with the paused position.
+    const before = await currentTime(page);
     await page.locator('#search').press('d');
     await expect(page.locator('#search')).toHaveValue('d');
-    await expect.poll(() => currentTime(page)).toBeCloseTo(start(1), 2);
+    expect(await currentTime(page)).toBe(before);
   });
 
   test('switches cues within 100 ms of their start time', async ({ context }) => {
