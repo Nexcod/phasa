@@ -37,3 +37,19 @@ export const test = base.extend<Fixtures>({
 });
 
 export const expect = test.expect;
+
+interface ChromeTabs {
+  chrome: { tabs: { query(query: { url: string }): Promise<{ id?: number }[]> } };
+}
+
+/** Id of the (first) youtube.com tab, for pinning the side panel to it (`sidepanel.html?tab=`). */
+export async function youTubeTabId(serviceWorker: Worker): Promise<number> {
+  const id = await serviceWorker.evaluate(async () => {
+    const [tab] = await (globalThis as unknown as ChromeTabs).chrome.tabs.query({
+      url: '*://www.youtube.com/*',
+    });
+    return tab?.id;
+  });
+  if (id === undefined) throw new Error('No youtube.com tab');
+  return id;
+}

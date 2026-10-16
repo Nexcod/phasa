@@ -1,4 +1,4 @@
-import type { CaptionCue, TrackKind } from '../captions/types';
+import type { ProcessedCue, TrackKind } from '../captions/types';
 import type { DictEntry } from '../dictionary/types';
 
 export type LearningLevel = 1 | 2 | 3 | 4;
@@ -44,13 +44,21 @@ export interface VideoRow {
   analyzedAt?: number;
 }
 
+/** A processed caption track, cached per video (docs/plan.md §4.1 step 9). */
 export interface CaptionTrackRow {
   videoId: string;
+  /** Track key: the player's `vssId` (`.th`, `a.th`), or `<vssId>>en` for YouTube's machine translation. */
   vssId: string;
+  /** Language of the text. */
   languageCode: string;
+  /** Kind of the source track. */
   trackKind: TrackKind;
-  cues: CaptionCue[];
+  /** Source `vssId` of a machine translation. */
+  translatedFrom?: string;
+  cues: ProcessedCue[];
   fetchedAt: number;
+  /** Rows from an older captions pipeline are ignored and refetched. */
+  processingVersion: number;
 }
 
 export interface SegRuleRow {

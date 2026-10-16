@@ -108,6 +108,52 @@ remove `sticky-language`, toggle CC off.
 4. Speed: ~1.2 s from a recommendation click to Thai json3 in hand — within the 3 s criterion.
 5. Still open (non-blocking): `pot` lifetime beyond ~7 min; logged-out profile; behaviour with ads.
 
+### Run 3 — phase 2 code against live YouTube (2026-10-16, real Chrome, via Claude in Chrome)
+
+The built MAIN-world bundle (`content-scripts/youtube-main.js`) was injected into a logged-in watch
+page and driven through the bridge protocol by hand: the isolated side's messages were posted from
+the console, and the test moved between videos with YouTube's own SPA navigation (`yt-navigate`).
+The user's captions were off throughout.
+
+New facts, now handled in code (ADR 0007):
+
+- **`pot` alone is not enough.** `baseUrl + pot` returned an empty body. `baseUrl + pot + c +
+cver` worked, so we copy every parameter of the captured request except the track and format
+  ones.
+- **The player aborts its own first request** on a fresh page (`status 0`) and sends the same URL
+  again ~30 ms later. Our refetch with the same `pot` works even right after the abort.
+- **After an SPA switch the player can briefly report the previous video again.** A fetch right
+  after the switch returned `stale-video`; the fetcher now waits up to 3 s for the player to settle.
+- **Stub manual tracks:** `pxLHURprYuI` has 2 manual cues (4 s) against 30 asr cues (179 s);
+  `pBoQcFogon8` has 5 manual cues (16 s) against 35 (161 s). Track choice falls back to asr.
+- **`captionsInitialState: CAPTIONS_INITIAL_STATE_ON_REQUIRED`** (both Pinkfong songs): YouTube
+  turns captions on by itself, so these videos use the natural path (72–309 ms).
+- The user's two caption keys stayed byte-identical through 13 navigations, 10 of them with a
+  forced load, and the CC button stayed off wherever YouTube had not turned it on itself.
+- Real formats are captured as contract fixtures in `tests/fixtures/captions/`.
+
+| videoId       | Tracks (th/en) | Chosen          | English | Player ready after nav | Thai ready after player | English after Thai |
+| ------------- | -------------- | --------------- | ------- | ---------------------: | ----------------------: | -----------------: |
+| `wD3NSzYtsMc` | .th a.th       | .th (281 cues)  | tlang   |                 783 ms |                1658 ms¹ |             391 ms |
+| `6FGHJxEx6Ts` | .en .th a.th   | .th (245)       | manual  |                 912 ms |                  582 ms |              83 ms |
+| `PoautAigKP8` | .en .th a.th   | .th (305)       | manual  |                1000 ms |                  692 ms |              85 ms |
+| `1pRtDpRJZdY` | .th            | .th (200)       | tlang   |                 690 ms |                  497 ms |             429 ms |
+| `48A9SU6_bQ8` | .th a.th       | .th (347)       | tlang   |                 703 ms |                  491 ms |             385 ms |
+| `iH31BMKBEdU` | a.th           | a.th (335)      | tlang   |                 861 ms |                  496 ms |             438 ms |
+| `uYEW8BeJ0zY` | .en a.th       | a.th (117)      | manual  |                 811 ms |                  489 ms |              92 ms |
+| `0DVrEKzzYEQ` | .en a.th       | a.th (426)      | manual  |                 808 ms |                  531 ms |              62 ms |
+| `xV8fgU3Hczk` | a.en a.th      | a.th (372)      | tlang   |                1129 ms |                  494 ms |             462 ms |
+| `SVj46JwYnB4` | a.th (31 min)  | a.th (750)      | tlang   |                 797 ms |                  536 ms |             731 ms |
+| `pBoQcFogon8` | .th a.th       | a.th (stub .th) | tlang   |                 957 ms |                 309 ms² |             213 ms |
+| `pxLHURprYuI` | .th a.th       | a.th (stub .th) | tlang   |                 771 ms |                  72 ms² |             454 ms |
+| `jNQXAC9IVRw` | .en            | no Thai         | —       |                 914 ms |                       — |                  — |
+
+¹ First video after the script started: the full 1.5 s wait for a natural request, then a forced
+load. Later videos wait 0.4 s. ² The player requested captions itself (`ON_REQUIRED`).
+
+Processing the bodies in the service worker (parse + normalize + merge + align, Node 24) takes
+5.4 ms for a 750-cue track and 19 ms for 3000 cues.
+
 ### Re-running
 
 Load the kit unpacked in a normal Chrome profile and open watch pages (console filter `[phasa-spike]`).

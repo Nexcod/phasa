@@ -1,12 +1,15 @@
 @import '../../src/ui/theme.css';
 
 /* The shadow host is reset with `all: initial` by WXT, so it stays static and
-   this layer is positioned against #movie_player (position: relative). */
+   this layer is positioned against #movie_player (position: relative). It is a
+   size container: subtitle sizes follow the player in default, theater and
+   fullscreen modes without JavaScript. */
 .phasa-overlay {
   position: absolute;
   inset: 0;
   z-index: 40;
   pointer-events: none;
+  container-type: size;
   font-family: var(--phasa-font-ui);
 }
 
@@ -17,16 +20,77 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  max-width: calc(100% - 24px);
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgb(0 0 0 / 0.6);
+  background: rgb(0 0 0 / 0.65);
   color: #fff;
   font-size: 12px;
   line-height: 1.4;
   pointer-events: auto;
 }
 
-.phasa-chip__status {
+.phasa-chip[data-tone='muted'] {
+  color: #d0d0d0;
+}
+
+.phasa-chip[data-tone='error'] {
+  background: rgb(127 29 29 / 0.85);
+}
+
+.phasa-chip__button {
+  padding: 0 8px;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.phasa-subs {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  align-items: center;
+  width: max-content;
+  max-width: 90%;
+  transform: translateX(-50%);
+  transition: bottom 120ms ease-out;
+  text-align: center;
+  pointer-events: auto;
+  user-select: text;
+}
+
+/* Above YouTube's control bar while it is shown. */
+.phasa-overlay[data-controls='shown'] .phasa-subs {
+  bottom: max(64px, 13%);
+}
+
+.phasa-subs__line {
   margin: 0;
-  opacity: 0.85;
+  padding: 0 0.4em;
+  border-radius: 4px;
+  background: rgb(8 8 8 / 0.75);
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+/* No letter-spacing, text-transform or synthesized styles on Thai: they break
+   shaping (docs/plan.md §5.1). line-height ≥ 1.7 keeps stacked marks such as
+   น้ำ, ที่, ปู่ inside the line box. */
+.phasa-subs__thai {
+  font-family: var(--phasa-font-thai);
+  font-size: clamp(16px, 5.4cqh, 56px);
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.phasa-subs__en {
+  color: #ececec;
+  font-size: clamp(12px, 3.6cqh, 36px);
+  line-height: 1.35;
 }

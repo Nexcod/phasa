@@ -26,8 +26,9 @@ export function useBackgroundStatus(client: Client): BackgroundStatus {
         },
       );
     };
-    // sw/hello is the only server event so far; filter by type once there are more.
-    const unsubscribe = client.onEvent(refresh);
+    const unsubscribe = client.onEvent((event) => {
+      if (event.type === 'sw/hello') refresh();
+    });
     refresh();
     return () => {
       active = false;

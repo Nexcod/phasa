@@ -9,8 +9,11 @@
  * {@link METHOD_ACCESS}, implement it in `src/background/handlers.ts`.
  */
 
+import type { ProcessedTrack, TrackKind, TrackRef } from '../captions/types';
+import type { Settings } from '../settings';
+
 export const PORT_NAME = 'phasa';
-export const PROTOCOL_VERSION = 1;
+export const PROTOCOL_VERSION = 2;
 
 /** Where a request comes from. Derived by the SW from `port.sender`, never trusted from the payload. */
 export type Origin = 'content-script' | 'extension-page';
@@ -18,6 +21,18 @@ export type Origin = 'content-script' | 'extension-page';
 export interface DbInfo {
   schemaVersion: number;
   counts: Record<string, number>;
+}
+
+/** Raw timedtext bodies fetched in the page, processed and cached by the SW. */
+export interface CaptionsProcessParams {
+  video: { videoId: string; title: string; channel: string; durationSec: number };
+  items: { ref: TrackRef; languageCode: string; kind: TrackKind; body: string }[];
+}
+
+export interface CaptionsProcessResult {
+  tracks: ProcessedTrack[];
+  /** Bodies that could not be parsed, by track key. */
+  failed: { key: string; error: string }[];
 }
 
 export interface Methods {
@@ -28,6 +43,24 @@ export interface Methods {
   'db/info': {
     params: Record<string, never>;
     result: DbInfo;
+  };
+  /** Cached tracks of a video (current processing version only). */
+  'captions/get': {
+    params: { videoId: string };
+    result: { tracks: ProcessedTrack[] };
+  };
+  'captions/process': {
+    params: CaptionsProcessParams;
+    result: CaptionsProcessResult;
+  };
+  'settings/get': {
+    params: Record<string, never>;
+    result: Settings;
+  };
+  /** Validated partial update; broadcasts `settings/changed`. */
+  'settings/set': {
+    params: { patch: Partial<Settings> };
+    result: Settings;
   };
 }
 
@@ -42,6 +75,10 @@ export type Result<M extends Method> = Methods[M]['result'];
 export const METHOD_ACCESS: Readonly<Record<Method, readonly Origin[]>> = {
   ping: ['content-script', 'extension-page'],
   'db/info': ['content-script', 'extension-page'],
+  'captions/get': ['content-script', 'extension-page'],
+  'captions/process': ['content-script', 'extension-page'],
+  'settings/get': ['content-script', 'extension-page'],
+  'settings/set': ['content-script', 'extension-page'],
 };
 
 /** Sent on every new connection; a changed `swStartedAt` means the SW restarted. */
@@ -51,7 +88,12 @@ export interface HelloEvent {
   swStartedAt: number;
 }
 
-export type ServerEvent = HelloEvent;
+export interface SettingsChangedEvent {
+  type: 'settings/changed';
+  settings: Settings;
+}
+
+export type ServerEvent = HelloEvent | SettingsChangedEvent;
 
 export type RequestEnvelope = {
   [M in Method]: { kind: 'request'; id: number; method: M; params: Params<M> };

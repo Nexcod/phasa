@@ -20,11 +20,12 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "wxt build && playwright test --grep-invert @network",
-    "test:e2e:network": "wxt build && playwright test --grep @network",
+    "test:e2e": "PHASA_TEST_PAGES=1 wxt build && playwright test --grep-invert @network",
+    "test:e2e:network": "PHASA_TEST_PAGES=1 wxt build && playwright test --grep @network",
     "spike:seg": "tsx scripts/spikes/segmentation.ts",
     "spike:seg:fetch": "tsx scripts/spikes/fetch-wisesight.ts",
-    "spike:cues": "tsx scripts/spikes/cues-to-tsv.ts"
+    "spike:cues": "tsx scripts/spikes/cues-to-tsv.ts",
+    "fonts:fetch": "tsx scripts/fetch-fonts.ts"
   },
   "dependencies": {
     "dexie": "^4.4.6",

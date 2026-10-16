@@ -11,6 +11,7 @@ import {
   type ResponseEnvelope,
   type Result,
   type RpcError,
+  type ServerEvent,
 } from './protocol';
 
 export interface RequestContext {
@@ -45,10 +46,22 @@ function toRpcError(error: unknown): RpcError {
   return { code: 'internal', message: error instanceof Error ? error.message : 'Internal error' };
 }
 
-export function createServer(handlers: Handlers, options: ServerOptions) {
+export interface Server {
+  /** Serve one connected port until it disconnects. */
+  attach(port: PortLike): void;
+  /** Push an event to every connected context. */
+  broadcast(event: ServerEvent): void;
+}
+
+export function createServer(handlers: Handlers, options: ServerOptions): Server {
+  const connections = new Set<(message: EventEnvelope) => void>();
+
   return {
-    /** Serve one connected port until it disconnects. */
-    attach(port: PortLike): void {
+    broadcast(event) {
+      for (const send of connections) send({ kind: 'event', event });
+    },
+
+    attach(port) {
       const origin = classifySender(port.sender, options.extensionOrigin);
       if (!origin) {
         port.disconnect();
@@ -58,6 +71,7 @@ export function createServer(handlers: Handlers, options: ServerOptions) {
       let connected = true;
       port.onDisconnect.addListener(() => {
         connected = false;
+        connections.delete(send);
       });
 
       const send = (message: ResponseEnvelope | EventEnvelope) => {
@@ -98,6 +112,7 @@ export function createServer(handlers: Handlers, options: ServerOptions) {
           );
       });
 
+      connections.add(send);
       send({
         kind: 'event',
         event: { type: 'sw/hello', protocol: PROTOCOL_VERSION, swStartedAt: options.swStartedAt },

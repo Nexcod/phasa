@@ -58,3 +58,105 @@ body {
   margin: 0;
   color: var(--phasa-muted);
 }
+
+.page__error {
+  margin: 0;
+  color: var(--phasa-error);
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--phasa-accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Side panel: current video and its transcript. */
+.video__meta {
+  margin-bottom: 8px;
+}
+
+.video__title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.video__channel,
+.video__note,
+.video__hint {
+  margin: 2px 0 0;
+  color: var(--phasa-muted);
+  font-size: 12px;
+}
+
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 10px 0 4px;
+}
+
+.toggle {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.transcript {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.transcript__button {
+  display: grid;
+  grid-template-columns: 3.5em 1fr;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.transcript__button:hover {
+  background: var(--phasa-hover);
+}
+
+.transcript__row[data-active] .transcript__button {
+  background: var(--phasa-active);
+}
+
+.transcript__time {
+  padding-top: 0.35em;
+  color: var(--phasa-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.transcript__text {
+  display: flex;
+  flex-direction: column;
+}
+
+.transcript__thai {
+  font-family: var(--phasa-font-thai);
+  font-size: 17px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.transcript__en {
+  color: var(--phasa-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}

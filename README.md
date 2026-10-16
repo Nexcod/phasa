@@ -6,11 +6,11 @@ estimates, optional AI explanations via Sign in with ChatGPT.
 
 ## Status
 
-| Phase (docs/plan.md §12)   | Status                                                                                                                                                                                                                            |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 — spikes and decisions   | **Accepted 2026-10-16**: captions source (ADR 0002), Sign in with ChatGPT via a DNR redirect (ADR 0003), data sources (ADR 0004), segmentation baseline (ADR 0005) — see [docs/spikes.md](docs/spikes.md)                         |
-| 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green; `pnpm dev` builds and serves the dev extension |
-| 2 — captions and rendering | Not started                                                                                                                                                                                                                       |
+| Phase (docs/plan.md §12)   | Status                                                                                                                                                                                                                                                                                                                                                                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 — spikes and decisions   | **Accepted 2026-10-16**: captions source (ADR 0002), Sign in with ChatGPT via a DNR redirect (ADR 0003), data sources (ADR 0004), segmentation baseline (ADR 0005) — see [docs/spikes.md](docs/spikes.md)                                                                                                                                                             |
+| 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green; `pnpm dev` builds and serves the dev extension                                                                                                                                     |
+| 2 — captions and rendering | **Implemented 2026-10-16, awaiting manual acceptance** ([checklist](docs/manual-checklist.md)): Thai + English subtitles over the player from the player's own PoToken (ADR 0007), cached per video; Noto Sans Thai Looped; side-panel transcript; hotkeys A/D/S/Space/T; auto-pause. Live run: Thai ready 0.5–1.7 s after the player loads (docs/spikes.md §1 run 3) |
 
 ## Development
 
@@ -24,24 +24,29 @@ pnpm zip            # store-ready zip
 ```
 
 Load the build: `chrome://extensions` → Developer mode → **Load unpacked** → `.output/chrome-mv3`
-(or `-dev`). Open a YouTube watch page; the toolbar button opens the side panel.
+(or `-dev`). Open a YouTube watch page with Thai captions; the toolbar button opens the side panel.
+Live captions can't be tested under automation; [docs/manual-checklist.md](docs/manual-checklist.md)
+lists the checks done by hand.
 
-| Command                     | What it does                                                                                                               |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm lint` / `pnpm format` | ESLint (type-aware) / Prettier                                                                                             |
-| `pnpm typecheck`            | `tsc --noEmit`                                                                                                             |
-| `pnpm test`                 | Vitest unit tests                                                                                                          |
-| `pnpm test:e2e`             | Build + Playwright e2e with the extension loaded, youtube.com stubbed (first run: `pnpm exec playwright install chromium`) |
-| `pnpm test:e2e:network`     | e2e against real youtube.com (`@network`, nightly in CI)                                                                   |
-| `pnpm spike:seg [file]`     | Segmentation baseline: `Intl.Segmenter` vs a gold file                                                                     |
+| Command                     | What it does                                                                                                                      |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm lint` / `pnpm format` | ESLint (type-aware) / Prettier                                                                                                    |
+| `pnpm typecheck`            | `tsc --noEmit`                                                                                                                    |
+| `pnpm test`                 | Vitest unit tests                                                                                                                 |
+| `pnpm test:e2e`             | Build (with dev-only test pages) + Playwright e2e against a fake youtube.com (first run: `pnpm exec playwright install chromium`) |
+| `pnpm test:e2e:network`     | e2e against real youtube.com (`@network`, nightly in CI)                                                                          |
+| `pnpm spike:seg [file]`     | Segmentation baseline: `Intl.Segmenter` vs a gold file                                                                            |
+| `pnpm fonts:fetch`          | Re-download the bundled Thai fonts into `public/fonts/` (committed; see its README)                                               |
 
 ## Layout
 
 ```
 entrypoints/   background (SW), youtube.content (overlay), youtube-main.content (MAIN world),
-               sidepanel, options
-src/           messaging (typed Port protocol), db (Dexie schema + migrations), background,
-               thai, captions, dictionary, i18n, ui
+               sidepanel, options, fonts-test (dev/test builds only)
+src/           captions (parsers, processing, track choice; main/ = MAIN-world fetcher),
+               content (overlay state, playback sync, hotkeys, panel link), messaging (typed
+               Port protocols), db (Dexie schema + migrations), background (SW handlers),
+               settings, thai, dictionary, i18n, ui (shared components, fonts)
 tests/         unit (Vitest), e2e (Playwright), fixtures
 spikes/        phase-0 experiment kits (not shipped)
 docs/          plan.md, spikes.md, decisions/ (ADRs)

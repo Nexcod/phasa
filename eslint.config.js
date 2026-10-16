@@ -27,6 +27,26 @@ const CONTENT_SCRIPT_FORBIDDEN = [
   },
 ];
 
+// The MAIN world shares `window` with youtube.com: no extension APIs, no user data (plan §3.2 rule 3).
+const MAIN_WORLD_FORBIDDEN = [
+  ...CONTENT_SCRIPT_FORBIDDEN,
+  {
+    group: [
+      'wxt/browser',
+      '**/src/messaging',
+      '**/src/messaging/**',
+      '@/src/messaging',
+      '@/src/messaging/**',
+      '**/src/i18n',
+      '@/src/i18n',
+      '**/src/content/**',
+      '@/src/content/**',
+    ],
+    message:
+      'The MAIN-world script has no extension APIs. Talk to the content script via src/captions/bridge.',
+  },
+];
+
 export default defineConfig(
   {
     ignores: [
@@ -56,8 +76,12 @@ export default defineConfig(
     extends: [reactHooks.configs.flat['recommended-latest']],
   },
   {
-    files: ['entrypoints/youtube*.content/**', 'entrypoints/youtube*.content.ts'],
+    files: ['entrypoints/youtube*.content/**', 'entrypoints/youtube*.content.ts', 'src/content/**'],
     rules: { 'no-restricted-imports': ['error', { patterns: CONTENT_SCRIPT_FORBIDDEN }] },
+  },
+  {
+    files: ['entrypoints/youtube-main.content.ts', 'src/captions/main/**'],
+    rules: { 'no-restricted-imports': ['error', { patterns: MAIN_WORLD_FORBIDDEN }] },
   },
   {
     files: ['scripts/**', 'tests/**', '*.config.{ts,js}'],

@@ -1,0 +1,25 @@
+{
+  "wireMagic": "pb3",
+  "pens": [ {
+  
+  } ],
+  "wsWinStyles": [ {
+  
+  } ],
+  "wpWinPositions": [ {
+  
+  } ],
+  "events": [ {
+    "tStartMs": 15745,
+    "dDurationMs": 2000,
+    "segs": [ {
+      "utf8": "ร้องเพลงพยัญชนะไทย"
+    } ]
+  }, {
+    "tStartMs": 19499,
+    "dDurationMs": 1857,
+    "segs": [ {
+      "utf8": "ร้องเพลงพยัญชนะไทย"
+    } ]
+  } ]
+}

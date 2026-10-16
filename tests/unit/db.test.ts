@@ -60,6 +60,7 @@ describe('schema', () => {
       trackKind: 'asr' as const,
       cues: [],
       fetchedAt: 0,
+      processingVersion: 1,
     };
     await db.captions.put({ ...row, vssId: 'a.th' });
     await db.captions.put({ ...row, vssId: '.th' });

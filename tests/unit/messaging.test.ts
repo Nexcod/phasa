@@ -1,7 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createClient } from '@/src/messaging/client';
-import { PORT_NAME, RpcFailure, parseRequest, type ServerEvent } from '@/src/messaging/protocol';
+import {
+  PORT_NAME,
+  PROTOCOL_VERSION,
+  RpcFailure,
+  parseRequest,
+  type ServerEvent,
+} from '@/src/messaging/protocol';
 import { classifySender, createServer, type Handlers } from '@/src/messaging/server';
+import { DEFAULT_SETTINGS } from '@/src/settings';
 import { createPortPair, type FakePort } from '../helpers/fake-port';
 
 const EXT = 'chrome-extension://abcdefghijklmnop';
@@ -15,6 +22,10 @@ function setup(
   const all: Handlers = {
     ping: ({ sentAt }, ctx) => ({ sentAt, swStartedAt: ctx.tabId ?? 1 }),
     'db/info': () => ({ schemaVersion: 1, counts: {} }),
+    'captions/get': () => ({ tracks: [] }),
+    'captions/process': () => ({ tracks: [], failed: [] }),
+    'settings/get': () => ({ ...DEFAULT_SETTINGS }),
+    'settings/set': ({ patch }) => ({ ...DEFAULT_SETTINGS, ...patch }),
     ...handlers,
   };
   const server = createServer(all, { extensionOrigin: EXT, swStartedAt: 1 });
@@ -25,7 +36,7 @@ function setup(
     server.attach(serverEnd);
     return clientEnd;
   });
-  return { client, ports };
+  return { client, ports, server };
 }
 
 describe('classifySender', () => {
@@ -69,7 +80,22 @@ describe('client ↔ server', () => {
     const events: ServerEvent[] = [];
     client.onEvent((event) => events.push(event));
     await client.request('ping', { sentAt: 0 });
-    expect(events).toEqual([{ type: 'sw/hello', protocol: 1, swStartedAt: 1 }]);
+    expect(events).toEqual([{ type: 'sw/hello', protocol: PROTOCOL_VERSION, swStartedAt: 1 }]);
+  });
+
+  it('broadcasts events to every connected context until it disconnects', async () => {
+    const { client, ports, server } = setup();
+    const events: ServerEvent[] = [];
+    client.onEvent((event) => events.push(event));
+    await client.request('ping', { sentAt: 0 });
+    const settings = { ...DEFAULT_SETTINGS, autoPause: true };
+    server.broadcast({ type: 'settings/changed', settings });
+    await Promise.resolve();
+    expect(events.at(-1)).toEqual({ type: 'settings/changed', settings });
+
+    ports[0]!.disconnect();
+    await Promise.resolve();
+    expect(() => server.broadcast({ type: 'settings/changed', settings })).not.toThrow();
   });
 
   it('propagates handler errors as RpcFailure without stack traces', async () => {

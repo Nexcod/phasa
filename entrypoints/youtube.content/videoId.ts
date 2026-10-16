@@ -13,7 +13,8 @@ export function videoIdFromUrl(href: string): string | null {
 /**
  * Current `?v=` of a /watch page. YouTube is an SPA: `yt-navigate-finish` is the
  * primary signal, WXT's `wxt:locationchange` (URL polling) the fallback.
- * Phase 2 replaces this with full video detection and cancellation.
+ * The MAIN world reports which video the player has actually loaded; this URL
+ * value hides the previous video's subtitles the moment navigation starts.
  */
 export function createVideoIdStore(ctx: ContentScriptContext): VideoIdStore {
   let current = videoIdFromUrl(location.href);

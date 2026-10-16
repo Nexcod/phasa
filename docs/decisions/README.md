@@ -11,6 +11,7 @@ usually a spike), **Accepted**, **Superseded by NNNN**. Never rewrite an accepte
 | [0004](0004-dictionary-and-frequency-data.md) | Dictionary and frequency data sources                             | Accepted (Volubilis pending confirmation) |
 | [0005](0005-segmentation-convention.md)       | Word unit = dictionary headword; tokenizer pipeline on top of ICU | Accepted                                  |
 | [0006](0006-license.md)                       | AGPL-3.0-or-later for all code; DCO, no CLA                       | Accepted                                  |
+| [0007](0007-captions-runtime.md)              | Captions runtime: fetch, choose, cache, render, sync              | Accepted                                  |
 
 ## Template
 
