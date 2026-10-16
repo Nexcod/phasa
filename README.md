@@ -4,9 +4,13 @@ Chrome extension (Manifest V3) that turns YouTube videos with Thai subtitles int
 interactive Thai subtitles, word lookups with romanization and tones, known-word tracking, difficulty
 estimates, optional AI explanations via Sign in with ChatGPT.
 
-> Status: **phase 1 scaffold** — the extension installs, mounts an empty overlay on watch pages and
-> opens a side panel. Phase 0: captions, segmentation and data licenses are done; the Sign in with
-> ChatGPT spike still needs a live run — see [docs/spikes.md](docs/spikes.md).
+## Status
+
+| Phase (docs/plan.md §12)   | Status                                                                                                                                                                            |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 — spikes and decisions   | 3 of 4 done; the Sign in with ChatGPT spike needs a live run — see [docs/spikes.md](docs/spikes.md)                                                                               |
+| 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green |
+| 2 — captions and rendering | Not started                                                                                                                                                                       |
 
 ## Development
 

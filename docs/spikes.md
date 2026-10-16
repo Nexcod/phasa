@@ -5,6 +5,9 @@ Status as of 2026-10-16. Decisions that follow from these results live in
 all four spikes concluded, OAuth variant chosen, captions source chosen, data
 sources chosen.
 
+Phase 0 stays open until the Sign in with ChatGPT spike runs. Phase 1 (scaffold) was built in
+parallel at the owner's request and accepted on 2026-10-16 (see README → Status).
+
 | #   | Spike                          | Status                                 | Blocking item                                        |
 | --- | ------------------------------ | -------------------------------------- | ---------------------------------------------------- |
 | 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos       | — (pot lifetime > 7 min, logged-out: non-blocking)   |
