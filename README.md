@@ -6,11 +6,11 @@ estimates, optional AI explanations via Sign in with ChatGPT.
 
 ## Status
 
-| Phase (docs/plan.md §12)   | Status                                                                                                                                                                            |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 — spikes and decisions   | All four spikes concluded 2026-10-16: captions, Sign in with ChatGPT (A1), segmentation, data licenses — see [docs/spikes.md](docs/spikes.md)                                     |
-| 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green |
-| 2 — captions and rendering | Not started                                                                                                                                                                       |
+| Phase (docs/plan.md §12)   | Status                                                                                                                                                                                                                            |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 — spikes and decisions   | **Accepted 2026-10-16**: captions source (ADR 0002), Sign in with ChatGPT via a DNR redirect (ADR 0003), data sources (ADR 0004), segmentation baseline (ADR 0005) — see [docs/spikes.md](docs/spikes.md)                         |
+| 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green; `pnpm dev` builds and serves the dev extension |
+| 2 — captions and rendering | Not started                                                                                                                                                                                                                       |
 
 ## Development
 

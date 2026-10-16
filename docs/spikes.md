@@ -5,9 +5,9 @@ Status as of 2026-10-16. Decisions that follow from these results live in
 all four spikes concluded, OAuth variant chosen, captions source chosen, data
 sources chosen.
 
-All four spikes concluded on 2026-10-16; the remaining items in the table are non-blocking follow-ups.
-Phase 1 (scaffold) was built in parallel at the owner's request and accepted on 2026-10-16 (see
-README → Status).
+**Phase 0 accepted on 2026-10-16.** All four spikes concluded; the open items in the table below are
+non-blocking follow-ups. Phase 1 (scaffold) was built in parallel at the owner's request and accepted
+the same day (see README → Status).
 
 | #   | Spike                          | Status                           | Blocking item                                        |
 | --- | ------------------------------ | -------------------------------- | ---------------------------------------------------- |
