@@ -5,6 +5,12 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 (`npm run build` → `chrome://extensions` → Load unpacked → `.output/chrome-mv3`). Videos:
 `tests/e2e/videos.ts`. Open DevTools on the YouTube tab and filter the console by `[phasa]`.
 
+## Every phase
+
+- [ ] **Network e2e.** `npm run test:e2e:network` passes. Run it from a home connection: YouTube
+      shows datacenter IPs, including CI runners, a bot check instead of the video
+      ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
+
 ## Phase 2 — captions and rendering
 
 - [ ] **Speed.** For each of the 10 acceptance videos, the console shows

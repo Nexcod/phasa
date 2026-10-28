@@ -1,4 +1,4 @@
-import { FAKE_WATCH_PAGE, expect, test } from './fixtures';
+import { FAKE_WATCH_PAGE, expect, expectPlayable, test } from './fixtures';
 
 test('overlay mounts over #movie_player and waits for the player', async ({ context }) => {
   await context.route('https://www.youtube.com/**', (route) =>
@@ -55,6 +55,7 @@ test('real watch page without Thai captions says so @network', async ({ context 
   const page = await context.newPage();
   // "Me at the zoo" — stable, short, public, English/German captions only.
   await page.goto('https://www.youtube.com/watch?v=jNQXAC9IVRw');
+  await expectPlayable(page);
   const overlay = page.locator('#movie_player phasa-overlay [data-testid="phasa-overlay"]');
   await expect(overlay).toBeAttached({ timeout: 20_000 });
   // The track list comes from the player response, which works under automation.
@@ -64,6 +65,7 @@ test('real watch page without Thai captions says so @network', async ({ context 
 test('real watch page with Thai captions is detected @network', async ({ context }) => {
   const page = await context.newPage();
   await page.goto('https://www.youtube.com/watch?v=iH31BMKBEdU');
+  await expectPlayable(page);
   const overlay = page.locator('#movie_player phasa-overlay [data-testid="phasa-overlay"]');
   // Timedtext bodies are empty under automation (docs/spikes.md §1), so "ready" is not
   // reachable here; detection of the Thai track is.

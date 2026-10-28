@@ -35,7 +35,7 @@ lists the checks done by hand.
 | `npm run typecheck`               | `tsc --noEmit`                                                                                                              |
 | `npm test`                        | Vitest unit tests                                                                                                           |
 | `npm run test:e2e`                | Build (with dev-only test pages) + Playwright e2e against a fake youtube.com (first run: `npx playwright install chromium`) |
-| `npm run test:e2e:network`        | e2e against real youtube.com (`@network`, nightly in CI)                                                                    |
+| `npm run test:e2e:network`        | e2e against real youtube.com (`@network`); run locally, YouTube blocks CI runners (ADR 0009)                                |
 | `npm run spike:seg [file]`        | Segmentation baseline: `Intl.Segmenter` vs a gold file                                                                      |
 | `npm run fonts:fetch`             | Re-download the bundled Thai fonts into `public/fonts/` (committed; see its README)                                         |
 
