@@ -6,10 +6,9 @@ Thanks for helping. Read [`AGENTS.md`](AGENTS.md) for the project rules and
 ## Setup and checks
 
 ```sh
-corepack enable
-pnpm install
-pnpm lint && pnpm format:check && pnpm typecheck && pnpm test
-pnpm test:e2e   # first run: pnpm exec playwright install chromium
+npm install
+npm run lint && npm run format:check && npm run typecheck && npm test
+npm run test:e2e   # first run: npx playwright install chromium
 ```
 
 CI runs the same checks on every pull request.

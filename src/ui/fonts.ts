@@ -1,6 +1,6 @@
 /**
  * Bundled Thai fonts (docs/plan.md §5.1). Files live in public/fonts/ and are
- * fetched by `pnpm fonts:fetch`.
+ * fetched by `npm run fonts:fetch`.
  *
  * `@font-face` declared inside a shadow root is ignored by Chrome, so every
  * context injects these rules into `document.head`; shadow roots then use the

@@ -3,7 +3,7 @@
 ## segmentation.tsv
 
 Gold word segmentation for the Thai tokenizer (ADR 0005). Gate: boundary F1 ≥ 0.90 on Thai–Thai
-boundaries (`pnpm spike:seg`; a unit test enforces it once the tokenizer exists in phase 3).
+boundaries (`npm run spike:seg`; a unit test enforces it once the tokenizer exists in phase 3).
 
 Columns (tab-separated, header row): `id`, `source`, `segmented`, `note`.
 
@@ -39,7 +39,7 @@ of its parts, keep it whole; otherwise split. Record hard cases in `note`.
 ### Adding real cues
 
 1. Capture Thai json3 with the captions spike kit (`phasaSpike.save()`).
-2. `pnpm spike:cues path/to/*.json > /tmp/new.tsv` — rows come pre-segmented by ICU.
+2. `npm run -s spike:cues path/to/*.json > /tmp/new.tsv` — rows come pre-segmented by ICU.
 3. Review **every** row against this convention (pre-segmentation biases toward ICU), then append.
 
 ## captions/

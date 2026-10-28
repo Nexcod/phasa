@@ -2,7 +2,7 @@
 
 Automation cannot load real captions (YouTube returns empty timedtext bodies to automated browsers,
 docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with the unpacked build
-(`pnpm build` → `chrome://extensions` → Load unpacked → `.output/chrome-mv3`). Videos:
+(`npm run build` → `chrome://extensions` → Load unpacked → `.output/chrome-mv3`). Videos:
 `tests/e2e/videos.ts`. Open DevTools on the YouTube tab and filter the console by `[phasa]`.
 
 ## Phase 2 — captions and rendering
@@ -37,6 +37,6 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 - [ ] **Cache.** Reopen a video watched earlier: subtitles appear without a forced CC flicker, and
       the Network tab shows no new `timedtext` request.
 - [ ] **Ads.** On a video with a pre-roll ad, no subtitles show during the ad; they appear after it.
-- [ ] **Fonts.** In a dev build (`pnpm dev`), `chrome-extension://<id>/fonts-test.html` says "all
+- [ ] **Fonts.** In a dev build (`npm run dev`), `chrome-extension://<id>/fonts-test.html` says "all
       checks passed" and no stacked mark (น้ำ, ที่, ปู่, ญี่ปุ่น) is cut. On youtube.com, the
       subtitles use the looped font.

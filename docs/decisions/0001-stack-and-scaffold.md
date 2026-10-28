@@ -1,6 +1,6 @@
 # 0001. Stack, repository layout, permissions policy
 
-- Status: Accepted
+- Status: Accepted; package manager superseded by [0008](0008-npm.md)
 - Date: 2026-10-16
 - Evidence: docs/plan.md §3, §11; phase 1 scaffold
 

@@ -5,7 +5,7 @@
   "description": "Learn Thai from videos with Thai subtitles — Chrome extension.",
   "license": "AGPL-3.0-or-later",
   "type": "module",
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "npm@11.19.1",
   "engines": {
     "node": ">=22.12"
   },
@@ -51,5 +51,9 @@
     "vite": "^8.3.4",
     "vitest": "~5.0.4",
     "wxt": "^0.21.4"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "fsevents": false
   }
 }

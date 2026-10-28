@@ -159,7 +159,7 @@ Processing the bodies in the service worker (parse + normalize + merge + align, 
 Load the kit unpacked in a normal Chrome profile and open watch pages (console filter `[phasa-spike]`).
 **The kit calls `setOption` and therefore flips the sticky caption preference** — afterwards remove
 `yt-player-caption-sticky-language` from youtube.com localStorage and switch CC off.
-`phasaSpike.save()` downloads the Thai json3 for `pnpm spike:cues` (§3).
+`phasaSpike.save()` downloads the Thai json3 for `npm run spike:cues` (§3).
 
 ---
 
@@ -286,8 +286,8 @@ port was open.
 
 ## 3. Segmentation spike
 
-**Tools:** `src/thai/segmentation-eval.ts` (boundary P/R/F1, tested), `pnpm spike:seg [file]`,
-`pnpm spike:seg:fetch` (wisesight-1000), `pnpm spike:cues` (json3 → pre-segmented TSV rows).
+**Tools:** `src/thai/segmentation-eval.ts` (boundary P/R/F1, tested), `npm run spike:seg [file]`,
+`npm run spike:seg:fetch` (wisesight-1000), `npm run spike:cues` (json3 → pre-segmented TSV rows).
 
 Scoring: a boundary is an offset between two words. Boundaries next to whitespace are excluded (free
 for every segmenter). "Thai" columns score only boundaries with Thai script on both sides.
@@ -344,7 +344,7 @@ ICU never placed a boundary inside a grapheme cluster (0 violations on both sets
   unknown ICU tokens → user rules.
 - Open: confirm that Chrome's ICU gives the same segmentation as Node's ICU 78.3 (run the same script
   in the browser during phase 3; Chrome bundles its own ICU build).
-- Open: build the real gold set (≥ 200 cues from ≥ 10 videos, manual + asr) with `pnpm spike:cues`
+- Open: build the real gold set (≥ 200 cues from ≥ 10 videos, manual + asr) with `npm run spike:cues`
   after the captions spike, then annotate per `tests/fixtures/README.md`.
 
 ---

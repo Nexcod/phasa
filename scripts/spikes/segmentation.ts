@@ -3,8 +3,8 @@
  * `Intl.Segmenter('th', { granularity: 'word' })` against a gold file and
  * prints boundary P/R/F1 plus the most frequent error patterns as Markdown.
  *
- *   pnpm spike:seg                                 # tests/fixtures/segmentation.tsv
- *   pnpm spike:seg data/raw/wisesight-1000.label   # after `pnpm spike:seg:fetch`
+ *   npm run spike:seg                                 # tests/fixtures/segmentation.tsv
+ *   npm run spike:seg data/raw/wisesight-1000.label   # after `npm run spike:seg:fetch`
  *
  * Formats: `.tsv` = `id <TAB> source <TAB> segmented [<TAB> note]` with a header
  * row; anything else = one `|`-segmented sentence per line.

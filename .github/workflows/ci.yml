@@ -19,17 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm format:check
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm zip
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run zip
       - uses: actions/upload-artifact@v4
         with:
           name: phasa-chrome-zip
@@ -42,19 +41,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - name: Offline e2e (stubbed YouTube)
         if: github.event_name != 'schedule'
-        run: pnpm test:e2e
+        run: npm run test:e2e
       - name: Network e2e (real YouTube)
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: pnpm test:e2e:network
+        run: npm run test:e2e:network
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

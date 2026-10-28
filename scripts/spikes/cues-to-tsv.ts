@@ -3,7 +3,7 @@
  * spikes/captions-extension) into segmentation.tsv rows pre-segmented by ICU,
  * ready for manual correction:
  *
- *   pnpm spike:cues spikes/captions-extension/captures/*.json3.json > /tmp/cues.tsv
+ *   npm run -s spike:cues spikes/captions-extension/captures/*.json3.json > /tmp/cues.tsv
  *
  * Pre-segmenting biases annotators toward ICU's answer: review every row
  * against tests/fixtures/README.md rather than only fixing obvious errors.
@@ -21,7 +21,7 @@ const NON_SPEECH = /^\[[^\]]*\]$/u; // [เพลง], [ดนตรี], [ห�
 
 const files = process.argv.slice(2);
 if (files.length === 0) {
-  console.error('usage: pnpm spike:cues <file.json3.json>...');
+  console.error('usage: npm run -s spike:cues <file.json3.json>...');
   process.exit(1);
 }
 

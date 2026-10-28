@@ -9,7 +9,7 @@
 //
 // Console API (window.phasaSpike): tracks(), enableThai(), hideNative(bool),
 // probe(), report(), save() — save() downloads the Thai json3 body for
-// `pnpm spike:cues`.
+// `npm run spike:cues`.
 (() => {
   const TAG = '[phasa-spike]';
   const AUTO = localStorage.getItem('phasa-spike:auto') !== 'off';

@@ -3,7 +3,7 @@
  * the Thai subset of Noto Sans Thai Looped and Noto Sans Thai (variable,
  * weights 100–900) from Google Fonts, plus their OFL license text.
  *
- *   pnpm fonts:fetch
+ *   npm run fonts:fetch
  *
  * The files are committed; re-run only to update the fonts, then check the
  * fonts test page (docs/plan.md §5.1) and update public/fonts/README.md.
