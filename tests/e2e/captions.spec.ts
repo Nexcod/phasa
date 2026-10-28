@@ -33,6 +33,31 @@ async function seek(page: Page, seconds: number): Promise<void> {
 const currentTime = (page: Page) =>
   page.evaluate(() => document.querySelector('video')!.currentTime);
 
+/**
+ * Settles once the video has presented a frame after the next seek and the overlay has had a frame
+ * to react to it, or after 500 ms: a paused video may have shown that frame before `seeked`. Like the
+ * overlay's sync, it asks for the frame on `seeked`. Start it before the action that seeks.
+ */
+async function frameAfterSeek(page: Page): Promise<() => Promise<void>> {
+  await page.evaluate(() => {
+    const video = document.querySelector('video')!;
+    (window as unknown as { __phasaFrame?: Promise<void> }).__phasaFrame = new Promise(
+      (resolve) => {
+        video.addEventListener(
+          'seeked',
+          () => {
+            video.requestVideoFrameCallback(() => requestAnimationFrame(() => resolve()));
+            setTimeout(resolve, 500);
+          },
+          { once: true },
+        );
+      },
+    );
+  });
+  return () =>
+    page.evaluate(() => (window as unknown as { __phasaFrame: Promise<void> }).__phasaFrame);
+}
+
 test.describe('captions and rendering', () => {
   test('loads Thai + English for a video with captions off and restores the caption state', async ({
     context,
@@ -131,10 +156,19 @@ test.describe('captions and rendering', () => {
     await seek(page, 2.5);
 
     const start = (i: number) => THAI_CUES[i]!.startMs / 1000;
-    await page.keyboard.press('d');
-    await expect.poll(() => currentTime(page)).toBeCloseTo(start(2), 2);
-    await page.keyboard.press('a');
-    await expect.poll(() => currentTime(page)).toBeCloseTo(start(1), 2);
+    // The frame shown after a seek starts up to 0.1 s before the cue (the fake video has 10 fps);
+    // the line must not slip back to the previous cue.
+    const pressAndCheck = async (key: string, cue: number) => {
+      const framed = await frameAfterSeek(page);
+      await page.keyboard.press(key);
+      await expect.poll(() => currentTime(page)).toBeCloseTo(start(cue), 2);
+      await framed();
+      await expect(overlay(page).getByTestId('phasa-cue-thai')).toHaveText(THAI_CUES[cue]!.text);
+    };
+    await pressAndCheck('d', 2);
+    await pressAndCheck('d', 3);
+    await pressAndCheck('a', 2);
+    await pressAndCheck('a', 1);
     await seek(page, 3.5);
     await page.keyboard.press('s');
     await expect.poll(() => currentTime(page)).toBeCloseTo(start(1), 2);

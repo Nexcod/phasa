@@ -41,6 +41,8 @@ export class PlaybackSync {
   private activeIndex = -1;
   /** Cue that started while playing and has not been auto-paused yet. */
   private armedIndex = -1;
+  /** Where the last seek landed (ms), until the first frame after it is presented. */
+  private seekedMs: number | null = null;
   private stopped = false;
 
   constructor(
@@ -72,6 +74,8 @@ export class PlaybackSync {
   private readonly onMediaEvent = (event: Event) => {
     const mediaMs = this.video.currentTime * 1000;
     if (event.type === 'seeking') this.armedIndex = -1;
+    if (event.type === 'seeking' || event.type === 'emptied') this.seekedMs = null;
+    if (event.type === 'seeked') this.seekedMs = mediaMs;
     this.update(mediaMs);
     if (event.type === 'play' || event.type === 'playing' || event.type === 'seeked') {
       this.arm(mediaMs);
@@ -92,7 +96,14 @@ export class PlaybackSync {
     this.frameHandle = this.video.requestVideoFrameCallback((_now, metadata) => {
       this.frameHandle = null;
       // A frame decoded before a seek must not pull the cue back; `seeked` updates instead.
-      if (!this.video.seeking) this.update(metadata.mediaTime * 1000);
+      if (!this.video.seeking) {
+        // The first frame after a seek starts up to a frame before the seek target. Count it as
+        // the target, or a seek to a cue start shows the previous cue (until the next frame, or
+        // for good while paused).
+        const frameMs = metadata.mediaTime * 1000;
+        this.update(this.seekedMs === null ? frameMs : Math.max(frameMs, this.seekedMs));
+        this.seekedMs = null;
+      }
       if (!this.video.paused) this.requestFrame();
     });
   }

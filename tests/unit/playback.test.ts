@@ -39,6 +39,10 @@ class FakeVideo extends EventTarget {
   /** A presented frame at `ms`. */
   frame(ms: number): void {
     this.currentTime = ms / 1000;
+    this.present(ms);
+  }
+  /** A frame at `ms` presented while `currentTime` stays, like the picture shown after a seek. */
+  present(ms: number): void {
     const pending = [...this.callbacks.values()];
     this.callbacks.clear();
     for (const callback of pending) callback(0, { mediaTime: ms / 1000 });
@@ -128,6 +132,34 @@ describe('PlaybackSync', () => {
     expect(sync.index).toBe(2);
     video.frame(1533); // stale frame from before the seek
     expect(sync.index).toBe(2);
+  });
+
+  it('keeps the cue a paused seek landed in when the frame shown starts before it', () => {
+    const { video, sync } = setup();
+    video.seek(3001);
+    expect(sync.index).toBe(1);
+    video.present(2967); // the last frame at or before the seek target
+    expect(sync.index).toBe(1);
+  });
+
+  it('does not flash the previous cue after a seek while playing', async () => {
+    const { video, indices } = setup();
+    await video.play();
+    video.frame(1500);
+    video.seek(3001);
+    video.present(2967);
+    video.frame(3033);
+    expect(indices).toEqual([0, 1]);
+  });
+
+  it('forgets the seek target when the media changes', async () => {
+    const { video, sync } = setup();
+    video.seek(8001);
+    video.currentTime = 0;
+    video.dispatchEvent(new Event('emptied'));
+    await video.play();
+    video.frame(1500);
+    expect(sync.index).toBe(0);
   });
 
   it('stops listening when stopped', async () => {
