@@ -491,6 +491,12 @@ body {
   font-size: 12px;
 }
 
+/* Secondary actions under the main button, set apart from it. */
+.account__secondary {
+  margin-top: 12px;
+  font-size: 13px;
+}
+
 .account__key {
   flex: 1;
   min-width: 16em;

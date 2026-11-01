@@ -135,6 +135,42 @@ function ModelPicker({
   );
 }
 
+/** "Forget account" behind a confirmation: the next sign-in registers Phasa again. */
+function ForgetAccount({ busy, onForget }: { busy: boolean; onForget: () => void }) {
+  const [confirming, setConfirming] = useState(false);
+  if (!confirming) {
+    return (
+      <button
+        type="button"
+        className="link-button"
+        onClick={() => setConfirming(true)}
+        data-testid="phasa-account-forget"
+      >
+        {t('accountForget')}
+      </button>
+    );
+  }
+  return (
+    <>
+      <span>{t('accountForgetConfirm')}</span>
+      <button
+        type="button"
+        className="phasa-button"
+        disabled={busy}
+        onClick={() => {
+          setConfirming(false);
+          onForget();
+        }}
+      >
+        {t('accountForget')}
+      </button>
+      <button type="button" className="link-button" onClick={() => setConfirming(false)}>
+        {t('actionCancel')}
+      </button>
+    </>
+  );
+}
+
 function ChatGptBlock({
   client,
   view,
@@ -151,7 +187,6 @@ function ChatGptBlock({
   const models = useModels(client, 'chatgpt-plan', signedIn && chatgpt.planUsage);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const [confirmForget, setConfirmForget] = useState(false);
 
   const signIn = () => {
     setBusy(true);
@@ -166,7 +201,6 @@ function ChatGptBlock({
   };
   const signOut = (forget: boolean) => {
     setBusy(true);
-    setConfirmForget(false);
     client.request(forget ? 'account/forget' : 'account/sign-out', {}, { timeoutMs: 30_000 }).then(
       ({ revoked }) => {
         setBusy(false);
@@ -210,7 +244,9 @@ function ChatGptBlock({
               <p className="page__error" data-testid="phasa-account-no-plan">
                 {t('accountNoPlan')}
               </p>
-              <ContinueWithChatGpt onClick={signIn} busy={busy} />
+              <div className="account__row">
+                <ContinueWithChatGpt onClick={signIn} busy={busy} />
+              </div>
             </>
           )}
           <div className="account__row">
@@ -223,25 +259,7 @@ function ChatGptBlock({
             >
               {t('accountSignOut')}
             </button>
-            {confirmForget ? (
-              <>
-                <span>{t('accountForgetConfirm')}</span>
-                <button type="button" className="phasa-button" onClick={() => signOut(true)}>
-                  {t('accountForget')}
-                </button>
-                <button
-                  type="button"
-                  className="link-button"
-                  onClick={() => setConfirmForget(false)}
-                >
-                  {t('actionCancel')}
-                </button>
-              </>
-            ) : (
-              <button type="button" className="link-button" onClick={() => setConfirmForget(true)}>
-                {t('accountForget')}
-              </button>
-            )}
+            <ForgetAccount busy={busy} onForget={() => signOut(true)} />
           </div>
           <p className="account__muted">{t('accountSignOutHint')}</p>
         </>
@@ -254,16 +272,18 @@ function ChatGptBlock({
           )}
           <p>{chatgpt.registered ? t('accountReturning') : t('accountFirstSignIn')}</p>
           {!chatgpt.registered && <p className="account__muted">{t('accountUnverified')}</p>}
-          <ContinueWithChatGpt onClick={signIn} busy={busy} />
+          <div className="account__row">
+            <ContinueWithChatGpt onClick={signIn} busy={busy} />
+          </div>
           {chatgpt.pending && (
             <p className="account__muted" role="status" data-testid="phasa-account-pending">
               {t('accountPending')}
             </p>
           )}
           {chatgpt.registered && (
-            <button type="button" className="link-button" onClick={() => signOut(true)}>
-              {t('accountForget')}
-            </button>
+            <div className="account__row account__secondary">
+              <ForgetAccount busy={busy} onForget={() => signOut(true)} />
+            </div>
           )}
         </>
       )}

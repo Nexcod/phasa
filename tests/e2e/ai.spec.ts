@@ -167,6 +167,19 @@ test.describe('AI', () => {
       'data-state',
       'signed-in',
     );
+
+    // Signed out, "Forget account" sits under the button and asks first.
+    await options.getByTestId('phasa-account-sign-out').click();
+    const account = options.getByTestId('phasa-account-chatgpt');
+    await expect(account).toHaveAttribute('data-state', 'signed-out');
+    const button = await options.getByTestId('phasa-siwc-button').boundingBox();
+    const forget = await options.getByTestId('phasa-account-forget').boundingBox();
+    expect(forget!.y).toBeGreaterThanOrEqual(button!.y + button!.height);
+    await options.getByTestId('phasa-account-forget').click();
+    await expect(account).toContainText('Forget the ChatGPT account?');
+    await account.getByRole('button', { name: 'Forget account' }).click();
+    await expect(account).toContainText('OpenAI opens in a new tab');
+    await expect(options.getByTestId('phasa-account-forget')).toHaveCount(0);
   });
 
   test('explains a word in its line, streamed, then from the cache', async ({
