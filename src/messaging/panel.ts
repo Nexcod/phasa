@@ -31,7 +31,16 @@ export type PanelSession =
   | { status: 'loading'; video: PanelVideo }
   | { status: 'no-thai'; video: PanelVideo }
   | { status: 'error'; video: PanelVideo; error: string }
-  | { status: 'ready'; video: PanelVideo; kind: TrackKind; cues: PanelCue[] };
+  | {
+      status: 'ready';
+      video: PanelVideo;
+      kind: TrackKind;
+      /** The Thai track shown, for `analysis/*` requests. */
+      trackKey: string;
+      /** The English track of the second line, when there is one. */
+      englishKey?: string;
+      cues: PanelCue[];
+    };
 
 export type TabToPanel =
   | { type: 'session'; session: PanelSession; activeIndex: number }

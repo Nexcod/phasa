@@ -10,6 +10,7 @@ import {
   type ServerEvent,
 } from '@/src/messaging/protocol';
 import type { Token } from '@/src/thai/types';
+import type { WordStatus } from '@/src/vocab/types';
 
 const cue = (text: string, startMs: number): ProcessedCue => ({
   startMs,
@@ -112,6 +113,30 @@ describe('createWordManager', () => {
     emit({ type: 'segmentation/changed' });
     await settle();
     expect(calls.filter((call) => call.method === 'thai/tokenize')).toHaveLength(2);
+  });
+
+  it('applies a batch of changes, and reloads statuses when told to', async () => {
+    let statuses: Record<string, WordStatus> = { ผม: 'known' };
+    const { client, calls, emit } = fakeClient({ 'vocab/statuses': () => ({ statuses }) });
+    let data: WordData | undefined;
+    const manager = createWordManager(client, (next) => (data = next));
+    manager.setTrack('v/a.th', [cue('ผม|ไป|บ้าน', 0)]);
+    await vi.waitFor(() => expect(data?.prefetched).toBe(true));
+
+    emit({
+      type: 'vocab/changed',
+      changes: [
+        { kind: 'word', thai: 'ไป', status: 'known' },
+        { kind: 'word', thai: 'บ้าน', status: 1 },
+        { kind: 'word', thai: 'ผม', status: 'new' },
+      ],
+    });
+    expect(data?.statuses).toEqual({ ไป: 'known', บ้าน: 1 });
+
+    statuses = { ผม: 'known', ไป: 'known', บ้าน: 'known' };
+    emit({ type: 'vocab/changed', changes: [], reload: true });
+    await vi.waitFor(() => expect(data?.statuses).toEqual(statuses));
+    expect(calls.filter((call) => call.method === 'vocab/statuses')).toHaveLength(2);
   });
 
   it('updates a status optimistically and rolls back when saving fails', async () => {

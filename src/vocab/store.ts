@@ -11,12 +11,15 @@ import { normalizeThai } from '../thai/normalize';
 import {
   isWordStatus,
   segRuleKey,
+  type BulkMode,
   type ContextInput,
   type SavedContext,
   type SavedUnit,
   type SegRule,
   type SegRuleKind,
   type UnitKind,
+  type VocabChange,
+  type VocabCounts,
   type WordStatus,
 } from './types';
 
@@ -186,6 +189,65 @@ export async function deleteUnit(db: PhasaDb, kind: UnitKind, thai: string): Pro
     await table.delete(row.id);
     return true;
   });
+}
+
+const PROGRESS: Readonly<Record<string, number>> = {
+  new: 0,
+  '1': 1,
+  '2': 2,
+  '3': 3,
+  '4': 4,
+  known: 5,
+};
+
+export function bulkReplaces(
+  current: WordStatus | undefined,
+  target: WordStatus,
+  mode: BulkMode,
+): boolean {
+  if (current === undefined || current === 'new') return target !== 'new';
+  if (mode === 'new-only' || current === 'ignored' || target === 'ignored') return false;
+  return (PROGRESS[String(target)] ?? 0) > (PROGRESS[String(current)] ?? 0);
+}
+
+/** Sets the status of many words at once, without contexts. Returns what changed. */
+export async function bulkSetWords(
+  db: PhasaDb,
+  words: readonly string[],
+  status: WordStatus,
+  mode: BulkMode,
+  now: number,
+): Promise<VocabChange[]> {
+  const unique = [...new Set(words)];
+  return db.transaction('rw', db.words, async () => {
+    const existing = new Map(
+      (await db.words.where('thai').anyOf(unique).toArray()).map((row) => [row.thai, row]),
+    );
+    const added: Omit<WordRow, 'id'>[] = [];
+    const updated: { key: number; changes: Partial<WordRow> }[] = [];
+    const changes: VocabChange[] = [];
+    for (const thai of unique) {
+      const row = existing.get(thai);
+      if (!bulkReplaces(row?.status, status, mode)) continue;
+      if (row) updated.push({ key: row.id, changes: { status, updatedAt: now } });
+      else added.push({ thai, status, createdAt: now, updatedAt: now });
+      changes.push({ kind: 'word', thai, status });
+    }
+    if (added.length > 0) await db.words.bulkAdd(added);
+    if (updated.length > 0) await db.words.bulkUpdate(updated);
+    return changes;
+  });
+}
+
+/** Saved words by status, and saved phrases. */
+export async function vocabCounts(db: PhasaDb): Promise<VocabCounts> {
+  const [known, learning, ignored, phrases] = await Promise.all([
+    db.words.where('status').equals('known').count(),
+    db.words.where('status').anyOf([1, 2, 3, 4]).count(),
+    db.words.where('status').equals('ignored').count(),
+    db.phrases.count(),
+  ]);
+  return { known, learning, ignored, phrases };
 }
 
 /** Statuses of saved words and phrases among `words`; unsaved ones are new and left out. */

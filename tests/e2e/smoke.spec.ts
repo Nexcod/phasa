@@ -60,6 +60,11 @@ test('real watch page without Thai captions says so @network', async ({ context 
   await expect(overlay).toBeAttached({ timeout: 20_000 });
   // The track list comes from the player response, which works under automation.
   await expect(overlay).toHaveAttribute('data-status', 'no-thai', { timeout: 20_000 });
+  // The grey badge sits under the real title (ytd-watch-metadata #title, src/content/player-dom.ts).
+  await expect(page.locator('phasa-badge [data-testid="phasa-title-badge"]')).toHaveText(
+    'No Thai subtitles',
+    { timeout: 20_000 },
+  );
 });
 
 test('real watch page with Thai captions is detected @network', async ({ context }) => {

@@ -1,4 +1,5 @@
 @import '../../src/ui/theme.css';
+@import '../../src/ui/analysis.css';
 
 /* The shadow host is reset with `all: initial` by WXT, so it stays static and
    this layer is positioned against #movie_player (position: relative). It is a
@@ -397,4 +398,19 @@
 .phasa-popup__error {
   margin: 6px 0 0;
   color: #fca5a5;
+}
+
+/* Analysis badge under the video title (docs/plan.md §7.4). Its own shadow root, in the page flow. */
+.phasa-title-badge {
+  margin: 8px 0 4px;
+  color: var(--phasa-fg);
+  font-family: var(--phasa-font-ui);
+}
+
+.phasa-title-badge .phasa-analysis {
+  font-size: 14px;
+}
+
+.phasa-title-badge .phasa-analysis__details {
+  max-width: 640px;
 }

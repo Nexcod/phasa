@@ -24,4 +24,7 @@ Files:
   from Wiktionary (CC BY-SA 4.0), frequency ranks from the corpora above. Built by
   `npm run data:dict`; sources, retrieval dates and checksums are in `dict.meta.json`.
 - `freq.json` — the 30 000 most frequent Thai words of the Thai National Corpus (CC0-1.0). Built by
-  `npm run data:freq`.
+  `npm run data:freq`. Shipped with the extension since phase 4 for the video analysis and the
+  known-word onboarding (ADR 0011).
+
+All three files ship in the extension package under `data/`.

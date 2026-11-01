@@ -45,6 +45,36 @@ export interface SavedUnit {
   contexts: SavedContext[];
 }
 
+/**
+ * How a bulk change treats words that already have a status: `new-only` leaves every saved word
+ * alone (top-N known, "mark all as known" for the rest of a video); `advance` also moves a word
+ * forward, learning → known (importing a known-word list, plan §9: the more advanced status wins).
+ * Ignored words are never touched.
+ */
+export type BulkMode = 'new-only' | 'advance';
+
+/** Saved words by status, and saved phrases. */
+export interface VocabCounts {
+  known: number;
+  learning: number;
+  ignored: number;
+  phrases: number;
+}
+
+/** Onboarding offers to mark this many of the most frequent words as known (plan §2.1). */
+export const FREQUENT_COUNTS = [100, 500, 1000, 2000, 5000] as const;
+
+/** A word of the frequency list offered in onboarding (plan §2.1). */
+export interface FrequentWord {
+  thai: string;
+  /** Corpus frequency rank, 1 = most frequent. */
+  rank: number;
+  gloss?: string;
+  romanization?: string;
+  /** Saved status, when the word is saved and not new. */
+  status?: WordStatus;
+}
+
 /** `status: null` = deleted. */
 export interface VocabChange {
   kind: UnitKind;

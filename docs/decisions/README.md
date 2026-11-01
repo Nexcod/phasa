@@ -15,6 +15,7 @@ usually a spike), **Accepted**, **Superseded by NNNN**. Never rewrite an accepte
 | [0008](0008-npm.md)                            | npm instead of pnpm; install-script and release-age policy             | Accepted                                                                      |
 | [0009](0009-network-e2e-runs-locally.md)       | `@network` e2e runs locally before phase acceptance, not nightly in CI | Accepted                                                                      |
 | [0010](0010-dictionary-build-and-tokenizer.md) | Dictionary build and packaging; convention rules; tokenizer pipeline   | Accepted                                                                      |
+| [0011](0011-video-analysis-and-onboarding.md)  | Video analysis in the SW; top-N / import onboarding; change signal     | Accepted                                                                      |
 
 ## Template
 

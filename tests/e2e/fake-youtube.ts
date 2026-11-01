@@ -30,6 +30,24 @@ interface FakeVideo {
 const THAI_ASR = caption('iH31BMKBEdU.a.th.json3.json');
 const THAI_ASR_EN = caption('iH31BMKBEdU.a.th.tlang-en.json3.json');
 
+/** Real subtitle lines: the segmentation gold set without its boundaries. */
+const GOLD_LINES = readFileSync(join(FIXTURES, 'segmentation.tsv'), 'utf8')
+  .split('\n')
+  .slice(1)
+  .map((line) => line.split('\t')[2]?.replaceAll('|', '') ?? '')
+  .filter((line) => line !== '');
+
+/** A 20-minute video: 400 lines of 3 s, about 3000 words (plan §7.5: analysis < 500 ms). */
+export const LONG_VIDEO_ID = 'longVideo20';
+export const LONG_VIDEO_CUES = 400;
+const LONG_THAI = JSON.stringify({
+  events: Array.from({ length: LONG_VIDEO_CUES }, (_, i) => ({
+    tStartMs: i * 3000,
+    dDurationMs: 3000,
+    segs: [{ utf8: GOLD_LINES[i % GOLD_LINES.length] }],
+  })),
+});
+
 export const FAKE_VIDEOS: Record<string, FakeVideo> = {
   /** Thai auto-generated only; English comes from YouTube's translation (tlang=en). */
   iH31BMKBEdU: {
@@ -47,6 +65,12 @@ export const FAKE_VIDEOS: Record<string, FakeVideo> = {
       { vssId: '.en', languageCode: 'en', bodies: { '': caption('uYEW8BeJ0zY.en.json3.json') } },
       { vssId: 'a.th', languageCode: 'th', kind: 'asr', bodies: { '': THAI_ASR, en: THAI_ASR_EN } },
     ],
+  },
+  /** Manual Thai, 20 minutes long. */
+  [LONG_VIDEO_ID]: {
+    videoId: LONG_VIDEO_ID,
+    title: 'A long Thai video',
+    tracks: [{ vssId: '.th', languageCode: 'th', bodies: { '': LONG_THAI } }],
   },
   /** No Thai track at all. */
   jNQXAC9IVRw: {
@@ -197,6 +221,12 @@ export function fakeWatchPage(options: { captionsOn?: boolean } = {}): string {
       <div class="ytp-caption-window-container" id="native-captions">NATIVE CAPTIONS</div>
     </div>
   </div>
+  <ytd-watch-metadata>
+    <div id="above-the-fold">
+      <div id="title"><h1>Fake title</h1></div>
+      <div id="top-row">Fake channel</div>
+    </div>
+  </ytd-watch-metadata>
   <a href="/watch?v=uYEW8BeJ0zY" data-navigate="uYEW8BeJ0zY" id="next">next video</a>
   <a href="/watch?v=jNQXAC9IVRw" data-navigate="jNQXAC9IVRw" id="no-thai">video without Thai</a>
   <button id="fullscreen">fullscreen</button>

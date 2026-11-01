@@ -1,4 +1,5 @@
 @import './theme.css';
+@import './analysis.css';
 
 * {
   box-sizing: border-box;
@@ -74,6 +75,16 @@ body {
   cursor: pointer;
 }
 
+/* Side panel: analysis of the video on screen (docs/plan.md §7.4). */
+.page__analysis {
+  margin-bottom: 12px;
+}
+
+.page__calibration {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
 /* Side panel: current video and its transcript. */
 .video__meta {
   margin-bottom: 8px;
@@ -105,6 +116,10 @@ body {
   gap: 6px;
   align-items: center;
   cursor: pointer;
+}
+
+.transcript__filter {
+  margin-top: 8px;
 }
 
 .transcript {
@@ -303,4 +318,109 @@ body {
   align-self: flex-start;
   font-size: 12px;
   text-align: left;
+}
+
+/* Options: known words (onboarding, docs/plan.md §2.1). */
+.known__block {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 10px;
+}
+
+.known__block h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.known__block p {
+  margin: 0 0 8px;
+}
+
+.known__counts,
+.known__selected,
+.known__found {
+  color: var(--phasa-muted);
+}
+
+.known__particles {
+  font-family: var(--phasa-font-thai);
+  font-size: 16px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.known__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.known__list {
+  max-height: 360px;
+  overflow-y: auto;
+  margin: 0 0 10px;
+  padding: 0 4px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 6px;
+  list-style: none;
+}
+
+.known__item label {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.known__item[data-saved] label {
+  color: var(--phasa-muted);
+  cursor: default;
+}
+
+.known__thai {
+  min-width: 5em;
+  font-family: var(--phasa-font-thai);
+  font-size: 16px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.known__roman,
+.known__status {
+  color: var(--phasa-muted);
+}
+
+.known__gloss {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.known__status {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.known__paste {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 6px 8px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 4px;
+  background: var(--phasa-bg);
+  color: var(--phasa-fg);
+  font: inherit;
+}
+
+.known__result {
+  color: var(--phasa-ok);
 }

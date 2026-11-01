@@ -41,15 +41,25 @@ export function uniqueWords(tokens: readonly (readonly Token[])[]): string[] {
   return [...seen];
 }
 
-/** `statuses` with `thai` set to `status`; new or deleted words are left out. */
+/** `statuses` with the changes applied; new or deleted words are left out. */
+export function withStatuses(
+  statuses: Readonly<Record<string, WordStatus>>,
+  changes: readonly { thai: string; status: WordStatus | null | undefined }[],
+): Record<string, WordStatus> {
+  const out = new Map(Object.entries(statuses));
+  for (const { thai, status } of changes) {
+    if (status === null || status === undefined || status === 'new') out.delete(thai);
+    else out.set(thai, status);
+  }
+  return Object.fromEntries(out);
+}
+
 function withStatus(
   statuses: Readonly<Record<string, WordStatus>>,
   thai: string,
   status: WordStatus | null | undefined,
 ): Record<string, WordStatus> {
-  const out = Object.fromEntries(Object.entries(statuses).filter(([word]) => word !== thai));
-  if (status !== null && status !== undefined && status !== 'new') out[thai] = status;
-  return out;
+  return withStatuses(statuses, [{ thai, status }]);
 }
 
 function chunks<T>(items: readonly T[], size: number): T[][] {
@@ -141,23 +151,27 @@ export function createWordManager(
     }
   }
 
+  const reloadStatuses = () => {
+    const tokens = data.tokens;
+    if (!tokens) return;
+    fetchStatuses(uniqueWords(tokens)).then(
+      (statuses) => {
+        if (data.tokens === tokens) update({ statuses });
+      },
+      () => undefined,
+    );
+  };
+
   const unsubscribe = client.onEvent((event) => {
     if (event.type === 'vocab/changed') {
-      let statuses = data.statuses;
-      for (const change of event.changes)
-        statuses = withStatus(statuses, change.thai, change.status);
-      update({ statuses });
+      // A bulk change too big to list (onboarding, import) only says to reload.
+      if (event.reload) reloadStatuses();
+      else update({ statuses: withStatuses(data.statuses, event.changes) });
     } else if (event.type === 'segmentation/changed') {
       void load();
-    } else if (event.type === 'sw/hello' && data.tokens) {
+    } else if (event.type === 'sw/hello') {
       // Reconnected: statuses may have changed while the port was down.
-      const tokens = data.tokens;
-      fetchStatuses(uniqueWords(tokens)).then(
-        (statuses) => {
-          if (data.tokens === tokens) update({ statuses });
-        },
-        () => undefined,
-      );
+      reloadStatuses();
     }
   });
 

@@ -34,6 +34,8 @@ export function toPanelSession(state: ContentState): PanelSession {
         status: 'ready',
         video,
         kind: session.thai.kind,
+        trackKey: session.thai.key,
+        ...(session.english.status === 'ready' ? { englishKey: session.english.track.key } : {}),
         cues: session.thai.cues.map((cue, i) => {
           const translation = lines[i];
           return translation

@@ -24,6 +24,8 @@ export interface Client {
     options?: RequestOptions,
   ): Promise<Result<M>>;
   onEvent(listener: (event: ServerEvent) => void): () => void;
+  /** Opens a port if none is open; the SW then says hello. */
+  connect(): void;
   /** Rejects pending requests and drops the port. A later request reconnects. */
   close(): void;
 }
@@ -114,6 +116,15 @@ export function createClient(connect: () => PortLike): Client {
       eventListeners.add(listener);
       ensurePort();
       return () => eventListeners.delete(listener);
+    },
+
+    connect() {
+      try {
+        ensurePort();
+      } catch {
+        // "Extension context invalidated": this context is going away.
+        port = null;
+      }
     },
 
     close() {

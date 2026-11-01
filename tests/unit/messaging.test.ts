@@ -34,6 +34,11 @@ function setup(
     },
     'vocab/delete': () => ({ deleted: false }),
     'vocab/list': () => ({ units: [], total: 0 }),
+    'vocab/counts': () => ({ known: 0, learning: 0, ignored: 0, phrases: 0 }),
+    'vocab/bulk-set': () => ({ changed: 0, words: 0 }),
+    'vocab/frequent': () => ({ words: [] }),
+    'analysis/video': () => ({ analysis: null }),
+    'analysis/mark-new': () => ({ changed: 0 }),
     'segrules/list': () => ({ rules: [] }),
     'segrules/add': () => {
       throw new RpcFailure('bad_request', 'not in this test');
@@ -153,6 +158,19 @@ describe('client ↔ server', () => {
     release?.(); // late result on a dead port must not throw
 
     await expect(client.request('db/info', {})).resolves.toMatchObject({ schemaVersion: 1 });
+    expect(ports).toHaveLength(2);
+  });
+
+  it('connect() opens a port after the SW went away, so the next hello arrives', async () => {
+    const { client, ports } = setup();
+    const events: ServerEvent[] = [];
+    client.onEvent((event) => events.push(event));
+    await client.request('ping', { sentAt: 0 });
+    ports[0]!.disconnect(); // SW terminated: no port, no events until something reconnects
+    await Promise.resolve();
+    client.connect();
+    client.connect(); // already connected: no second port
+    await vi.waitFor(() => expect(events.filter((e) => e.type === 'sw/hello')).toHaveLength(2));
     expect(ports).toHaveLength(2);
   });
 

@@ -536,5 +536,367 @@
   "optionsSectionWords": {
     "message": "My words",
     "description": "Options page section: saved words and phrases with their contexts."
+  },
+  "analysisLoading": {
+    "message": "Counting words…",
+    "description": "Video badge while the analysis runs."
+  },
+  "analysisError": {
+    "message": "Couldn't count the words of this video.",
+    "description": "Video badge when the analysis failed."
+  },
+  "analysisBadge": {
+    "message": "$KNOWN$% known · $NEW$ new ($UNIQUE$ unique)",
+    "description": "Video badge: share of word occurrences the learner knows, new word occurrences and distinct new words.",
+    "placeholders": {
+      "known": {
+        "content": "$1",
+        "example": "87"
+      },
+      "new": {
+        "content": "$2",
+        "example": "142"
+      },
+      "unique": {
+        "content": "$3",
+        "example": "61"
+      }
+    }
+  },
+  "analysisLevelTitle": {
+    "message": "Estimated level of the video, A1 (easiest) to C2",
+    "description": "Tooltip of the level in the video badge."
+  },
+  "analysisNoWords": {
+    "message": "No Thai words to count",
+    "description": "Video badge or details when the subtitles have no countable Thai words."
+  },
+  "comprehensionComfortable": {
+    "message": "Comfortable: you know at least 98% of the words you will hear.",
+    "description": "Comprehension band, coverage ≥ 98%."
+  },
+  "comprehensionChallenging": {
+    "message": "Challenging but OK: you know 95–98% of the words you will hear.",
+    "description": "Comprehension band, coverage 95–98%."
+  },
+  "comprehensionHard": {
+    "message": "Hard: you know 90–95% of the words you will hear.",
+    "description": "Comprehension band, coverage 90–95%."
+  },
+  "comprehensionTooHard": {
+    "message": "Too hard for now: you know less than 90% of the words you will hear.",
+    "description": "Comprehension band, coverage below 90%."
+  },
+  "analysisLevel": {
+    "message": "Level $LEVEL$: an estimate from the vocabulary, the speech rate and the line length.",
+    "description": "Explains the absolute level of the video.",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "B1"
+      }
+    }
+  },
+  "analysisFeatures": {
+    "message": "$RATE$ syllables per second · $WORDS$ words per line · $RARE$% of the words outside the 3000 most common",
+    "description": "Measures the level is estimated from.",
+    "placeholders": {
+      "rate": {
+        "content": "$1",
+        "example": "5.2"
+      },
+      "words": {
+        "content": "$2",
+        "example": "8.1"
+      },
+      "rare": {
+        "content": "$3",
+        "example": "12"
+      }
+    }
+  },
+  "analysisDistribution": {
+    "message": "Words of this video by status",
+    "description": "Accessible label of the status distribution bar."
+  },
+  "analysisKnown": {
+    "message": "Known $COUNT$",
+    "description": "Legend of the distribution: distinct known words.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "120"
+      }
+    }
+  },
+  "analysisLearning": {
+    "message": "Learning $COUNT$",
+    "description": "Legend of the distribution: distinct words being learned.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "analysisIgnored": {
+    "message": "Ignored $COUNT$",
+    "description": "Legend of the distribution: distinct ignored words.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "analysisNew": {
+    "message": "New $COUNT$",
+    "description": "Legend of the distribution: distinct new words.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "61"
+      }
+    }
+  },
+  "analysisAllKnown": {
+    "message": "No new words left in this video.",
+    "description": "Details when no word of the video is new."
+  },
+  "analysisNewHighFreq": {
+    "message": "New words among the 3000 most common: $COUNT$",
+    "description": "Number of new words worth learning.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "38"
+      }
+    }
+  },
+  "analysisTopNew": {
+    "message": "Top new words to learn first",
+    "description": "Heading of the list of new words ranked by frequency."
+  },
+  "analysisTimes": {
+    "message": "×$COUNT$",
+    "description": "How often a word occurs in the video, short.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "analysisOccurrences": {
+    "message": "Times in this video: $COUNT$",
+    "description": "Tooltip: how often a word occurs in the video.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "analysisLearn": {
+    "message": "Learn",
+    "description": "Button: add a new word to learning (level 1)."
+  },
+  "analysisAddTop": {
+    "message": "Add top $COUNT$ to learning",
+    "description": "Button: add the best new words to learning.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "10"
+      }
+    }
+  },
+  "analysisMarkAll": {
+    "message": "Mark all new words as known ($COUNT$)",
+    "description": "Button: mark every new word of the video as known (asks to confirm).",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "61"
+      }
+    }
+  },
+  "analysisMarkAllConfirm": {
+    "message": "Mark every new word of this video as known ($COUNT$)? Words you are learning stay as they are.",
+    "description": "Confirmation before marking all new words of the video as known.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "61"
+      }
+    }
+  },
+  "analysisMarkAllYes": {
+    "message": "Mark as known",
+    "description": "Confirms marking all new words of the video as known."
+  },
+  "analysisCancel": {
+    "message": "Cancel",
+    "description": "Cancels a confirmation."
+  },
+  "analysisActionFailed": {
+    "message": "Couldn't change the words. Try again.",
+    "description": "Error after a bulk status change failed."
+  },
+  "transcriptNewOnly": {
+    "message": "Only lines with new words",
+    "description": "Side panel filter of the transcript."
+  },
+  "transcriptNoNewLines": {
+    "message": "No line has a new word.",
+    "description": "Side panel transcript when the new-words filter leaves nothing."
+  },
+  "analysisCopyCalibration": {
+    "message": "Copy calibration row",
+    "description": "Development builds only: copies the video's measures for tests/fixtures/levels.csv."
+  },
+  "analysisCalibrationCopied": {
+    "message": "Copied — paste it into tests/fixtures/levels.csv and fill in the level",
+    "description": "Development builds only: after copying a calibration row."
+  },
+  "knownIntro": {
+    "message": "Phasa counts how many words of each video you already know. Every word starts as new; tell Phasa which ones you know.",
+    "description": "Intro of the known-words section of the settings."
+  },
+  "knownCounts": {
+    "message": "Known: $KNOWN$ · learning: $LEARNING$ · ignored: $IGNORED$",
+    "description": "Saved words by status.",
+    "placeholders": {
+      "known": {
+        "content": "$1",
+        "example": "523"
+      },
+      "learning": {
+        "content": "$2",
+        "example": "12"
+      },
+      "ignored": {
+        "content": "$3",
+        "example": "3"
+      }
+    }
+  },
+  "knownBeginnerTitle": {
+    "message": "New to Thai?",
+    "description": "Heading: onboarding for beginners."
+  },
+  "knownBeginnerText": {
+    "message": "Then there is nothing to do: start from zero and mark words as you meet them. These particles are in almost every line, though; mark them known so they don't count as new everywhere:",
+    "description": "Onboarding for beginners."
+  },
+  "knownParticlesButton": {
+    "message": "Mark these $COUNT$ particles as known",
+    "description": "Button: mark the common particles as known.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "9"
+      }
+    }
+  },
+  "knownMarked": {
+    "message": "Marked as known: $COUNT$",
+    "description": "Result of a bulk change; words that already had a status are left out of the count.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "512"
+      }
+    }
+  },
+  "knownFailed": {
+    "message": "Couldn't mark the words. Try again.",
+    "description": "Error of an onboarding action."
+  },
+  "knownTopTitle": {
+    "message": "Know some Thai already?",
+    "description": "Heading: mark the most frequent words as known."
+  },
+  "knownTopText": {
+    "message": "Mark the most frequent words as known. Review the list first and untick the words you don't know.",
+    "description": "Explains marking the most frequent words as known."
+  },
+  "knownTopCount": {
+    "message": "Most frequent words:",
+    "description": "Label of the number of frequent words to review."
+  },
+  "knownTopReview": {
+    "message": "Review the list",
+    "description": "Button: load the most frequent words for review."
+  },
+  "knownTopLoading": {
+    "message": "Loading…",
+    "description": "Button while the frequent words load."
+  },
+  "knownTopSelected": {
+    "message": "$SELECTED$ of $TOTAL$ selected",
+    "description": "How many of the listed words will be marked known.",
+    "placeholders": {
+      "selected": {
+        "content": "$1",
+        "example": "980"
+      },
+      "total": {
+        "content": "$2",
+        "example": "1000"
+      }
+    }
+  },
+  "knownSelectAll": {
+    "message": "Select all",
+    "description": "Ticks every word of the list."
+  },
+  "knownSelectNone": {
+    "message": "Select none",
+    "description": "Unticks every word of the list."
+  },
+  "knownTopApply": {
+    "message": "Mark as known ($COUNT$)",
+    "description": "Button: mark the ticked frequent words as known.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "980"
+      }
+    }
+  },
+  "knownImportTitle": {
+    "message": "Import a word list",
+    "description": "Heading: import known words."
+  },
+  "knownImportText": {
+    "message": "A text or CSV file with one word per line, or an Anki deck exported as “Notes in Plain Text”: Phasa reads the first field of each line and splits it into words. They become known, also those you are learning.",
+    "description": "Explains the word-list import."
+  },
+  "knownImportFile": {
+    "message": "Word list file",
+    "description": "Accessible label of the file input."
+  },
+  "knownImportPaste": {
+    "message": "…or paste the words here, one per line",
+    "description": "Placeholder of the paste area."
+  },
+  "knownImportFound": {
+    "message": "Entries with Thai: $WORDS$ · skipped lines without Thai: $SKIPPED$",
+    "description": "Result of reading a word list.",
+    "placeholders": {
+      "words": {
+        "content": "$1",
+        "example": "523"
+      },
+      "skipped": {
+        "content": "$2",
+        "example": "2"
+      }
+    }
+  },
+  "knownImportApply": {
+    "message": "Mark them as known",
+    "description": "Button: import the list as known words."
   }
 }

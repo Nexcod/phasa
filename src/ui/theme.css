@@ -18,6 +18,16 @@
   --phasa-hover: #f2f2f2;
   --phasa-active: #e8f0fe;
 
+  /* Comprehension bands and word statuses (docs/plan.md §7.4). */
+  --phasa-comfortable: #15803d;
+  --phasa-challenging: #4d7c0f;
+  --phasa-hard: #b45309;
+  --phasa-too-hard: #b91c1c;
+  --phasa-status-known: #16a34a;
+  --phasa-status-learning: #eab308;
+  --phasa-status-ignored: #a1a1aa;
+  --phasa-status-new: #3b82f6;
+
   /* Tone colors, shared by every view (docs/plan.md §5.1). */
   --phasa-tone-mid: #6b7280;
   --phasa-tone-low: #2563eb;
@@ -37,5 +47,43 @@
     --phasa-error: #f87171;
     --phasa-hover: #1f1f1f;
     --phasa-active: #1e2a3d;
+    --phasa-comfortable: #4ade80;
+    --phasa-challenging: #a3e635;
+    --phasa-hard: #fbbf24;
+    --phasa-too-hard: #f87171;
   }
+}
+
+/* UI on youtube.com follows YouTube's theme (its <html dark> attribute, docs/plan.md §10), not the
+   system's: such roots set data-theme. */
+[data-theme='light'] {
+  --phasa-bg: #ffffff;
+  --phasa-fg: #0f0f0f;
+  --phasa-muted: #606060;
+  --phasa-border: #e5e5e5;
+  --phasa-accent: #2563eb;
+  --phasa-ok: #15803d;
+  --phasa-error: #b91c1c;
+  --phasa-hover: #f2f2f2;
+  --phasa-active: #e8f0fe;
+  --phasa-comfortable: #15803d;
+  --phasa-challenging: #4d7c0f;
+  --phasa-hard: #b45309;
+  --phasa-too-hard: #b91c1c;
+}
+
+[data-theme='dark'] {
+  --phasa-bg: #0f0f0f;
+  --phasa-fg: #f1f1f1;
+  --phasa-muted: #aaaaaa;
+  --phasa-border: #303030;
+  --phasa-accent: #60a5fa;
+  --phasa-ok: #4ade80;
+  --phasa-error: #f87171;
+  --phasa-hover: #272727;
+  --phasa-active: #1e2a3d;
+  --phasa-comfortable: #4ade80;
+  --phasa-challenging: #a3e635;
+  --phasa-hard: #fbbf24;
+  --phasa-too-hard: #f87171;
 }

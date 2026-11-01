@@ -9,6 +9,9 @@
 
 export const PLAYER_SELECTOR = '#movie_player';
 
+/** The video title on a watch page; the analysis badge goes right after it (docs/plan.md §7.4). */
+export const TITLE_SELECTOR = 'ytd-watch-metadata #title';
+
 export function findPlayer(doc: Document): HTMLElement | null {
   return doc.querySelector<HTMLElement>(PLAYER_SELECTOR);
 }

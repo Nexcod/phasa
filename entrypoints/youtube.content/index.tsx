@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom/client';
 import { startContentController } from '@/src/content/controller';
 import { connectMainBridge } from '@/src/content/main-bridge';
 import { servePanel } from '@/src/content/panel-link';
+import { TITLE_SELECTOR } from '@/src/content/player-dom';
 import { getBackgroundClient } from '@/src/messaging/browser';
 import { extensionUrl } from '@/src/ui/extension-url';
 import { injectFontFaces } from '@/src/ui/fonts';
 import { Overlay } from './Overlay';
+import { TitleBadge } from './TitleBadge';
 import { createVideoIdStore } from './videoId';
 import './style.css';
 
@@ -61,5 +63,27 @@ export default defineContentScript({
     });
     // #movie_player appears after YouTube's SPA boots and survives navigations.
     ui.autoMount();
+
+    const badge = await createShadowRootUi(ctx, {
+      name: 'phasa-badge',
+      position: 'inline',
+      anchor: TITLE_SELECTOR,
+      append: 'after',
+      onMount(container) {
+        const root = ReactDOM.createRoot(container);
+        root.render(<TitleBadge controller={controller} client={client} />);
+        return root;
+      },
+      onRemove(root) {
+        root?.unmount();
+      },
+    });
+    badge.autoMount();
+    // autoMount follows the title element; if YouTube re-renders around it and drops the badge,
+    // put the same host (and its React tree) back.
+    ctx.setInterval(() => {
+      const title = document.querySelector(TITLE_SELECTOR);
+      if (title && badge.mounted && !badge.shadowHost.isConnected) title.after(badge.shadowHost);
+    }, 1000);
   },
 });

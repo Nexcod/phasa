@@ -103,3 +103,20 @@ seeking and `requestVideoFrameCallback` in e2e tests. Regenerate with:
 ```sh
 ffmpeg -f lavfi -i "color=c=0x202020:s=160x90:r=10:d=120" -c:v libvpx -b:v 8k -g 10 -an tests/fixtures/media/blank-120s.webm
 ```
+
+## levels.csv
+
+Hand-rated videos for calibrating the absolute level estimate (plan §7.3, ADR 0011). Target: 30–50
+videos across the range — lessons for beginners (A1/A2), vlogs and talk (B1/B2), news, TED talks and
+drama (B2+). A unit test checks that the estimate (src/analysis/levels.ts) is within one level of
+the rating for at least 80 % of the rows; it is skipped while the file has no rows.
+
+Columns (comma-separated, header row): `videoId`, `title`, `level` (A1–C2, by hand), then the
+features the estimate uses — `tokens`, `outside1000`, `outside3000`, `outside5000`,
+`outside10000` (shares of counted words outside the N most frequent), `speechRate` (syllables per
+second), `avgCueLength` (words per line) — and a free `note`.
+
+To add a video: watch it in a development build (`npm run dev`), open the side panel, expand the
+analysis and click **Copy calibration row**. Paste the line here and fill in `level` (and `note`,
+e.g. "news, studio", "kids' song"). Rate the language, not the topic: speed, vocabulary, how much
+a learner at that level would follow.

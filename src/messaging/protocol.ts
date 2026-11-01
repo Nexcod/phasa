@@ -9,27 +9,40 @@
  * {@link METHOD_ACCESS}, implement it in `src/background/handlers.ts`.
  */
 
+import type { VideoAnalysis } from '../analysis/types';
 import type { ProcessedTrack, TrackKind, TrackRef } from '../captions/types';
 import type { WordInfo } from '../dictionary/types';
 import type { Settings } from '../settings';
 import type { Token } from '../thai/types';
 import type {
+  BulkMode,
   ContextInput,
+  FrequentWord,
   SavedUnit,
   SegRule,
   SegRuleKind,
   UnitKind,
   VocabChange,
+  VocabCounts,
   WordStatus,
 } from '../vocab/types';
 
 export const PORT_NAME = 'phasa';
-export const PROTOCOL_VERSION = 3;
+export const PROTOCOL_VERSION = 4;
+
+/**
+ * `chrome.storage.local` key the SW bumps with every broadcast. A context whose port closed while
+ * the SW was asleep would miss the event; storage changes reach every context, so it reconnects,
+ * and the `sw/hello` it gets makes it reload (src/messaging/browser.ts).
+ */
+export const CHANGE_SIGNAL_KEY = 'phasaChanged';
 
 /** Request size limits, checked by the handlers. */
 export const MAX_TOKENIZE_TEXTS = 2000;
 export const MAX_LOOKUP_WORDS = 500;
 export const MAX_STATUS_WORDS = 5000;
+/** A `vocab/changed` event lists at most this many changes; beyond, it asks to reload. */
+export const MAX_EVENT_CHANGES = 1000;
 
 /** Where a request comes from. Derived by the SW from `port.sender`, never trusted from the payload. */
 export type Origin = 'content-script' | 'extension-page';
@@ -107,6 +120,45 @@ export interface Methods {
     params: { kind?: UnitKind; videoId?: string; query?: string; limit?: number; offset?: number };
     result: { units: SavedUnit[]; total: number };
   };
+  /** Saved words by status (onboarding). */
+  'vocab/counts': {
+    params: Record<string, never>;
+    result: VocabCounts;
+  };
+  /**
+   * Sets the status of many words (onboarding, import); broadcasts `vocab/changed`. With `split`,
+   * each entry is normalized and split into words first (a word list from elsewhere).
+   */
+  'vocab/bulk-set': {
+    params: { words: string[]; status: WordStatus; mode: BulkMode; split?: boolean };
+    result: { changed: number; words: number };
+  };
+  /** The `count` most frequent words that are one unit in the subtitles (onboarding). */
+  'vocab/frequent': {
+    params: { count: number };
+    result: { words: FrequentWord[] };
+  };
+  /** Coverage, level and new words of a video's Thai track; null until the track is cached. */
+  'analysis/video': {
+    params: { videoId: string; trackKey: string };
+    result: { analysis: VideoAnalysis | null };
+  };
+  /**
+   * Sets the status of the video's new words: all of them, the `top` N best to learn, or the given
+   * `words`. Learning words are saved with the line they first occur in (and its translation from
+   * `englishKey`). Broadcasts `vocab/changed`.
+   */
+  'analysis/mark-new': {
+    params: {
+      videoId: string;
+      trackKey: string;
+      englishKey?: string;
+      status: WordStatus;
+      top?: number;
+      words?: string[];
+    };
+    result: { changed: number };
+  };
   'segrules/list': {
     params: Record<string, never>;
     result: { rules: SegRule[] };
@@ -143,6 +195,11 @@ export const METHOD_ACCESS: Readonly<Record<Method, readonly Origin[]>> = {
   'vocab/set': ['content-script', 'extension-page'],
   'vocab/delete': ['content-script', 'extension-page'],
   'vocab/list': ['content-script', 'extension-page'],
+  'vocab/counts': ['extension-page'],
+  'vocab/bulk-set': ['extension-page'],
+  'vocab/frequent': ['extension-page'],
+  'analysis/video': ['content-script', 'extension-page'],
+  'analysis/mark-new': ['content-script', 'extension-page'],
   'segrules/list': ['content-script', 'extension-page'],
   'segrules/add': ['content-script', 'extension-page'],
   'segrules/delete': ['content-script', 'extension-page'],
@@ -164,6 +221,8 @@ export interface SettingsChangedEvent {
 export interface VocabChangedEvent {
   type: 'vocab/changed';
   changes: VocabChange[];
+  /** More than {@link MAX_EVENT_CHANGES} changed: `changes` is empty, reload the statuses. */
+  reload?: true;
 }
 
 /** Word boundaries may differ now: user rules or phrases changed. Re-tokenize. */

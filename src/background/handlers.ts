@@ -1,8 +1,11 @@
+import { isVideoId } from '../captions/bridge';
 import { SCHEMA_VERSION } from '../db/schema';
 import type { PhasaDb } from '../db/db';
+import { createFrequencyStore, type FrequencySource } from '../dictionary/frequency';
 import { createDictionaryStore, type DictionarySource } from '../dictionary/store';
 import type { DictEntry } from '../dictionary/types';
 import {
+  MAX_EVENT_CHANGES,
   MAX_LOOKUP_WORDS,
   MAX_STATUS_WORDS,
   MAX_TOKENIZE_TEXTS,
@@ -11,9 +14,11 @@ import {
 } from '../messaging/protocol';
 import type { Handlers } from '../messaging/server';
 import { parseSettingsPatch, settingsFromRows, type Settings } from '../settings';
+import { normalizeThai } from '../thai/normalize';
 import {
   MAX_UNIT_CHARS,
   addSegRule,
+  bulkSetWords,
   deleteSegRule,
   deleteUnit,
   listSegRules,
@@ -25,15 +30,21 @@ import {
   setUnit,
   statusesOf,
   unitKey,
+  vocabCounts,
 } from '../vocab/store';
+import { FREQUENT_COUNTS, type BulkMode, type VocabChange, type WordStatus } from '../vocab/types';
+import { createAnalysisService } from './analysis';
 import { getCachedTracks, processAndStore, validateProcessParams } from './captions';
 import { createLanguageService, type TokenizeInput } from './language';
+import { frequentWords } from './onboarding';
 
 export interface HandlerDeps {
   db: () => PhasaDb;
   swStartedAt: number;
   /** The packaged dictionary (data/dict.json); lookups and tokenizing fail without one. */
   dictionarySource?: DictionarySource;
+  /** The packaged frequency list (data/freq.json); analysis and onboarding fail without one. */
+  frequencySource?: FrequencySource;
   /** Push an event to every connected context. */
   broadcast?: (event: ServerEvent) => void;
   now?: () => number;
@@ -49,10 +60,10 @@ function badRequest(message: string): never {
   throw new RpcFailure('bad_request', message);
 }
 
-function stringList(value: unknown, max: number): string[] {
+function stringList(value: unknown, max: number, maxChars = MAX_UNIT_CHARS): string[] {
   if (!Array.isArray(value) || value.length > max) badRequest('Invalid word list');
   return (value as unknown[]).map((word) => {
-    if (typeof word !== 'string' || word.length === 0 || word.length > MAX_UNIT_CHARS) {
+    if (typeof word !== 'string' || word.length === 0 || word.length > maxChars) {
       badRequest('Invalid word');
     }
     return word;
@@ -80,18 +91,63 @@ const missingDictionary: DictionarySource = {
   file: () => Promise.reject(new Error('No dictionary source')),
 };
 
+const missingFrequency: FrequencySource = () => Promise.reject(new Error('No frequency source'));
+
+/** A caption track key as the player names it: `.th`, `a.th`, `.en`, `a.th>en`. */
+function trackKeyParam(value: unknown, field: string): string {
+  if (typeof value !== 'string' || value.length === 0 || value.length > 40)
+    badRequest(`Invalid ${field}`);
+  return value;
+}
+
+function videoIdParam(value: unknown): string {
+  if (!isVideoId(value)) badRequest('Invalid videoId');
+  return value;
+}
+
+function savedStatus(value: unknown): WordStatus {
+  const status = parseStatus(value);
+  if (status === 'new') badRequest('Invalid status');
+  return status;
+}
+
+function bulkMode(value: unknown): BulkMode {
+  if (value !== 'advance' && value !== 'new-only') badRequest('Invalid mode');
+  return value;
+}
+
+function optionalCount(value: unknown, max: number): number | undefined {
+  if (value === undefined) return undefined;
+  if (!Number.isInteger(value) || (value as number) < 1 || (value as number) > max)
+    badRequest('Invalid count');
+  return value as number;
+}
+
 export function createHandlers({
   db,
   swStartedAt,
   dictionarySource = missingDictionary,
+  frequencySource = missingFrequency,
   broadcast = () => undefined,
   now = Date.now,
 }: HandlerDeps): Handlers {
   const dictionary = createDictionaryStore(db, dictionarySource, now);
+  const frequency = createFrequencyStore(frequencySource);
   const language = createLanguageService(db, dictionary);
+  const analysis = createAnalysisService({ db, language, dictionary, frequency, now });
   const segmentationChanged = () => {
     language.invalidate();
+    analysis.invalidate();
     broadcast({ type: 'segmentation/changed' });
+  };
+  /** Broadcasts what changed, or a reload request when that is too much to list. */
+  const vocabChanged = (changes: VocabChange[]) => {
+    if (changes.length === 0) return;
+    broadcast(
+      changes.length > MAX_EVENT_CHANGES
+        ? { type: 'vocab/changed', changes: [], reload: true }
+        : { type: 'vocab/changed', changes },
+    );
   };
 
   return {
@@ -157,10 +213,7 @@ export function createHandlers({
       const entry = entries.get(unit.thai);
       if (entry?.senses[0]?.glosses[0]) unit.gloss = entry.senses[0].glosses[0];
       if (entry?.romanization?.paiboon) unit.romanization = entry.romanization.paiboon;
-      broadcast({
-        type: 'vocab/changed',
-        changes: [{ kind, thai: unit.thai, status: unit.status }],
-      });
+      vocabChanged([{ kind, thai: unit.thai, status: unit.status }]);
       // A new phrase without spaces becomes one token (ADR 0005).
       if (isNewPhrase && !unit.thai.includes(' ')) segmentationChanged();
       return { unit };
@@ -171,7 +224,7 @@ export function createHandlers({
       const thai = unitKey(params.thai);
       const deleted = await deleteUnit(db(), kind, thai);
       if (deleted) {
-        broadcast({ type: 'vocab/changed', changes: [{ kind, thai, status: null }] });
+        vocabChanged([{ kind, thai, status: null }]);
         if (kind === 'phrase' && !thai.includes(' ')) segmentationChanged();
       }
       return { deleted };
@@ -197,6 +250,71 @@ export function createHandlers({
         },
         (words) => dictionary.entries(words).catch(() => new Map<string, DictEntry>()),
       );
+    },
+
+    'vocab/counts': () => vocabCounts(db()),
+
+    'vocab/bulk-set': async (params) => {
+      const status = savedStatus(params.status);
+      const mode = bulkMode(params.mode);
+      // Entries of an imported list may be whole sentences (an Anki card); they are split below.
+      const entries = stringList(
+        params.words,
+        MAX_STATUS_WORDS,
+        params.split ? MAX_TOKENIZE_CHARS : MAX_UNIT_CHARS,
+      );
+      let words: string[];
+      if (params.split) {
+        // A word list from elsewhere: whatever the tokenizer makes of each entry is what counts.
+        const texts = entries.map((entry) => ({ text: normalizeThai(entry).text }));
+        const tokens = await language.tokenize(texts);
+        words = tokens.flatMap((cue) =>
+          cue.flatMap((token) => (token.kind === 'thai' ? [token.text] : [])),
+        );
+      } else {
+        words = entries.flatMap((entry) => {
+          try {
+            return [unitKey(entry)];
+          } catch {
+            return [];
+          }
+        });
+      }
+      const changes = await bulkSetWords(db(), words, status, mode, now());
+      vocabChanged(changes);
+      return { changed: changes.length, words: new Set(words).size };
+    },
+
+    'vocab/frequent': async ({ count }) => {
+      if (!FREQUENT_COUNTS.includes(count as (typeof FREQUENT_COUNTS)[number]))
+        badRequest('Invalid count');
+      return { words: await frequentWords(count, { db, language, dictionary, frequency }) };
+    },
+
+    'analysis/video': async (params) => ({
+      analysis: await analysis.analyze(
+        videoIdParam(params.videoId),
+        trackKeyParam(params.trackKey, 'trackKey'),
+      ),
+    }),
+
+    'analysis/mark-new': async (params) => {
+      const top = optionalCount(params.top, 100);
+      const words =
+        params.words === undefined ? undefined : stringList(params.words, MAX_STATUS_WORDS);
+      const changes = await analysis.markNew({
+        videoId: videoIdParam(params.videoId),
+        trackKey: trackKeyParam(params.trackKey, 'trackKey'),
+        ...(params.englishKey === undefined
+          ? {}
+          : { englishKey: trackKeyParam(params.englishKey, 'englishKey') }),
+        status: savedStatus(params.status),
+        ...(top === undefined ? {} : { top }),
+        ...(words === undefined ? {} : { words }),
+      });
+      if (!changes) throw new RpcFailure('bad_request', 'No cached captions for this track');
+      vocabChanged(changes);
+      return { changed: changes.length };
     },
 
     'segrules/list': async () => ({ rules: await listSegRules(db()) }),

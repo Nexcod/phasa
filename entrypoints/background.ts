@@ -2,8 +2,9 @@ import { defineBackground } from '#imports';
 import { browser } from 'wxt/browser';
 import { createHandlers } from '@/src/background/handlers';
 import { getDb } from '@/src/db';
+import { packagedFrequency } from '@/src/dictionary/frequency';
 import { packagedSource } from '@/src/dictionary/store';
-import { PORT_NAME, type ServerEvent } from '@/src/messaging/protocol';
+import { CHANGE_SIGNAL_KEY, PORT_NAME, type ServerEvent } from '@/src/messaging/protocol';
 import { createServer } from '@/src/messaging/server';
 
 export default defineBackground(() => {
@@ -15,11 +16,13 @@ export default defineBackground(() => {
 
   // Handlers broadcast through the server created right below.
   let broadcast: (event: ServerEvent) => void = () => undefined;
+  const packaged = (path: string) => browser.runtime.getURL(`/${path}` as '/');
   const server = createServer(
     createHandlers({
       db: getDb,
       swStartedAt,
-      dictionarySource: packagedSource((path) => browser.runtime.getURL(`/${path}` as '/')),
+      dictionarySource: packagedSource(packaged),
+      frequencySource: packagedFrequency(packaged),
       broadcast: (event) => broadcast(event),
     }),
     {
@@ -28,7 +31,14 @@ export default defineBackground(() => {
       onHandlerError: (method, error) => console.error(`[phasa] ${method} failed`, error),
     },
   );
-  broadcast = (event) => server.broadcast(event);
+  // Contexts whose port closed while the SW slept hear about the change through storage.
+  let changes = 0;
+  broadcast = (event) => {
+    server.broadcast(event);
+    browser.storage.local
+      .set({ [CHANGE_SIGNAL_KEY]: `${swStartedAt}:${++changes}` })
+      .catch((error: unknown) => console.error('[phasa] change signal failed', error));
+  };
 
   browser.runtime.onConnect.addListener((port) => {
     if (port.name === PORT_NAME) server.attach(port);

@@ -1,0 +1,278 @@
+/* Video analysis badge and details (docs/plan.md §7.4): under the video title on youtube.com and at
+   the top of the side panel. Colors come from theme.css. */
+.phasa-analysis {
+  color: var(--phasa-fg);
+  font-family: var(--phasa-font-ui);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.phasa-analysis__badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  max-width: 100%;
+  padding: 3px 10px 3px 4px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 999px;
+  background: var(--phasa-bg);
+  color: var(--phasa-fg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+span.phasa-analysis__badge {
+  padding-left: 10px;
+  color: var(--phasa-muted);
+  cursor: default;
+}
+
+.phasa-analysis__badge:hover {
+  background: var(--phasa-hover);
+}
+
+.phasa-analysis__badge[data-comprehension='comfortable'] {
+  border-color: var(--phasa-comfortable);
+}
+
+.phasa-analysis__badge[data-comprehension='challenging'] {
+  border-color: var(--phasa-challenging);
+}
+
+.phasa-analysis__badge[data-comprehension='hard'] {
+  border-color: var(--phasa-hard);
+}
+
+.phasa-analysis__badge[data-comprehension='too-hard'] {
+  border-color: var(--phasa-too-hard);
+}
+
+.phasa-analysis__level {
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--phasa-muted);
+  color: var(--phasa-bg);
+  font-weight: 600;
+}
+
+[data-comprehension='comfortable'] > .phasa-analysis__level {
+  background: var(--phasa-comfortable);
+}
+
+[data-comprehension='challenging'] > .phasa-analysis__level {
+  background: var(--phasa-challenging);
+}
+
+[data-comprehension='hard'] > .phasa-analysis__level {
+  background: var(--phasa-hard);
+}
+
+[data-comprehension='too-hard'] > .phasa-analysis__level {
+  background: var(--phasa-too-hard);
+}
+
+.phasa-analysis__summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phasa-analysis__chevron {
+  color: var(--phasa-muted);
+  font-size: 10px;
+}
+
+.phasa-analysis__details {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 10px;
+  background: var(--phasa-bg);
+}
+
+.phasa-analysis__details p {
+  margin: 0 0 6px;
+}
+
+.phasa-analysis__comprehension {
+  font-weight: 600;
+}
+
+.phasa-analysis__comprehension[data-comprehension='comfortable'] {
+  color: var(--phasa-comfortable);
+}
+
+.phasa-analysis__comprehension[data-comprehension='challenging'] {
+  color: var(--phasa-challenging);
+}
+
+.phasa-analysis__comprehension[data-comprehension='hard'] {
+  color: var(--phasa-hard);
+}
+
+.phasa-analysis__comprehension[data-comprehension='too-hard'] {
+  color: var(--phasa-too-hard);
+}
+
+.phasa-analysis__note {
+  color: var(--phasa-muted);
+}
+
+.phasa-analysis__error {
+  color: var(--phasa-error);
+}
+
+.phasa-analysis__bar {
+  display: flex;
+  overflow: hidden;
+  height: 8px;
+  margin: 8px 0 4px;
+  border-radius: 4px;
+  background: var(--phasa-border);
+}
+
+.phasa-analysis__segment {
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+.phasa-analysis__segment[data-status='known'],
+.phasa-analysis__legend [data-status='known']::before {
+  background: var(--phasa-status-known);
+}
+
+.phasa-analysis__segment[data-status='learning'],
+.phasa-analysis__legend [data-status='learning']::before {
+  background: var(--phasa-status-learning);
+}
+
+.phasa-analysis__segment[data-status='ignored'],
+.phasa-analysis__legend [data-status='ignored']::before {
+  background: var(--phasa-status-ignored);
+}
+
+.phasa-analysis__segment[data-status='new'],
+.phasa-analysis__legend [data-status='new']::before {
+  background: var(--phasa-status-new);
+}
+
+.phasa-analysis__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0 0 8px;
+  padding: 0;
+  color: var(--phasa-muted);
+  font-size: 12px;
+  list-style: none;
+}
+
+.phasa-analysis__legend li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
+  border-radius: 2px;
+}
+
+.phasa-analysis__heading {
+  margin: 10px 0 4px;
+  font-size: 13px;
+}
+
+.phasa-analysis__top {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phasa-analysis__word {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--phasa-border);
+}
+
+.phasa-analysis__word-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.phasa-analysis__thai {
+  font-family: var(--phasa-font-thai);
+  font-size: 17px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.phasa-analysis__roman,
+.phasa-analysis__count,
+.phasa-analysis__gloss {
+  color: var(--phasa-muted);
+}
+
+.phasa-analysis__gloss {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phasa-analysis__word-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.phasa-analysis__actions,
+.phasa-analysis__confirm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.phasa-analysis__confirm p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.phasa-button {
+  padding: 4px 10px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 6px;
+  background: var(--phasa-bg);
+  color: var(--phasa-fg);
+  font: inherit;
+  cursor: pointer;
+}
+
+.phasa-button:hover:not(:disabled) {
+  background: var(--phasa-hover);
+}
+
+.phasa-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.phasa-button--small {
+  padding: 0 6px;
+  font-size: 12px;
+}
+
+.phasa-button--primary {
+  border-color: var(--phasa-accent);
+  background: var(--phasa-accent);
+  color: var(--phasa-bg);
+}
+
+.phasa-button--primary:hover:not(:disabled) {
+  background: var(--phasa-accent);
+  filter: brightness(1.1);
+}

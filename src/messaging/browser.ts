@@ -1,7 +1,7 @@
 import { browser } from 'wxt/browser';
 import { createClient, type Client } from './client';
 import type { PortLike } from './port';
-import { PORT_NAME } from './protocol';
+import { CHANGE_SIGNAL_KEY, PORT_NAME } from './protocol';
 
 export function connectToBackground(): PortLike {
   const port = browser.runtime.connect({ name: PORT_NAME });
@@ -15,7 +15,15 @@ export function connectToBackground(): PortLike {
 
 let shared: Client | undefined;
 
-/** One client per JS context (content script, side panel, options page). */
+/**
+ * One client per JS context (content script, side panel, options page). It reconnects when the SW
+ * signals a change through storage while its port is closed (see {@link CHANGE_SIGNAL_KEY}).
+ */
 export function getBackgroundClient(): Client {
-  return (shared ??= createClient(connectToBackground));
+  if (shared) return shared;
+  const client = createClient(connectToBackground);
+  browser.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && Object.hasOwn(changes, CHANGE_SIGNAL_KEY)) client.connect();
+  });
+  return (shared = client);
 }

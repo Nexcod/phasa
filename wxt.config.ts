@@ -1,8 +1,8 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'wxt';
 
-/** Built dictionary files shipped under data/ (scripts/build-dictionary.ts, ADR 0004). */
-const DATA_FILES = ['dict.json', 'dict.meta.json'];
+/** Built dictionary and frequency files shipped under data/ (scripts/build-*.ts, ADR 0004). */
+const DATA_FILES = ['dict.json', 'dict.meta.json', 'freq.json'];
 
 /** Pages that exist only for development and tests (docs/plan.md §5.1: fonts test page). */
 const DEV_ONLY_ENTRYPOINTS = new Set(['fonts-test']);
@@ -26,7 +26,8 @@ export default defineConfig({
     web_accessible_resources: [{ resources: ['fonts/*.woff2'], matches: ['*://*.youtube.com/*'] }],
   },
   hooks: {
-    // The service worker loads the dictionary into IndexedDB from the package (src/dictionary/store.ts).
+    // The service worker loads the dictionary into IndexedDB from the package (src/dictionary/store.ts)
+    // and reads the frequency list from it (src/dictionary/frequency.ts).
     'build:publicAssets': (_wxt, files) => {
       for (const file of DATA_FILES) {
         files.push({ absoluteSrc: resolve('data/build', file), relativeDest: `data/${file}` });

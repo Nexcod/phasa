@@ -1,3 +1,4 @@
+import type { VideoStats } from '../analysis/types';
 import type { ProcessedCue, TrackKind } from '../captions/types';
 import type { DictEntry } from '../dictionary/types';
 import type { SegRuleKind, WordStatus } from '../vocab/types';
@@ -41,8 +42,8 @@ export interface VideoRow {
   channel?: string;
   trackKind: TrackKind;
   durationSec?: number;
-  /** Analysis snapshot; shape is defined by src/analysis in phase 4. */
-  stats?: unknown;
+  /** Snapshot of the latest analysis (src/background/analysis.ts). */
+  stats?: VideoStats;
   analyzedAt?: number;
 }
 
