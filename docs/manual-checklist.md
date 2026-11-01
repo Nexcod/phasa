@@ -7,7 +7,7 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 
 ## Every phase
 
-- [x] **Network e2e.** `npm run test:e2e:network` passes. Run it from a home connection: YouTube
+- [ ] **Network e2e.** `npm run test:e2e:network` passes. Run it from a home connection: YouTube
       shows datacenter IPs, including CI runners, a bot check instead of the video
       ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
 
@@ -15,6 +15,8 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 
 Start from a fresh install (remove and load the unpacked build again) so the vocabulary is empty.
 Use 3–4 of the acceptance videos, one of them long (`SVj46JwYnB4`).
+
+All items passed on 2026-11-01, together with the network e2e (Every phase).
 
 - [x] **Badge.** Under the video title: `B1 · 0% known · N new words`, red border (too hard)
       on a fresh install. In YouTube's dark theme it is readable too. On `jNQXAC9IVRw` it says "No
@@ -31,11 +33,11 @@ Use 3–4 of the acceptance videos, one of them long (`SVj46JwYnB4`).
       have no blue underlines left except the learning words.
 - [x] **Side panel.** The same badge above the tabs; "Only lines with new words" shows only those
       lines and follows status changes.
-- [ ] **Onboarding: particles and top N.** Options → Known words: "Mark these 9 particles as
+- [x] **Onboarding: particles and top N.** Options → Known words: "Mark these 9 particles as
       known". Then most frequent 1000 → "Review the list": the list shows Thai, romanization,
       meaning; the particles show as Known and can't be ticked. Untick two words, "Mark as known
       (…)". The counts line and the badge on an open video tab (without reloading it) change.
-- [ ] **Onboarding: import.** Import a TXT file with one word per line, and an Anki deck exported
+- [x] **Onboarding: import.** Import a TXT file with one word per line, and an Anki deck exported
       as "Notes in Plain Text" (.txt) whose first field is Thai: the "Entries with Thai" count is
       right, "Mark them as known" changes the counts and the badge of an open video tab right away
       — also after leaving the options page idle for a minute first (the service worker sleeps).
