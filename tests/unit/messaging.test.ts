@@ -8,6 +8,7 @@ import {
   type ServerEvent,
 } from '@/src/messaging/protocol';
 import { classifySender, createServer, type Handlers } from '@/src/messaging/server';
+import { disabledAiHandlers } from '@/src/background/ai';
 import { DEFAULT_SETTINGS } from '@/src/settings';
 import { createPortPair, type FakePort } from '../helpers/fake-port';
 
@@ -20,6 +21,7 @@ function setup(
   sender: { url?: string; tab?: { id?: number } } = PAGE_SENDER,
 ) {
   const all: Handlers = {
+    ...disabledAiHandlers(),
     ping: ({ sentAt }, ctx) => ({ sentAt, swStartedAt: ctx.tabId ?? 1 }),
     'db/info': () => ({ schemaVersion: 1, counts: {} }),
     'captions/get': () => ({ tracks: [] }),
@@ -184,5 +186,30 @@ describe('client ↔ server', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('progress', () => {
+  it('reaches only the request that asked, and only before its result', async () => {
+    let push: ((data: never) => void) | undefined;
+    const { client } = setup({
+      'ai/translate-cue': (_params, context) => {
+        context.progress?.({ provider: 'chatgpt-plan', partial: { natural: 'Hi' } });
+        push = context.progress;
+        return { status: 'miss' };
+      },
+    });
+    const seen: unknown[] = [];
+    const other: unknown[] = [];
+    const line = { line: { text: 'x' }, before: [], after: [], videoTitle: '' };
+    const result = await client.request('ai/translate-cue', line, {
+      onProgress: (data) => seen.push(data),
+    });
+    await client.request('ping', { sentAt: 1 }, { onProgress: (data) => other.push(data) });
+    push?.({ provider: 'chatgpt-plan', partial: { natural: 'late' } } as never);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(result).toEqual({ status: 'miss' });
+    expect(seen).toEqual([{ provider: 'chatgpt-plan', partial: { natural: 'Hi' } }]);
+    expect(other).toEqual([]);
   });
 });

@@ -7,6 +7,7 @@ import { posLabel, statusLabel, tagLabel } from '@/src/ui/labels';
 import { Romanization, romanizationText } from '@/src/ui/Romanization';
 import { speakThai } from '@/src/ui/tts';
 import type { SegRuleKind, UnitKind, WordStatus } from '@/src/vocab/types';
+import { PopupAiSection, type PopupAi } from './PopupAi';
 
 /** Where the popup points: the word's box, relative to the overlay. */
 export interface PopupAnchor {
@@ -384,6 +385,7 @@ export function WordPopup({
   openedAt,
   settings,
   actions,
+  ai,
 }: {
   word: string;
   /** Adjacent Thai words, for merge rules. */
@@ -394,6 +396,7 @@ export function WordPopup({
   openedAt: number;
   settings: Settings;
   actions: PopupActions;
+  ai: PopupAi;
 }) {
   const info = useInfo(word, actions);
   const [error, setError] = useState(false);
@@ -456,6 +459,7 @@ export function WordPopup({
         </div>
       )}
       {info && !entry && !info.parts && <p className="phasa-popup__muted">{t('popupNotFound')}</p>}
+      <PopupAiSection ai={ai} word={word} />
       <StatusButtons
         status={status}
         onSet={setStatus}
@@ -480,6 +484,7 @@ export function PhrasePopup({
   openedAt,
   settings,
   actions,
+  ai,
 }: {
   /** The selected text, spaces included. */
   text: string;
@@ -489,6 +494,7 @@ export function PhrasePopup({
   openedAt: number;
   settings: Settings;
   actions: PopupActions;
+  ai: PopupAi;
 }) {
   const [error, setError] = useState(false);
   const words = tokens.filter((token) => token.kind === 'thai');
@@ -545,6 +551,7 @@ export function PhrasePopup({
           })}
         </ul>
       </div>
+      <PopupAiSection ai={ai} word={text} />
       <StatusButtons
         status={status}
         onSet={setStatus}

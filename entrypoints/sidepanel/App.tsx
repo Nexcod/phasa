@@ -1,10 +1,13 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { browser } from 'wxt/browser';
 import { t, type MessageKey } from '@/src/i18n';
 import type { Client } from '@/src/messaging/client';
 import type { PanelCue, PanelSession } from '@/src/messaging/panel';
 import type { Settings } from '@/src/settings';
 import { calibrationRow } from '@/src/analysis/calibration';
+import { MAX_CONTEXT_LINES, type AiLineContext, type AiStatus } from '@/src/messaging/ai';
+import { AiAnswer, AiSection } from '@/src/ui/ai/AiAnswer';
+import { useAiStatus } from '@/src/ui/ai/useAi';
 import { AnalysisCard } from '@/src/ui/AnalysisCard';
 import { formatTime, watchUrl } from '@/src/ui/labels';
 import { SavedWordList, useSavedWords } from '@/src/ui/SavedWords';
@@ -28,26 +31,58 @@ const ERROR_MESSAGES: Readonly<Record<string, MessageKey>> = {
 /** Pause auto-scroll this long after the user scrolls the transcript. */
 const MANUAL_SCROLL_HOLD_MS = 4000;
 
+/** The line with up to two lines on each side, for AI requests. */
+function lineContext(cues: readonly PanelCue[], index: number, videoTitle: string): AiLineContext {
+  const cue = cues[index];
+  const context: AiLineContext = {
+    line: { text: cue?.text ?? '' },
+    before: cues.slice(Math.max(0, index - MAX_CONTEXT_LINES), index).map((c) => c.text),
+    after: cues.slice(index + 1, index + 1 + MAX_CONTEXT_LINES).map((c) => c.text),
+    videoTitle,
+  };
+  if (cue?.translation) context.line.translation = cue.translation;
+  return context;
+}
+
 const CueRow = memo(function CueRow({
   cue,
   index,
   active,
   showTranslation,
   onSeek,
+  aiOpen,
+  onToggleAi,
+  ai,
 }: {
   cue: PanelCue;
   index: number;
   active: boolean;
   showTranslation: boolean;
   onSeek: (index: number) => void;
+  aiOpen: boolean;
+  onToggleAi: (index: number) => void;
+  /** The AI translation, while open. */
+  ai: ReactNode;
 }) {
   return (
     <li
       className="transcript__row"
       data-index={index}
       data-active={active || undefined}
+      data-ai={aiOpen || undefined}
       aria-current={active || undefined}
     >
+      <button
+        type="button"
+        className="transcript__ai"
+        aria-expanded={aiOpen}
+        aria-label={t('aiTranslateLineLabel')}
+        title={t('aiTranslateLineLabel')}
+        data-testid="phasa-transcript-ai"
+        onClick={() => onToggleAi(index)}
+      >
+        {t('aiBadge')}
+      </button>
       <button type="button" className="transcript__button" onClick={() => onSeek(index)}>
         <span className="transcript__time">{formatTime(cue.startMs)}</span>
         <span className="transcript__text">
@@ -61,6 +96,7 @@ const CueRow = memo(function CueRow({
           )}
         </span>
       </button>
+      {ai}
     </li>
   );
 });
@@ -71,6 +107,9 @@ function Transcript({
   activeIndex,
   showTranslation,
   onSeek,
+  client,
+  videoTitle,
+  aiStatus,
 }: {
   cues: PanelCue[];
   /** Show only these cues (lines with new words), or all. */
@@ -78,9 +117,23 @@ function Transcript({
   activeIndex: number;
   showTranslation: boolean;
   onSeek: (index: number) => void;
+  client: Client;
+  videoTitle: string;
+  aiStatus: AiStatus | null;
 }) {
   const listRef = useRef<HTMLOListElement>(null);
   const userScrolledAt = useRef(0);
+  const [aiOpen, setAiOpen] = useState<ReadonlySet<number>>(new Set());
+  const onToggleAi = useCallback((index: number) => {
+    setAiOpen((open) => {
+      const next = new Set(open);
+      if (!next.delete(index)) next.add(index);
+      return next;
+    });
+  }, []);
+  const openSettings = useCallback(() => {
+    client.request('ui/open-ai-settings', {}).catch(() => undefined);
+  }, [client]);
 
   useEffect(() => {
     const list = listRef.current;
@@ -110,6 +163,24 @@ function Transcript({
             active={index === activeIndex}
             showTranslation={showTranslation}
             onSeek={onSeek}
+            aiOpen={aiOpen.has(index)}
+            onToggleAi={onToggleAi}
+            ai={
+              aiOpen.has(index) ? (
+                <div className="transcript__answer">
+                  <AiSection status={aiStatus}>
+                    <AiAnswer
+                      client={client}
+                      kind="translate"
+                      params={lineContext(cues, index, videoTitle)}
+                      questionKey={cue.text}
+                      label={t('aiTranslateLine')}
+                      onOpenSettings={openSettings}
+                    />
+                  </AiSection>
+                </div>
+              ) : null
+            }
           />
         ),
       )}
@@ -246,6 +317,8 @@ function SessionView({
   onSettings,
   onSeek,
   onRetry,
+  client,
+  aiStatus,
 }: {
   session: PanelSession;
   analysis: AnalysisState;
@@ -254,6 +327,8 @@ function SessionView({
   onSettings: (patch: Partial<Settings>) => void;
   onSeek: (index: number) => void;
   onRetry: () => void;
+  client: Client;
+  aiStatus: AiStatus | null;
 }) {
   const [newOnly, setNewOnly] = useState(false);
   const newCues = analysis.status === 'ready' ? analysis.analysis.newCues : null;
@@ -298,6 +373,9 @@ function SessionView({
             activeIndex={activeIndex}
             showTranslation={settings.showTranslation}
             onSeek={onSeek}
+            client={client}
+            videoTitle={video.title}
+            aiStatus={aiStatus}
           />
         </>
       )}
@@ -335,6 +413,7 @@ function CalibrationCopy({
 export function App({ client }: { client: Client }) {
   const status = useBackgroundStatus(client);
   const { settings, update } = useSettings(client);
+  const aiStatus = useAiStatus(client);
   const tab = useActiveTab();
   const { connection, send } = useTabSession(tab);
 
@@ -387,6 +466,8 @@ export function App({ client }: { client: Client }) {
         onSettings={onSettings}
         onSeek={onSeek}
         onRetry={onRetry}
+        client={client}
+        aiStatus={aiStatus}
       />
     );
   } else if (connection.state === 'unreachable' && isWatchUrl(tab?.url)) {

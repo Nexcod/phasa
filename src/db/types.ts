@@ -80,6 +80,12 @@ export interface AiCacheRow {
   createdAt: number;
 }
 
+/** OpenAI credentials, read and written only by the service worker (src/auth/credentials.ts). */
+export interface CredentialRow {
+  key: string;
+  value: unknown;
+}
+
 export type DictRow = DictEntry;
 
 export interface SettingRow {

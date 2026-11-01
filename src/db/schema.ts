@@ -35,6 +35,17 @@ export const SCHEMA_STEPS: readonly SchemaStep[] = [
       meta: 'key',
     },
   },
+  {
+    // Phase 5: OpenAI credentials (src/auth/credentials.ts). Not in chrome.storage.local, which
+    // content scripts can read (ADR 0014). Never part of an export.
+    version: 3,
+    stores: {
+      credentials: 'key',
+    },
+  },
 ];
+
+/** Tables a backup export must leave out (docs/decisions/0014-ai-and-account.md). */
+export const SECRET_TABLES: readonly string[] = ['credentials'];
 
 export const SCHEMA_VERSION = SCHEMA_STEPS.reduce((max, step) => Math.max(max, step.version), 0);

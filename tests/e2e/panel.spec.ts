@@ -34,7 +34,7 @@ test.describe('side panel', () => {
     await expect(rows.nth(1)).toHaveAttribute('aria-current', 'true');
 
     // A click seeks the video to the start of the line.
-    await rows.nth(3).getByRole('button').click();
+    await rows.nth(3).locator('.transcript__button').click();
     await expect
       .poll(() => page.evaluate(() => document.querySelector('video')!.currentTime))
       .toBeCloseTo(THAI_CUES[3]!.startMs / 1000, 2);

@@ -7,9 +7,25 @@
  *
  * To add a method: extend {@link Methods}, list who may call it in
  * {@link METHOD_ACCESS}, implement it in `src/background/handlers.ts`.
+ *
+ * A method with a `progress` type may push {@link ProgressEnvelope}s for its
+ * request before the response (AI answers streaming in).
  */
 
 import type { VideoAnalysis } from '../analysis/types';
+import type {
+  AccountView,
+  AiModel,
+  AiProgress,
+  AiProviderId,
+  AiResult,
+  AiStatus,
+  CueTranslation,
+  ExplainWordParams,
+  SignInResult,
+  TranslateCueParams,
+  WordExplanation,
+} from './ai';
 import type { ProcessedTrack, TrackKind, TrackRef } from '../captions/types';
 import type { WordInfo } from '../dictionary/types';
 import type { Settings } from '../settings';
@@ -28,7 +44,7 @@ import type {
 } from '../vocab/types';
 
 export const PORT_NAME = 'phasa';
-export const PROTOCOL_VERSION = 4;
+export const PROTOCOL_VERSION = 5;
 
 /**
  * `chrome.storage.local` key the SW bumps with every broadcast. A context whose port closed while
@@ -172,11 +188,74 @@ export interface Methods {
     params: { key: string };
     result: { deleted: boolean };
   };
+  /** Whether AI works now; no account details. */
+  'ai/status': {
+    params: Record<string, never>;
+    result: AiStatus;
+  };
+  /** The word in its line, explained by AI (plan §8.6); cached per model and input. */
+  'ai/explain-word': {
+    params: ExplainWordParams;
+    result: AiResult<WordExplanation>;
+    progress: AiProgress<WordExplanation>;
+  };
+  /** The line translated naturally, literally and word by word (plan §8.6). */
+  'ai/translate-cue': {
+    params: TranslateCueParams;
+    result: AiResult<CueTranslation>;
+    progress: AiProgress<CueTranslation>;
+  };
+  /** Opens the options page at its AI section (content scripts can't). */
+  'ui/open-ai-settings': {
+    params: Record<string, never>;
+    result: Record<string, never>;
+  };
+  'account/get': {
+    params: Record<string, never>;
+    result: AccountView;
+  };
+  /** Opens OpenAI's sign-in in a new tab; the callback page finishes it. */
+  'account/sign-in': {
+    params: Record<string, never>;
+    result: Record<string, never>;
+  };
+  /** The query string the OAuth redirect brought to auth-callback.html. */
+  'account/callback': {
+    params: { search: string };
+    result: SignInResult;
+  };
+  /** Revokes the refresh token and drops the tokens; keeps the registration (plan §8.7). */
+  'account/sign-out': {
+    params: Record<string, never>;
+    result: { revoked: boolean };
+  };
+  /** Signs out and forgets the account's registration as well. */
+  'account/forget': {
+    params: Record<string, never>;
+    result: { revoked: boolean };
+  };
+  /** Saves (or with null removes) the user's own OpenAI API key; checked against /v1/models. */
+  'account/set-api-key': {
+    params: { key: string | null };
+    result: { ok: true } | { ok: false; error: 'invalid-key' | 'network' | 'failed' };
+  };
+  /** Models the provider offers, in its order (plan §8.4). */
+  'account/models': {
+    params: { provider: AiProviderId };
+    result: { models: AiModel[] } | { error: string };
+  };
+  /** Development builds only: makes the access token look expired, to try the refresh. */
+  'account/expire-token': {
+    params: Record<string, never>;
+    result: Record<string, never>;
+  };
 }
 
 export type Method = keyof Methods;
 export type Params<M extends Method> = Methods[M]['params'];
 export type Result<M extends Method> = Methods[M]['result'];
+/** Progress a method pushes before its result; `never` for most methods. */
+export type Progress<M extends Method> = Methods[M] extends { progress: infer P } ? P : never;
 
 /**
  * Methods that touch OpenAI credentials must be `['extension-page']` only:
@@ -203,6 +282,19 @@ export const METHOD_ACCESS: Readonly<Record<Method, readonly Origin[]>> = {
   'segrules/list': ['content-script', 'extension-page'],
   'segrules/add': ['content-script', 'extension-page'],
   'segrules/delete': ['content-script', 'extension-page'],
+  // AI answers carry no credentials; content scripts are rate limited in the SW.
+  'ai/status': ['content-script', 'extension-page'],
+  'ai/explain-word': ['content-script', 'extension-page'],
+  'ai/translate-cue': ['content-script', 'extension-page'],
+  'ui/open-ai-settings': ['content-script', 'extension-page'],
+  'account/get': ['extension-page'],
+  'account/sign-in': ['extension-page'],
+  'account/callback': ['extension-page'],
+  'account/sign-out': ['extension-page'],
+  'account/forget': ['extension-page'],
+  'account/set-api-key': ['extension-page'],
+  'account/models': ['extension-page'],
+  'account/expire-token': ['extension-page'],
 };
 
 /** Sent on every new connection; a changed `swStartedAt` means the SW restarted. */
@@ -230,8 +322,14 @@ export interface SegmentationChangedEvent {
   type: 'segmentation/changed';
 }
 
+/** Sign-in, sign-out, the API key or the AI settings changed. */
+export interface AiChangedEvent {
+  type: 'ai/changed';
+  status: AiStatus;
+}
+
 export type ServerEvent =
-  HelloEvent | SettingsChangedEvent | VocabChangedEvent | SegmentationChangedEvent;
+  HelloEvent | SettingsChangedEvent | VocabChangedEvent | SegmentationChangedEvent | AiChangedEvent;
 
 export type RequestEnvelope = {
   [M in Method]: { kind: 'request'; id: number; method: M; params: Params<M> };
@@ -254,7 +352,14 @@ export interface EventEnvelope {
   event: ServerEvent;
 }
 
-export type ServerMessage = ResponseEnvelope | EventEnvelope;
+/** Progress of request `id`, only to the port that sent it. */
+export interface ProgressEnvelope {
+  kind: 'progress';
+  id: number;
+  data: unknown;
+}
+
+export type ServerMessage = ResponseEnvelope | EventEnvelope | ProgressEnvelope;
 
 export class RpcFailure extends Error {
   constructor(
@@ -302,6 +407,7 @@ export function isServerMessage(value: unknown): value is ServerMessage {
   if (!isRecord(value)) return false;
   if (value.kind === 'response')
     return typeof value.id === 'number' && typeof value.ok === 'boolean';
+  if (value.kind === 'progress') return typeof value.id === 'number';
   if (value.kind === 'event') return isRecord(value.event) && typeof value.event.type === 'string';
   return false;
 }

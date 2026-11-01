@@ -13,7 +13,7 @@ import {
   type ServerEvent,
 } from '../messaging/protocol';
 import type { Handlers } from '../messaging/server';
-import { parseSettingsPatch, settingsFromRows, type Settings } from '../settings';
+import { AI_SETTING_KEYS, parseSettingsPatch, settingsFromRows, type Settings } from '../settings';
 import { normalizeThai } from '../thai/normalize';
 import {
   MAX_UNIT_CHARS,
@@ -33,6 +33,7 @@ import {
   vocabCounts,
 } from '../vocab/store';
 import { FREQUENT_COUNTS, type BulkMode, type VocabChange, type WordStatus } from '../vocab/types';
+import { disabledAiHandlers, type AiHandlers } from './ai';
 import { createAnalysisService } from './analysis';
 import { getCachedTracks, processAndStore, validateProcessParams } from './captions';
 import { createLanguageService, type TokenizeInput } from './language';
@@ -47,6 +48,10 @@ export interface HandlerDeps {
   frequencySource?: FrequencySource;
   /** Push an event to every connected context. */
   broadcast?: (event: ServerEvent) => void;
+  /** The `ai/*` and `account/*` methods (src/background/ai.ts); disabled without them. */
+  ai?: AiHandlers;
+  /** An AI setting changed: readiness may differ now. */
+  aiChanged?: () => void;
   now?: () => number;
 }
 
@@ -129,6 +134,8 @@ export function createHandlers({
   dictionarySource = missingDictionary,
   frequencySource = missingFrequency,
   broadcast = () => undefined,
+  ai = disabledAiHandlers(),
+  aiChanged = () => undefined,
   now = Date.now,
 }: HandlerDeps): Handlers {
   const dictionary = createDictionaryStore(db, dictionarySource, now);
@@ -151,6 +158,8 @@ export function createHandlers({
   };
 
   return {
+    ...ai,
+
     ping: ({ sentAt }) => ({ sentAt, swStartedAt }),
 
     'db/info': async () => {
@@ -180,6 +189,7 @@ export function createHandlers({
       );
       const settings = await readSettings(database);
       broadcast({ type: 'settings/changed', settings });
+      if (AI_SETTING_KEYS.some((key) => Object.hasOwn(valid, key))) aiChanged();
       return settings;
     },
 

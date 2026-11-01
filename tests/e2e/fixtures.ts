@@ -28,7 +28,13 @@ export const test = base.extend<Fixtures>({
     // Bundled Chromium (channel "chromium") supports extensions, also headless.
     const context = await chromium.launchPersistentContext('', {
       channel: 'chromium',
-      args: [`--disable-extensions-except=${EXTENSION_PATH}`, `--load-extension=${EXTENSION_PATH}`],
+      args: [
+        `--disable-extensions-except=${EXTENSION_PATH}`,
+        `--load-extension=${EXTENSION_PATH}`,
+        // Tests never reach OpenAI: its hosts point at a closed port, and tests/e2e/ai.spec.ts serves
+        // a fake through routes. (A tab the extension opens loads its first URL unrouted.)
+        '--host-resolver-rules=MAP auth.openai.com 127.0.0.1:9, MAP api.openai.com 127.0.0.1:9',
+      ],
     });
     await use(context);
     await context.close();

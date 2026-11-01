@@ -4,6 +4,7 @@ import type {
   AiCacheRow,
   CaptionTrackRow,
   ContextRow,
+  CredentialRow,
   DictRow,
   MetaRow,
   PhraseRow,
@@ -26,6 +27,7 @@ export class PhasaDb extends Dexie {
   declare readonly dict: Table<DictRow, string>;
   declare readonly settings: Table<SettingRow, string>;
   declare readonly meta: Table<MetaRow, string>;
+  declare readonly credentials: Table<CredentialRow, string>;
 
   constructor(name: string = DB_NAME, options?: DexieOptions) {
     super(name, options);

@@ -11,6 +11,52 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
       shows datacenter IPs, including CI runners, a bot check instead of the video
       ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
 
+## Phase 5 — AI
+
+Needs a ChatGPT Plus or Pro account. Use a development build (`npm run dev`, load
+`.output/chrome-mv3-dev`) for the token item, the production build for the rest. Keep DevTools
+of the service worker open (`chrome://extensions` → Phasa → "service worker") on its Network tab:
+requests to OpenAI show there, and nothing should go to OpenAI unless you ask. Write down what
+OpenAI shows at each sign-in: docs and spike disagree (ADR 0014).
+
+- [ ] **First sign-in.** Options → AI: the text warns that OpenAI calls Phasa unverified and
+      lets you rename the agent. "Continue with ChatGPT" opens OpenAI in a new tab: account
+      chooser, the agent name ("Phasa"), consent with "Use your ChatGPT plan". Then Phasa's page:
+      "Connected ✓ as …", "You're using your ChatGPT plan", and its address bar shows no `code=`.
+      "Got it" closes the tab; the options page says "Signed in as …" without a reload, and the
+      model list's default names the first model.
+- [ ] **Explain.** On a video with Thai subtitles click a word: under the dictionary part,
+      "Explain in context" and "Translate the line" with "Using ChatGPT plan · Manage usage".
+      Explain: the meaning appears first and the rest follows within seconds; it fits this line.
+      Translate the line: natural, literal, word by word. Close and reopen the word: both answers
+      show at once marked "saved answer", and the Network tab has no new `responses` request.
+- [ ] **Phrase and side panel.** Select 2–3 words: the phrase popup has the same AI buttons.
+      Side panel → hover a transcript line → AI → "Translate the line".
+- [ ] **Default model.** For the first listed model and two others (the spike listed GPT-6.1-Sol
+      first; try the Luna ones), choose it in Options → AI, explain a new word, and read
+      `data-first-ms` and `data-total-ms` of `[data-testid="phasa-ai-explain"]` (DevTools →
+      Elements, inside the `phasa-overlay` shadow root). Note the numbers and whether the
+      answers are good; a clearly faster model changes the default rule (ADR 0014).
+- [ ] **Sign in again.** Options → Sign out: no warning about an unconfirmed revocation.
+      "Continue with ChatGPT" again: per OpenAI's docs only the account chooser shows (no name, no
+      consent screen), then "Connected ✓". Note what appeared. Then "Forget account" and sign in:
+      the full first-registration screens show again.
+- [ ] **Refresh after expiry.** Development build: Options → AI → Development → "Expire the
+      access token now", then explain a word not asked before: it works without signing in, and
+      the Network tab shows `oauth/token` before `responses`. Once more after the browser was
+      closed for more than an hour: AI still works without signing in.
+- [ ] **Service worker asleep during sign-in.** Sign out, start the sign-in and wait 1–2 minutes
+      on OpenAI's screen before continuing: it still ends in "Connected ✓".
+- [ ] **Usage limit.** Covered by e2e (`tests/e2e/ai.spec.ts`: the popup says the limit is
+      reached, "Manage usage" first, linking to ChatGPT settings → Usage). If the real limit is
+      hit, check the same message.
+- [ ] **Without AI.** Sign out: words, popups, badge, side panel and options all work. "Explain
+      in context" says AI is off; "AI settings" opens the options page at the AI section.
+- [ ] **API key (optional, needs a platform key).** Options → AI → paste a key → "Key saved:
+      sk-…" → choose a model → "Use for AI: My OpenAI API key": explain works and says "your API
+      key". With the ChatGPT plan chosen and the fallback box ticked, the key answers only when
+      the plan can't.
+
 ## Phase 4 — analysis and onboarding
 
 Start from a fresh install (remove and load the unpacked build again) so the vocabulary is empty.

@@ -1,5 +1,6 @@
 @import '../../src/ui/theme.css';
 @import '../../src/ui/analysis.css';
+@import '../../src/ui/ai.css';
 
 /* The shadow host is reset with `all: initial` by WXT, so it stays static and
    this layer is positioned against #movie_player (position: relative). It is a
@@ -214,6 +215,14 @@
   pointer-events: auto;
   transform: translateX(-50%);
   user-select: text;
+  /* The popup is a dark card on any theme: AI answers (src/ui/ai.css) use these tokens. */
+  --phasa-fg: #f4f4f5;
+  --phasa-muted: #a1a1aa;
+  --phasa-border: #52525b;
+  --phasa-accent: #93c5fd;
+  --phasa-error: #fca5a5;
+  --phasa-hover: rgb(255 255 255 / 0.08);
+  --phasa-bg: #18181b;
 }
 
 .phasa-popup [lang='th'] {

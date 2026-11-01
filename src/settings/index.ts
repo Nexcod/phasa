@@ -8,6 +8,8 @@
 export type WordBoundaries = 'none' | 'gaps' | 'underline';
 export type RomanizationSystem = 'paiboon' | 'rtgs';
 export type RomanizationPosition = 'above' | 'below';
+/** Where AI requests go first (docs/plan.md §8.5). */
+export type AiProviderSetting = 'chatgpt-plan' | 'openai-api-key';
 
 export interface Settings {
   /** Second subtitle line with the English translation (hotkey T). */
@@ -21,6 +23,13 @@ export interface Settings {
   wordBoundaries: WordBoundaries;
   /** Opening a word pauses the video; closing resumes it (docs/plan.md §10). */
   pauseOnLookup: boolean;
+  aiProvider: AiProviderSetting;
+  /** Model slug for the ChatGPT plan; empty = the first model OpenAI lists (plan §8.4). */
+  aiModelChatGpt: string;
+  /** Model id for the API key; empty = not chosen yet (the user pays, so no silent default). */
+  aiModelApiKey: string;
+  /** Use the API key when the ChatGPT plan can't serve a request (plan §8.4: only if enabled). */
+  aiFallbackToApiKey: boolean;
 }
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = {
@@ -31,7 +40,19 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
   romanizationSystem: 'paiboon',
   wordBoundaries: 'gaps',
   pauseOnLookup: true,
+  aiProvider: 'chatgpt-plan',
+  aiModelChatGpt: '',
+  aiModelApiKey: '',
+  aiFallbackToApiKey: false,
 };
+
+/** Keys whose change can make AI ready or not (`ai/changed`). */
+export const AI_SETTING_KEYS: readonly (keyof Settings)[] = [
+  'aiProvider',
+  'aiModelChatGpt',
+  'aiModelApiKey',
+  'aiFallbackToApiKey',
+];
 
 type Validators = { [K in keyof Settings]: (value: unknown) => value is Settings[K] };
 
@@ -40,6 +61,9 @@ const oneOf =
   <T extends string>(...values: T[]) =>
   (value: unknown): value is T =>
     values.includes(value as T);
+/** A model slug as OpenAI writes them (`gpt-6.1-sol`, `ft:…:org:…`), or empty. */
+const isModelSlug = (value: unknown): value is string =>
+  typeof value === 'string' && /^[\w.:/-]{0,100}$/.test(value);
 
 const VALIDATORS: Validators = {
   showTranslation: isBoolean,
@@ -49,6 +73,10 @@ const VALIDATORS: Validators = {
   romanizationSystem: oneOf('paiboon', 'rtgs'),
   wordBoundaries: oneOf('none', 'gaps', 'underline'),
   pauseOnLookup: isBoolean,
+  aiProvider: oneOf('chatgpt-plan', 'openai-api-key'),
+  aiModelChatGpt: isModelSlug,
+  aiModelApiKey: isModelSlug,
+  aiFallbackToApiKey: isBoolean,
 };
 
 function isKey(key: string): key is keyof Settings {

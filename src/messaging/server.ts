@@ -8,6 +8,8 @@ import {
   type Method,
   type Origin,
   type Params,
+  type ProgressEnvelope,
+  type Progress,
   type ResponseEnvelope,
   type Result,
   type RpcError,
@@ -19,8 +21,14 @@ export interface RequestContext {
   tabId: number | undefined;
 }
 
+/** Per request: the connection's context and a way to push progress to the caller. */
+export interface HandlerContext<M extends Method> extends RequestContext {
+  /** Set by the server for every request; tests calling handlers directly may leave it out. */
+  progress?: (data: Progress<M>) => void;
+}
+
 export type Handlers = {
-  [M in Method]: (params: Params<M>, context: RequestContext) => Result<M> | Promise<Result<M>>;
+  [M in Method]: (params: Params<M>, context: HandlerContext<M>) => Result<M> | Promise<Result<M>>;
 };
 
 export interface ServerOptions {
@@ -74,7 +82,7 @@ export function createServer(handlers: Handlers, options: ServerOptions): Server
         connections.delete(send);
       });
 
-      const send = (message: ResponseEnvelope | EventEnvelope) => {
+      const send = (message: ResponseEnvelope | EventEnvelope | ProgressEnvelope) => {
         if (!connected) return;
         try {
           port.postMessage(message);
@@ -100,9 +108,20 @@ export function createServer(handlers: Handlers, options: ServerOptions): Server
           });
           return;
         }
-        const handler = handlers[method] as (p: typeof params, c: RequestContext) => unknown;
+        const handler = handlers[method] as (
+          p: typeof params,
+          c: HandlerContext<typeof method>,
+        ) => unknown;
+        let settled = false;
+        const requestContext: HandlerContext<typeof method> = {
+          ...context,
+          progress: (data: unknown) => {
+            if (!settled) send({ kind: 'progress', id, data });
+          },
+        };
         Promise.resolve()
-          .then(() => handler(params, context))
+          .then(() => handler(params, requestContext))
+          .finally(() => (settled = true))
           .then(
             (result) => send({ kind: 'response', id, ok: true, result }),
             (error: unknown) => {

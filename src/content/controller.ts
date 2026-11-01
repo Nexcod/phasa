@@ -6,6 +6,7 @@
  */
 import type { ProcessedCue } from '../captions/types';
 import type { WordInfo } from '../dictionary/types';
+import { MAX_CONTEXT_LINES, type AiLineContext } from '../messaging/ai';
 import type { Client } from '../messaging/client';
 import { DEFAULT_SETTINGS, type Settings } from '../settings';
 import type { ContextInput, SegRuleKind, UnitKind, WordStatus } from '../vocab/types';
@@ -57,6 +58,10 @@ export interface ContentController {
   endLookup: () => void;
   /** W / Q / E: open the first word of the line, move to the previous / next word. */
   onWordKey: (listener: (key: WordKey) => void) => () => void;
+  /** The line at `cueIndex` with its neighbours and the video title, for AI requests. */
+  aiContext: (cueIndex: number) => AiLineContext | undefined;
+  /** Opens the options page at its AI section (the SW does it; content scripts can't). */
+  openAiSettings: () => void;
   dispose: () => void;
 }
 
@@ -232,6 +237,23 @@ export function startContentController(deps: {
     return context;
   };
 
+  const aiContext = (index: number): AiLineContext | undefined => {
+    const { session } = store.get();
+    if (session.status !== 'ready') return undefined;
+    const cues = session.thai.cues;
+    const cue = cues[index];
+    if (!cue) return undefined;
+    const context: AiLineContext = {
+      line: { text: cue.text },
+      before: cues.slice(Math.max(0, index - MAX_CONTEXT_LINES), index).map((c) => c.text),
+      after: cues.slice(index + 1, index + 1 + MAX_CONTEXT_LINES).map((c) => c.text),
+      videoTitle: session.video.title,
+    };
+    const english = session.english.status === 'ready' ? session.english.lines[index] : undefined;
+    if (english) context.line.translation = english;
+    return context;
+  };
+
   let pausedForLookup = false;
 
   return {
@@ -261,6 +283,10 @@ export function startContentController(deps: {
     onWordKey(listener) {
       wordKeyListeners.add(listener);
       return () => wordKeyListeners.delete(listener);
+    },
+    aiContext,
+    openAiSettings() {
+      client.request('ui/open-ai-settings', {}).catch(() => undefined);
     },
     endLookup() {
       if (!pausedForLookup) return;

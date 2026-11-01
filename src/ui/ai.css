@@ -1,0 +1,201 @@
+/* AI answers (docs/plan.md §8.6): in the word popup on youtube.com and in the side panel.
+   Colors come from theme.css; the popup overrides the tokens for its dark card. */
+.phasa-ai-section {
+  display: grid;
+  gap: 6px;
+}
+
+.phasa-ai {
+  color: var(--phasa-fg);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.phasa-ai [lang='th'] {
+  font-family: var(--phasa-font-thai);
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.phasa-ai__ask,
+.phasa-ai__button {
+  padding: 3px 10px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.phasa-ai__ask:hover:not(:disabled),
+.phasa-ai__button:hover {
+  background: var(--phasa-hover);
+}
+
+.phasa-ai__ask:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.phasa-ai__badge {
+  padding: 0 5px;
+  border: 1px solid var(--phasa-accent);
+  border-radius: 4px;
+  color: var(--phasa-accent);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: normal;
+  vertical-align: 1px;
+}
+
+.phasa-ai__head,
+.phasa-ai__working {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0 0 4px;
+  color: var(--phasa-muted);
+  font-size: 12px;
+}
+
+.phasa-ai__working::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--phasa-muted);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: phasa-ai-spin 0.8s linear infinite;
+}
+
+@keyframes phasa-ai-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phasa-ai__working::after {
+    animation: none;
+  }
+}
+
+.phasa-ai__answer p {
+  margin: 0 0 4px;
+}
+
+.phasa-ai__meaning {
+  font-size: 14px;
+}
+
+.phasa-ai__meta,
+.phasa-ai__syllables,
+.phasa-ai__notes,
+.phasa-ai__literal,
+.phasa-ai__classifier {
+  color: var(--phasa-muted);
+}
+
+.phasa-ai__roman {
+  color: var(--phasa-fg);
+}
+
+.phasa-ai__notes {
+  font-style: italic;
+}
+
+.phasa-ai__example {
+  margin: 6px 0 4px;
+  padding-left: 8px;
+  border-left: 2px solid var(--phasa-border);
+}
+
+.phasa-ai__label {
+  color: var(--phasa-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.phasa-ai__words {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.phasa-ai__usage,
+.phasa-ai__muted,
+.phasa-ai__detail {
+  color: var(--phasa-muted);
+  font-size: 11px;
+}
+
+.phasa-ai__detail {
+  overflow-wrap: anywhere;
+}
+
+.phasa-ai__link {
+  color: var(--phasa-accent);
+}
+
+.phasa-ai__error p {
+  margin: 0 0 4px;
+}
+
+.phasa-ai__error > p:first-child {
+  color: var(--phasa-error);
+}
+
+.phasa-ai__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+}
+
+.phasa-ai__primary {
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--phasa-accent);
+  color: var(--phasa-bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* "Continue with ChatGPT": OpenAI's approved button (label + logo, UI/UX guidelines). */
+.phasa-siwc {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid #0d0d0d;
+  border-radius: 999px;
+  background: #0d0d0d;
+  color: #ffffff;
+  font: 600 14px/1.2 var(--phasa-font-ui);
+  cursor: pointer;
+}
+
+.phasa-siwc:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.phasa-siwc__logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .phasa-siwc {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #0d0d0d;
+  }
+
+  .phasa-siwc__logo--light {
+    display: none;
+  }
+
+  .phasa-siwc__logo--dark {
+    display: inline;
+  }
+}

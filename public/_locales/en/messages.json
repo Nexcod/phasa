@@ -56,8 +56,8 @@
     "description": "Options page section: data import and export."
   },
   "optionsSectionAccount": {
-    "message": "AI account",
-    "description": "Options page section: Sign in with ChatGPT / API key."
+    "message": "AI",
+    "description": "Options page section: Sign in with ChatGPT, own OpenAI API key, models."
   },
   "comingSoon": {
     "message": "Coming in a later version.",
@@ -922,5 +922,435 @@
   "knownImportApply": {
     "message": "Mark them as known",
     "description": "Button: import the list as known words."
+  },
+  "actionCancel": {
+    "message": "Cancel",
+    "description": "Generic cancel button."
+  },
+  "aiBadge": {
+    "message": "AI",
+    "description": "Short badge marking AI features and answers."
+  },
+  "aiExplain": {
+    "message": "Explain in context",
+    "description": "Word popup button: AI explains the word in its subtitle line (follows the AI badge)."
+  },
+  "aiTranslateLine": {
+    "message": "Translate the line",
+    "description": "Button: AI translates the whole subtitle line (follows the AI badge)."
+  },
+  "aiTranslateLineLabel": {
+    "message": "Translate this line with AI",
+    "description": "Accessible label of the AI button on a transcript line."
+  },
+  "aiWorking": {
+    "message": "Asking AI…",
+    "description": "Shown while an AI answer streams in."
+  },
+  "aiCached": {
+    "message": "saved answer",
+    "description": "Next to an AI answer that came from the local cache (no request was made)."
+  },
+  "aiViaKey": {
+    "message": "your API key",
+    "description": "Next to an AI answer that was billed to the user's own OpenAI API key."
+  },
+  "aiUsingPlan": {
+    "message": "Using ChatGPT plan",
+    "description": "Next to AI features when requests use the ChatGPT plan (OpenAI UI/UX guidelines wording)."
+  },
+  "aiUsingKey": {
+    "message": "Using your OpenAI API key",
+    "description": "Next to AI features when requests use the user's own API key."
+  },
+  "aiManageUsage": {
+    "message": "Manage usage",
+    "description": "Link to ChatGPT settings → Usage (OpenAI UI/UX guidelines wording)."
+  },
+  "aiOpenSettings": {
+    "message": "AI settings",
+    "description": "Button opening the AI section of the options page."
+  },
+  "aiRetry": {
+    "message": "Try again",
+    "description": "Button repeating a failed AI request."
+  },
+  "aiUseKeyHint": {
+    "message": "You can also use your own API key in the AI settings.",
+    "description": "Shown under \"Manage usage\" when the ChatGPT plan limit is reached."
+  },
+  "aiExample": {
+    "message": "Example",
+    "description": "Label of the example sentence in an AI explanation."
+  },
+  "aiLiterally": {
+    "message": "Literally",
+    "description": "Label of the literal translation of a line."
+  },
+  "aiWordByWord": {
+    "message": "Word by word",
+    "description": "Accessible label of the word-by-word list of a line translation."
+  },
+  "aiClassifier": {
+    "message": "Classifier:",
+    "description": "Label before the classifier of a noun in an AI explanation."
+  },
+  "aiRomanizationHint": {
+    "message": "Romanization by AI: it may be wrong",
+    "description": "Tooltip of AI-made romanization."
+  },
+  "aiErrorNotConfigured": {
+    "message": "AI is off. Sign in with ChatGPT or add your own OpenAI API key in the AI settings.",
+    "description": "AI error: no provider set up."
+  },
+  "aiErrorSignInAgain": {
+    "message": "Your ChatGPT sign-in has ended. Sign in again in the AI settings.",
+    "description": "AI error: the refresh token was rejected."
+  },
+  "aiErrorNoPlanPermission": {
+    "message": "Phasa may not use your ChatGPT plan: it wasn't allowed when you signed in. Sign in again and allow it, or use your own API key.",
+    "description": "AI error: the plan-usage scope was not granted."
+  },
+  "aiErrorUsageLimit": {
+    "message": "You've reached your ChatGPT plan's usage limit for now.",
+    "description": "AI error: subscription_sharing_usage_limit_exceeded."
+  },
+  "aiErrorUnavailable": {
+    "message": "ChatGPT can't take requests from apps right now. Try again in a few minutes.",
+    "description": "AI error: the plan route is temporarily unavailable (503)."
+  },
+  "aiErrorNotEligible": {
+    "message": "Your ChatGPT plan doesn't include use by apps. You can use your own OpenAI API key instead.",
+    "description": "AI error: subscription_sharing_user_not_eligible."
+  },
+  "aiErrorBlocked": {
+    "message": "OpenAI refused the request.",
+    "description": "AI error: a policy, region or permission check failed."
+  },
+  "aiErrorInvalidKey": {
+    "message": "OpenAI didn't accept your API key. Check it in the AI settings.",
+    "description": "AI error: invalid API key."
+  },
+  "aiErrorQuota": {
+    "message": "Your OpenAI API account is out of credit.",
+    "description": "AI error: insufficient_quota on the API key."
+  },
+  "aiErrorRateLimited": {
+    "message": "Too many requests at once. Wait a moment and try again.",
+    "description": "AI error: rate limited."
+  },
+  "aiErrorUnsupported": {
+    "message": "The chosen model can't answer this. Choose another model in the AI settings.",
+    "description": "AI error: unsupported model or feature."
+  },
+  "aiErrorIncomplete": {
+    "message": "The answer stopped before it was finished.",
+    "description": "AI error: response.incomplete."
+  },
+  "aiErrorFailed": {
+    "message": "The AI request failed.",
+    "description": "AI error: response.failed or a server error."
+  },
+  "aiErrorBadOutput": {
+    "message": "The answer came back in an unexpected form.",
+    "description": "AI error: the structured answer did not validate."
+  },
+  "aiErrorNetwork": {
+    "message": "The connection to OpenAI broke off.",
+    "description": "AI error: network failure or the stream ended early."
+  },
+  "aiErrorTimeout": {
+    "message": "OpenAI took too long to answer.",
+    "description": "AI error: timeout."
+  },
+  "accountIntro": {
+    "message": "AI explains a word in its line and translates whole lines. It is optional: everything else works without it, and nothing is sent to OpenAI unless you ask.",
+    "description": "Intro of the AI section of the options page."
+  },
+  "accountChatGptTitle": {
+    "message": "ChatGPT plan",
+    "description": "Heading: Sign in with ChatGPT block."
+  },
+  "accountContinueWithChatGpt": {
+    "message": "Continue with ChatGPT",
+    "description": "Sign-in button label (OpenAI-approved wording)."
+  },
+  "accountFirstSignIn": {
+    "message": "Use your ChatGPT Plus or Pro plan. OpenAI opens in a new tab and asks you to choose your account, to name the agent and to allow Phasa to use your plan. Requests then count against your plan's limits.",
+    "description": "Shown before the first Sign in with ChatGPT."
+  },
+  "accountUnverified": {
+    "message": "OpenAI will say it hasn't verified Phasa: it is an open-source project, not an app OpenAI has reviewed. You can keep the name \"Phasa\" or change it.",
+    "description": "Explains OpenAI's \"unverified agent\" notice and the rename field before the first sign-in."
+  },
+  "accountReturning": {
+    "message": "Phasa is registered with your ChatGPT account. Signing in again only asks you to choose the account.",
+    "description": "Shown before a returning sign-in (reauthorization)."
+  },
+  "accountPending": {
+    "message": "Waiting for you to finish in the OpenAI tab…",
+    "description": "Shown while a sign-in tab is open."
+  },
+  "accountNeedsSignIn": {
+    "message": "Your ChatGPT sign-in has ended. Sign in again to keep using AI.",
+    "description": "Shown after a refresh token was rejected."
+  },
+  "accountSignedIn": {
+    "message": "Signed in with ChatGPT.",
+    "description": "Signed-in state without an email."
+  },
+  "accountSignedInAs": {
+    "message": "Signed in as $EMAIL$.",
+    "description": "Signed-in state.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "accountNoPlan": {
+    "message": "You didn't allow Phasa to use your ChatGPT plan, so AI stays off. Sign in again and allow \"Use your ChatGPT plan\", or use your own API key.",
+    "description": "Signed in without the plan-usage scope."
+  },
+  "accountSignOut": {
+    "message": "Sign out",
+    "description": "Button: revoke and drop the ChatGPT tokens."
+  },
+  "accountForget": {
+    "message": "Forget account",
+    "description": "Button: sign out and forget the ChatGPT registration too."
+  },
+  "accountForgetConfirm": {
+    "message": "Forget the ChatGPT account? The next sign-in registers Phasa again.",
+    "description": "Confirmation before forgetting the account."
+  },
+  "accountSignOutHint": {
+    "message": "Sign out keeps Phasa's registration, so the next sign-in is quicker. You can also disconnect Phasa in ChatGPT settings.",
+    "description": "Explains sign out vs. forget."
+  },
+  "accountRevokeUnconfirmed": {
+    "message": "Signed out here, but OpenAI didn't confirm it. To be sure, disconnect Phasa in ChatGPT settings.",
+    "description": "Sign-out finished without a confirmed revocation."
+  },
+  "accountSignOutFailed": {
+    "message": "Couldn't sign out. Try again.",
+    "description": "Sign-out failed."
+  },
+  "accountSignInFailed": {
+    "message": "Couldn't start the sign-in. Try again.",
+    "description": "Opening the sign-in tab failed."
+  },
+  "accountModel": {
+    "message": "Model",
+    "description": "Label of a model picker."
+  },
+  "accountModelFirst": {
+    "message": "Default: $NAME$ (first in OpenAI's list)",
+    "description": "Empty choice of the ChatGPT-plan model picker.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "GPT-6.1-Sol"
+      }
+    }
+  },
+  "accountModelFirstPlain": {
+    "message": "Default: first in OpenAI's list",
+    "description": "Empty choice of the ChatGPT-plan model picker while the list loads."
+  },
+  "accountModelChoose": {
+    "message": "Choose a model",
+    "description": "Empty choice of the API-key model picker."
+  },
+  "accountModelNeeded": {
+    "message": "Choose a model to use the API key: your key is billed per request.",
+    "description": "Shown while no model is chosen for the API key."
+  },
+  "accountModelTyped": {
+    "message": "Model id",
+    "description": "Placeholder of the model field when the list could not be loaded."
+  },
+  "accountModelsFailed": {
+    "message": "Couldn't load the list of models; type a model id.",
+    "description": "Shown when /v1/models failed."
+  },
+  "accountKeyTitle": {
+    "message": "Your own OpenAI API key",
+    "description": "Heading of the API-key block."
+  },
+  "accountKeyIntro": {
+    "message": "Requests are then billed to your OpenAI API account. The key stays in this browser and is sent only to api.openai.com.",
+    "description": "Explains the API-key option."
+  },
+  "accountKeySave": {
+    "message": "Save key",
+    "description": "Button saving the API key."
+  },
+  "accountKeyChecking": {
+    "message": "Checking…",
+    "description": "Shown while the API key is checked."
+  },
+  "accountKeySaved": {
+    "message": "Key saved: $HINT$",
+    "description": "The saved key, shortened.",
+    "placeholders": {
+      "hint": {
+        "content": "$1",
+        "example": "sk-…a1b2"
+      }
+    }
+  },
+  "accountKeyRemove": {
+    "message": "Remove key",
+    "description": "Button removing the API key."
+  },
+  "accountKeyInvalid": {
+    "message": "OpenAI didn't accept this key.",
+    "description": "API key check failed: invalid key."
+  },
+  "accountKeyNetwork": {
+    "message": "Couldn't reach OpenAI to check the key.",
+    "description": "API key check failed: network."
+  },
+  "accountKeyFailed": {
+    "message": "Couldn't check the key. Try again.",
+    "description": "API key check failed: other."
+  },
+  "accountProviderTitle": {
+    "message": "Use for AI",
+    "description": "Heading of the provider choice."
+  },
+  "accountProviderPlan": {
+    "message": "My ChatGPT plan",
+    "description": "Provider choice: ChatGPT plan."
+  },
+  "accountProviderKey": {
+    "message": "My OpenAI API key",
+    "description": "Provider choice: own API key."
+  },
+  "accountFallback": {
+    "message": "When the ChatGPT plan can't answer (usage limit, unavailable), use my API key",
+    "description": "Opt-in fallback to the API key."
+  },
+  "accountReadyPlan": {
+    "message": "AI is ready: requests use your ChatGPT plan.",
+    "description": "AI status line."
+  },
+  "accountReadyKey": {
+    "message": "AI is ready: requests use your API key.",
+    "description": "AI status line."
+  },
+  "accountNotReady": {
+    "message": "AI is off until you sign in or add an API key with a model.",
+    "description": "AI status line."
+  },
+  "accountDevTitle": {
+    "message": "Development",
+    "description": "Heading of development-only tools."
+  },
+  "accountDevExpire": {
+    "message": "Expire the access token now",
+    "description": "Development tool: forces a token refresh on the next request."
+  },
+  "accountDevExpired": {
+    "message": "The access token counts as expired: the next AI request refreshes it.",
+    "description": "Development tool result."
+  },
+  "callbackTitle": {
+    "message": "Phasa — Sign in with ChatGPT",
+    "description": "Title of the page the sign-in returns to."
+  },
+  "callbackHeading": {
+    "message": "Sign in with ChatGPT",
+    "description": "Heading of the page the sign-in returns to."
+  },
+  "callbackWorking": {
+    "message": "Connecting…",
+    "description": "While the code is exchanged."
+  },
+  "callbackNothing": {
+    "message": "There is no sign-in to finish here. Start it from Phasa's AI settings.",
+    "description": "Callback page opened without a sign-in."
+  },
+  "callbackOpenSettings": {
+    "message": "Open Phasa's AI settings",
+    "description": "Button on the callback page."
+  },
+  "callbackFailed": {
+    "message": "Sign-in failed: $ERROR$",
+    "description": "Callback page: the service worker could not be reached.",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Connection lost"
+      }
+    }
+  },
+  "callbackConnected": {
+    "message": "Connected ✓",
+    "description": "Callback page: success without an email."
+  },
+  "callbackConnectedAs": {
+    "message": "Connected ✓ as $EMAIL$",
+    "description": "Callback page: success.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "callbackPlanTitle": {
+    "message": "You're using your ChatGPT plan",
+    "description": "One-time notice after sign-in (OpenAI UI/UX guidelines wording)."
+  },
+  "callbackPlanText": {
+    "message": "The explanations and translations you ask for use your ChatGPT plan's limits. You can see and manage your usage in ChatGPT settings.",
+    "description": "One-time notice after sign-in."
+  },
+  "callbackGotIt": {
+    "message": "Got it",
+    "description": "Closes the callback page (OpenAI UI/UX guidelines wording)."
+  },
+  "callbackNoPlan": {
+    "message": "Connected, but you didn't allow Phasa to use your ChatGPT plan, so AI stays off. Sign in again and allow it, or use your own API key.",
+    "description": "Callback page: signed in without the plan-usage scope."
+  },
+  "callbackExpired": {
+    "message": "This sign-in took too long or was already finished. Start it again from Phasa's AI settings.",
+    "description": "Sign-in failure: no pending attempt."
+  },
+  "callbackStateMismatch": {
+    "message": "This page belongs to an older sign-in. Finish the newest one, or start again.",
+    "description": "Sign-in failure: state mismatch."
+  },
+  "callbackDenied": {
+    "message": "The sign-in was cancelled on OpenAI's page. Nothing was saved.",
+    "description": "Sign-in failure: access_denied."
+  },
+  "callbackNoClientId": {
+    "message": "OpenAI didn't finish registering Phasa. Try again.",
+    "description": "Sign-in failure: no issued client id."
+  },
+  "callbackClientMismatch": {
+    "message": "OpenAI answered for a different registration of Phasa. Use \"Forget account\" in the AI settings, then sign in again.",
+    "description": "Sign-in failure: client id mismatch."
+  },
+  "callbackAccountMismatch": {
+    "message": "You chose a different ChatGPT account than the one Phasa is registered with. To switch accounts, use \"Forget account\" in the AI settings first.",
+    "description": "Sign-in failure: the ID token subject differs."
+  },
+  "callbackExchangeFailed": {
+    "message": "OpenAI didn't accept the sign-in. Try again.",
+    "description": "Sign-in failure: code exchange failed."
+  },
+  "callbackInvalidToken": {
+    "message": "OpenAI's answer couldn't be verified. Try again.",
+    "description": "Sign-in failure: ID token rejected."
+  },
+  "callbackNetwork": {
+    "message": "Couldn't reach OpenAI. Check your connection and try again.",
+    "description": "Sign-in failure: network."
   }
 }

@@ -7,6 +7,9 @@ import {
   type ContentState,
 } from '@/src/content/controller';
 import type { SessionError } from '@/src/content/session';
+import type { Client } from '@/src/messaging/client';
+import { useAiStatus } from '@/src/ui/ai/useAi';
+import type { PopupAi } from './PopupAi';
 import { ThaiLine, type LineAction } from './ThaiLine';
 import { PhrasePopup, WordPopup, type PopupActions, type PopupAnchor } from './WordPopup';
 
@@ -151,8 +154,9 @@ function adjacentWord(
 }
 
 /** Subtitles over the player, a status chip and word popups (docs/plan.md §2.1, §4.1, §10). */
-export function Overlay({ controller }: { controller: ContentController }) {
+export function Overlay({ controller, client }: { controller: ContentController; client: Client }) {
   const state = useSyncExternalStore(controller.store.subscribe, controller.store.get);
+  const aiStatus = useAiStatus(client);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [popup, setPopup] = useState<Popup | null>(null);
 
@@ -269,6 +273,13 @@ export function Overlay({ controller }: { controller: ContentController }) {
   const cueTokens = popup ? tokens?.[popup.cueIndex] : undefined;
   const cueText = popup ? thaiCues(state)[popup.cueIndex]?.text : undefined;
 
+  const ai: PopupAi = {
+    client,
+    status: aiStatus,
+    context: popup ? controller.aiContext(popup.cueIndex) : undefined,
+    openSettings: controller.openAiSettings,
+  };
+
   let popupView = null;
   if (popup && cueTokens && cueText !== undefined) {
     if (popup.kind === 'word') {
@@ -285,6 +296,7 @@ export function Overlay({ controller }: { controller: ContentController }) {
             openedAt={popup.at}
             settings={state.settings}
             actions={actions}
+            ai={ai}
           />
         );
       }
@@ -303,6 +315,7 @@ export function Overlay({ controller }: { controller: ContentController }) {
             openedAt={popup.at}
             settings={state.settings}
             actions={actions}
+            ai={ai}
           />
         );
       }

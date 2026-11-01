@@ -1,6 +1,7 @@
 # 0003. Capturing the loopback OAuth redirect without a listener
 
-- Status: Accepted — option A1
+- Status: Accepted — option A1; implemented with the rest of the AI stack in
+  [0014](0014-ai-and-account.md)
 - Date: 2026-10-16
 - Evidence: docs/plan.md §8.3; docs/spikes.md §2 (documentation check, pre-flight, live run)
 

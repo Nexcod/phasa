@@ -4,6 +4,7 @@ import {
   isServerMessage,
   type Method,
   type Params,
+  type Progress,
   type RequestEnvelope,
   type Result,
   type ServerEvent,
@@ -12,16 +13,18 @@ import {
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 
-export interface RequestOptions {
+export interface RequestOptions<M extends Method = Method> {
   /** 0 disables the timeout. */
   timeoutMs?: number;
+  /** Progress the method pushes before its result (protocol `progress`). */
+  onProgress?: (data: Progress<M>) => void;
 }
 
 export interface Client {
   request<M extends Method>(
     method: M,
     params: Params<M>,
-    options?: RequestOptions,
+    options?: RequestOptions<M>,
   ): Promise<Result<M>>;
   onEvent(listener: (event: ServerEvent) => void): () => void;
   /** Opens a port if none is open; the SW then says hello. */
@@ -34,6 +37,7 @@ interface Pending {
   resolve: (value: unknown) => void;
   reject: (reason: RpcFailure) => void;
   timer: ReturnType<typeof setTimeout> | undefined;
+  onProgress: ((data: never) => void) | undefined;
 }
 
 /**
@@ -62,6 +66,12 @@ export function createClient(connect: () => PortLike): Client {
   function handle(message: ServerMessage): void {
     if (message.kind === 'event') {
       for (const listener of eventListeners) listener(message.event);
+      return;
+    }
+    if (message.kind === 'progress') {
+      (pending.get(message.id)?.onProgress as ((data: unknown) => void) | undefined)?.(
+        message.data,
+      );
       return;
     }
     const entry = settle(message.id);
@@ -98,7 +108,12 @@ export function createClient(connect: () => PortLike): Client {
                 );
               }, timeoutMs)
             : undefined;
-        pending.set(id, { resolve: resolve as (value: unknown) => void, reject, timer });
+        pending.set(id, {
+          resolve: resolve as (value: unknown) => void,
+          reject,
+          timer,
+          onProgress: options.onProgress,
+        });
         try {
           const envelope = { kind: 'request', id, method, params } as RequestEnvelope;
           ensurePort().postMessage(envelope);

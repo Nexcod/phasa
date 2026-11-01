@@ -6,9 +6,10 @@ import { watchUrl } from '@/src/ui/labels';
 import { SavedWordList, useSavedWords } from '@/src/ui/SavedWords';
 import { StatusLine } from '@/src/ui/StatusLine';
 import { useBackgroundStatus } from '@/src/ui/useBackgroundStatus';
+import { Account } from './Account';
 import { KnownWords } from './KnownWords';
 
-const LATER_SECTIONS: readonly MessageKey[] = ['optionsSectionData', 'optionsSectionAccount'];
+const LATER_SECTIONS: readonly MessageKey[] = ['optionsSectionData'];
 
 function MyWords({ client }: { client: Client }) {
   const [query, setQuery] = useState('');
@@ -49,6 +50,7 @@ export function App({ client }: { client: Client }) {
       </header>
       <KnownWords client={client} />
       <MyWords client={client} />
+      <Account client={client} />
       {LATER_SECTIONS.map((key) => (
         <section key={key} className="page__section">
           <h2>{t(key)}</h2>

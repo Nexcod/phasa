@@ -52,7 +52,7 @@ export default defineContentScript({
         // the host, after React's listeners inside the shadow root have seen them.
         for (const type of SHIELDED_EVENTS) host.addEventListener(type, stop);
         const root = ReactDOM.createRoot(container);
-        root.render(<Overlay controller={controller} />);
+        root.render(<Overlay controller={controller} client={client} />);
         return { root, host };
       },
       onRemove(mounted) {

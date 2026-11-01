@@ -8,8 +8,9 @@ const DATA_FILES = ['dict.json', 'dict.meta.json', 'freq.json'];
 const DEV_ONLY_ENTRYPOINTS = new Set(['fonts-test']);
 
 // Permissions are added only when a feature needs them (see docs/decisions/0001-stack-and-scaffold.md).
-// OAuth-related permissions (declarativeNetRequestWithHostAccess, auth.openai.com,
-// api.openai.com, 127.0.0.1) arrive in phase 5 (docs/decisions/0003-chatgpt-oauth-redirect.md).
+// Sign in with ChatGPT (docs/decisions/0003-chatgpt-oauth-redirect.md, option A1): a DNR session
+// rule sends OpenAI's redirect to http://127.0.0.1:1455/auth/callback to auth-callback.html; the
+// service worker calls auth.openai.com and api.openai.com (also for the user's own API key).
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   imports: false,
@@ -17,13 +18,30 @@ export default defineConfig({
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
-    permissions: ['storage', 'unlimitedStorage', 'sidePanel'],
-    host_permissions: ['*://*.youtube.com/*'],
+    permissions: [
+      'storage',
+      'unlimitedStorage',
+      'sidePanel',
+      'declarativeNetRequestWithHostAccess',
+    ],
+    host_permissions: [
+      '*://*.youtube.com/*',
+      'https://auth.openai.com/*',
+      'https://api.openai.com/*',
+      'http://127.0.0.1/*',
+    ],
     action: {
       default_title: '__MSG_actionTitle__',
     },
     // Bundled Thai fonts are loaded by @font-face rules on youtube.com (src/ui/fonts.ts).
-    web_accessible_resources: [{ resources: ['fonts/*.woff2'], matches: ['*://*.youtube.com/*'] }],
+    web_accessible_resources: [
+      { resources: ['fonts/*.woff2'], matches: ['*://*.youtube.com/*'] },
+      // The DNR redirect target must be reachable from OpenAI's page and the loopback URL.
+      {
+        resources: ['auth-callback.html'],
+        matches: ['https://auth.openai.com/*', 'http://127.0.0.1/*'],
+      },
+    ],
   },
   hooks: {
     // The service worker loads the dictionary into IndexedDB from the package (src/dictionary/store.ts)

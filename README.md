@@ -6,13 +6,14 @@ estimates, optional AI explanations via Sign in with ChatGPT.
 
 ## Status
 
-| Phase (docs/plan.md §12)    | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 0 — spikes and decisions    | **Accepted 2026-10-16**: captions source (ADR 0002), Sign in with ChatGPT via a DNR redirect (ADR 0003), data sources (ADR 0004), segmentation baseline (ADR 0005) — see [docs/spikes.md](docs/spikes.md)                                                                                                                                                                                                                                                                      |
-| 1 — scaffold                | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green; the `dev` script builds and serves the dev extension                                                                                                                                                                                                                                        |
-| 2 — captions and rendering  | **Accepted 2026-10-28** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e (ADR 0009): Thai + English subtitles over the player from the player's own PoToken (ADR 0007), cached per video; Noto Sans Thai Looped; side-panel transcript; hotkeys A/D/S/Space/T; auto-pause. Live run: Thai ready 0.5–1.7 s after the player loads (docs/spikes.md §1 run 3)                                                                           |
-| 3 — words                   | **Accepted 2026-11-01** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: Wiktionary dictionary + TNC ranks (ADR 0010), tokenizer (F1 0.963 on 249 real cues from 13 videos, 0.966 overall; native-speaker review of the gold set after phase 7), word popup (15 ms in e2e) with romanization, tones, TTS, statuses, phrases, boundary fixes; keys W/Q/E, 1–4/K/X; saved words with context in the side panel and options            |
-| 4 — analysis and onboarding | **Accepted 2026-11-01** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: badge under the title and in the side panel — level estimate, share of known words, distinct new words (ADR 0011, 0012) — with details, top new words, add top 10 to learning, mark all as known; onboarding with particles, top-N review and TXT/CSV/Anki import. 20-minute video analyzed in 79 ms; level calibration on hand-rated videos after phase 7 |
+| Phase (docs/plan.md §12)    | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 0 — spikes and decisions    | **Accepted 2026-10-16**: captions source (ADR 0002), Sign in with ChatGPT via a DNR redirect (ADR 0003), data sources (ADR 0004), segmentation baseline (ADR 0005) — see [docs/spikes.md](docs/spikes.md)                                                                                                                                                                                                                                                                                                                      |
+| 1 — scaffold                | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green; the `dev` script builds and serves the dev extension                                                                                                                                                                                                                                                                                        |
+| 2 — captions and rendering  | **Accepted 2026-10-28** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e (ADR 0009): Thai + English subtitles over the player from the player's own PoToken (ADR 0007), cached per video; Noto Sans Thai Looped; side-panel transcript; hotkeys A/D/S/Space/T; auto-pause. Live run: Thai ready 0.5–1.7 s after the player loads (docs/spikes.md §1 run 3)                                                                                                                           |
+| 3 — words                   | **Accepted 2026-11-01** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: Wiktionary dictionary + TNC ranks (ADR 0010), tokenizer (F1 0.963 on 249 real cues from 13 videos, 0.966 overall; native-speaker review of the gold set after phase 7), word popup (15 ms in e2e) with romanization, tones, TTS, statuses, phrases, boundary fixes; keys W/Q/E, 1–4/K/X; saved words with context in the side panel and options                                                            |
+| 4 — analysis and onboarding | **Accepted 2026-11-01** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: badge under the title and in the side panel — level estimate, share of known words, distinct new words (ADR 0011, 0012) — with details, top new words, add top 10 to learning, mark all as known; onboarding with particles, top-N review and TXT/CSV/Anki import. 20-minute video analyzed in 79 ms; level calibration on hand-rated videos after phase 7                                                 |
+| 5 — AI                      | **Implemented 2026-11-01, awaiting manual acceptance** ([checklist](docs/manual-checklist.md)): Sign in with ChatGPT through the loopback redirect (ADR 0003) with refresh, sign-out and forget; credentials only in the service worker and the extension's IndexedDB (ADR 0014); "Explain in context" and "Translate the line" in word and phrase popups and on side-panel lines, streamed, validated and cached; usage-limit and error messages with "Manage usage"; own OpenAI API key as an alternative or opt-in fallback |
 
 **After phase 7**, with the owner's or a native speaker's input: native-speaker review of the
 segmentation gold set ([guide](docs/segmentation-review/GUIDE.md)), level calibration on 30–50
@@ -53,7 +54,8 @@ lists the checks done by hand.
 
 ```
 entrypoints/   background (SW), youtube.content (overlay, title badge), youtube-main.content
-               (MAIN world), sidepanel, options, fonts-test (dev/test builds only)
+               (MAIN world), sidepanel, options, auth-callback (Sign in with ChatGPT redirect),
+               fonts-test (dev/test builds only)
 src/           captions (parsers, processing, track choice; main/ = MAIN-world fetcher),
                content (overlay state, playback sync, hotkeys, panel link, word data),
                messaging (typed Port protocols), db (Dexie schema + migrations), background
@@ -61,7 +63,8 @@ src/           captions (parsers, processing, track choice; main/ = MAIN-world f
                (normalization, tokenizer, segmentation convention, romanization), dictionary
                (kaikki conversion, store, pronunciation, frequency list), analysis (coverage,
                level, top new words), vocab (saved words, contexts, segmentation rules, bulk
-               changes, word-list import), i18n, ui
+               changes, word-list import), auth (Sign in with ChatGPT, credentials), ai
+               (Responses API client, providers, prompts, cache), i18n, ui
 data/build/    built dictionary and frequency list (committed, CC BY-SA 4.0, ATTRIBUTION.md)
 tests/         unit (Vitest), e2e (Playwright), fixtures
 spikes/        phase-0 experiment kits (not shipped)
@@ -70,7 +73,10 @@ docs/          plan.md, spikes.md, decisions/ (ADRs)
 
 Architecture rules (also in `AGENTS.md`): IndexedDB only in extension-origin contexts; content
 scripts talk to the service worker through `src/messaging`; OpenAI tokens never leave the service
-worker. The first two are enforced by ESLint and a runtime guard.
+worker. The first two are enforced by ESLint and a runtime guard; for the third, content scripts
+can't import `src/auth` or `src/ai` (ESLint), account methods answer extension pages only, and the
+credentials live in the extension's IndexedDB, out of content scripts' reach (ADR 0014). The e2e
+tests use a fake OpenAI and never reach the real one.
 
 ## License
 

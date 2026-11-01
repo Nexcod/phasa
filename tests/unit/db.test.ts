@@ -32,6 +32,7 @@ describe('schema', () => {
         'aiCache',
         'captions',
         'contexts',
+        'credentials',
         'dict',
         'meta',
         'phrases',

@@ -1,5 +1,6 @@
 @import './theme.css';
 @import './analysis.css';
+@import './ai.css';
 
 * {
   box-sizing: border-box;
@@ -128,12 +129,46 @@ body {
   list-style: none;
 }
 
+.transcript__row {
+  position: relative;
+}
+
+/* AI translation of a line (docs/plan.md §8.6 translateCue): on hover, focus, and while open. */
+.transcript__ai {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  z-index: 1;
+  padding: 0 5px;
+  border: 1px solid var(--phasa-accent);
+  border-radius: 4px;
+  background: var(--phasa-bg);
+  color: var(--phasa-accent);
+  font: 600 10px/1.6 var(--phasa-font-ui);
+  cursor: pointer;
+  opacity: 0;
+}
+
+.transcript__row:hover .transcript__ai,
+.transcript__row[data-active] .transcript__ai,
+.transcript__row[data-ai] .transcript__ai,
+.transcript__ai:focus-visible {
+  opacity: 1;
+}
+
+.transcript__answer {
+  margin: 0 0 8px 52px;
+  padding: 8px 10px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 8px;
+}
+
 .transcript__button {
   display: grid;
   grid-template-columns: 3.5em 1fr;
   gap: 8px;
   width: 100%;
-  padding: 6px 8px;
+  padding: 6px 34px 6px 8px;
   border: 0;
   border-radius: 6px;
   background: none;
@@ -423,4 +458,90 @@ body {
 
 .known__result {
   color: var(--phasa-ok);
+}
+
+/* Options: AI (docs/plan.md §8, phase 5). */
+.account__block {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 10px;
+}
+
+.account__block h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.account__block p {
+  margin: 0 0 8px;
+}
+
+.account__row,
+.account__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.account__muted {
+  color: var(--phasa-muted);
+  font-size: 12px;
+}
+
+.account__key {
+  flex: 1;
+  min-width: 16em;
+}
+
+.account__status[data-ready='true'] {
+  color: var(--phasa-ok);
+}
+
+.account__notice {
+  color: var(--phasa-hard);
+}
+
+/* The page OpenAI's sign-in redirects to (auth-callback.html). */
+.page--callback {
+  max-width: 560px;
+  margin: 10vh auto 0;
+  padding: 24px 16px;
+}
+
+.page--callback h1 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.callback__ok {
+  color: var(--phasa-ok);
+  font-size: 16px;
+}
+
+.callback__notice {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 10px;
+}
+
+.callback__notice h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.callback__actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.callback__detail {
+  color: var(--phasa-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
 }

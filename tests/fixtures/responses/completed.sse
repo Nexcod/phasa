@@ -1,0 +1,36 @@
+event: response.created
+data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_0a1b2c3d","object":"response","created_at":1792137600,"status":"in_progress","model":"gpt-6.1-sol","output":[],"store":false}}
+
+event: response.in_progress
+data: {"type":"response.in_progress","sequence_number":1,"response":{"id":"resp_0a1b2c3d","object":"response","status":"in_progress"}}
+
+event: response.output_item.added
+data: {"type":"response.output_item.added","sequence_number":2,"output_index":0,"item":{"id":"msg_01","type":"message","status":"in_progress","content":[],"role":"assistant"}}
+
+event: response.content_part.added
+data: {"type":"response.content_part.added","sequence_number":3,"item_id":"msg_01","output_index":0,"content_index":0,"part":{"type":"output_text","annotations":[],"text":""}}
+
+event: response.output_text.delta
+data: {"type":"response.output_text.delta","sequence_number":4,"item_id":"msg_01","output_index":0,"content_index":0,"delta":"{\"natural_en\":\"Hi, "}
+
+event: response.output_text.delta
+data: {"type":"response.output_text.delta","sequence_number":5,"item_id":"msg_01","output_index":0,"content_index":0,"delta":"everyone!\",\"literal_en\":\"hello (polite, male)\",\"word_by_word\":[{\"thai\":\"สวัสดี\",\"en\":\"hello\"},"}
+
+event: response.output_text.delta
+data: {"type":"response.output_text.delta","sequence_number":6,"item_id":"msg_01","output_index":0,"content_index":0,"delta":"{\"thai\":\"ครับ\",\"en\":\"polite particle (male speaker)\"}]}"}
+
+event: response.output_text.done
+data: {"type":"response.output_text.done","sequence_number":7,"item_id":"msg_01","output_index":0,"content_index":0,"text":"{\"natural_en\":\"Hi, everyone!\",\"literal_en\":\"hello (polite, male)\",\"word_by_word\":[{\"thai\":\"สวัสดี\",\"en\":\"hello\"},{\"thai\":\"ครับ\",\"en\":\"polite particle (male speaker)\"}]}"}
+
+event: response.content_part.done
+data: {"type":"response.content_part.done","sequence_number":8,"item_id":"msg_01","output_index":0,"content_index":0}
+
+event: response.output_item.done
+data: {"type":"response.output_item.done","sequence_number":9,"output_index":0,"item":{"id":"msg_01","type":"message","status":"completed"}}
+
+event: response.metadata
+data: {"type":"response.metadata","sequence_number":10,"metadata":{}}
+
+event: response.completed
+data: {"type":"response.completed","sequence_number":11,"response":{"id":"resp_0a1b2c3d","object":"response","status":"completed","model":"gpt-6.1-sol","usage":{"input_tokens":312,"output_tokens":61}}}
+
