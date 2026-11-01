@@ -101,10 +101,51 @@ test.describe('words', () => {
     await word(page, 'คุย').click();
     await expect(overlay(page).getByTestId('phasa-popup')).toBeVisible();
     expect(await paused(page)).toBe(true);
-    // A click outside closes it.
+    // A click on the video only closes it: the player must not also toggle (it would pause again).
     await page.mouse.click(5, 5);
     await expect(overlay(page).getByTestId('phasa-popup')).toHaveCount(0);
     await expect.poll(() => paused(page)).toBe(false);
+    await page.waitForTimeout(500);
+    expect(await paused(page)).toBe(false);
+  });
+
+  test('a click outside the player closes the popup, resumes and still reaches the page', async ({
+    context,
+  }) => {
+    await routeFakeYouTube(context);
+    const page = await context.newPage();
+    await openCue(page, 2.2);
+    await page.evaluate(() => document.querySelector('video')!.play());
+    await word(page, 'คุย').click();
+    await expect(overlay(page).getByTestId('phasa-popup')).toBeVisible();
+    await page.locator('#search').click();
+    await expect(overlay(page).getByTestId('phasa-popup')).toHaveCount(0);
+    await expect(page.locator('#search')).toBeFocused();
+    await expect.poll(() => paused(page)).toBe(false);
+  });
+
+  test('with "pause when I open a word" off, a click on the video keeps it playing', async ({
+    context,
+    extensionId,
+    serviceWorker,
+  }) => {
+    await routeFakeYouTube(context);
+    const page = await context.newPage();
+    await openCue(page, 2.2);
+    const panel = await context.newPage();
+    await panel.goto(
+      `chrome-extension://${extensionId}/sidepanel.html?tab=${await youTubeTabId(serviceWorker)}`,
+    );
+    await panel.getByLabel('Pause when I open a word').uncheck();
+    await page.bringToFront();
+    await page.evaluate(() => document.querySelector('video')!.play());
+    await word(page, 'คุย').click();
+    await expect(overlay(page).getByTestId('phasa-popup')).toBeVisible();
+    expect(await paused(page)).toBe(false);
+    await page.mouse.click(5, 5);
+    await expect(overlay(page).getByTestId('phasa-popup')).toHaveCount(0);
+    await page.waitForTimeout(500);
+    expect(await paused(page)).toBe(false);
   });
 
   test('R shows romanization with tone colors', async ({ context }) => {

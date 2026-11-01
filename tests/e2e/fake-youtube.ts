@@ -105,6 +105,8 @@ function playerScript(captionsOn: boolean): string {
   window.__fakeYt = state;
   const player = document.getElementById('movie_player');
   const video = document.querySelector('video');
+  // Like YouTube: a click on the video toggles playback.
+  video.addEventListener('click', () => (video.paused ? video.play() : video.pause()));
   const baseUrl = (v, t) =>
     '/api/timedtext?v=' + v + '&ei=x&signature=sig&key=yt8' + (t.kind === 'asr' ? '&kind=asr' : '') + '&lang=' + t.languageCode;
   const response = () => {

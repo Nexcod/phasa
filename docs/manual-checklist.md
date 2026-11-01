@@ -18,17 +18,16 @@ video after installing loads the dictionary into IndexedDB; words become clickab
 after the subtitles appear.
 
 - [x] **Gold set.** `tests/fixtures/segmentation.tsv` has ≥ 200 real cues from ≥ 10 videos (manual and asr), captured per its README and reviewed against the convention; `npm test` still passes (F1 ≥ 0.90) and `npm run seg:eval` reports the numbers for the acceptance note. Done 2026-11-01: 249 real cues from 13 videos, F1 0.963 (ADR 0010); native-speaker review open.
-- [ ] **Words.** Thai subtitles are split into words: the line reads exactly as before, nothing is
+- [x] **Words.** Thai subtitles are split into words: the line reads exactly as before, nothing is
       cut inside a stacked mark (น้ำ, ที่). With side panel → Word boundaries, "Thin gaps" and
       "Alternating underline" mark the words; "None" doesn't.
-- [ ] **Popup speed.** Click 10 different words: each popup appears at once (< 100 ms; the popup's
+- [x] **Popup speed.** Click 10 different words: each popup appears at once (< 100 ms; the popup's
       `data-open-ms` attribute in DevTools shows the time).
-- [ ] **Popup content.** For a common word: Paiboon romanization with tone colors and diacritics,
+- [x] **Popup content.** For a common word: Paiboon romanization with tone colors and diacritics,
       "Pronounced: …" syllables, part of speech, glosses, the classifier of a noun, the frequency
       rank. For a word the dictionary lacks: "Made of" parts or an "approximate" romanization. The
       🔊 button reads the word with a Thai voice, or says no Thai voice is installed.
-- [ ] **Pause.** Clicking a word while the video plays pauses it; Esc or a click outside closes the
-      popup and playback continues. With "Pause when I open a word" off, it keeps playing.
+- [ ] **Pause.** Clicking a word while the video plays pauses it; Esc, × or a click outside closes the popup and playback continues. A click on the video only closes the popup: playback must not stop again a moment later. With "Pause when I open a word" off, it keeps playing.
 - [ ] **Status keys.** In the popup, 1–4, 5/K and X set learning 1–4, known and ignored; YouTube
       doesn't seek (digits) or pause (K). The word's highlight changes in the subtitles at once.
 - [ ] **Context.** Side panel → My words lists the saved words with the line, its translation and

@@ -106,6 +106,26 @@ function Subtitles({
   );
 }
 
+const GESTURE_EVENTS = ['mousedown', 'pointerup', 'mouseup', 'click'] as const;
+
+/**
+ * Eats the rest of a click whose pointerdown we consumed, in the capture phase on `window`, before
+ * YouTube's own listeners. Gives up after a second in case the click never comes.
+ */
+function swallowRestOfClick(win: Window): void {
+  const stop = (event: Event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (event.type === 'click') done();
+  };
+  const done = () => {
+    clearTimeout(timer);
+    for (const type of GESTURE_EVENTS) win.removeEventListener(type, stop, { capture: true });
+  };
+  for (const type of GESTURE_EVENTS) win.addEventListener(type, stop, { capture: true });
+  const timer = setTimeout(done, 1000);
+}
+
 function adjacentWord(
   tokens: readonly { kind: string; text: string }[],
   index: number,
@@ -144,18 +164,27 @@ export function Overlay({ controller }: { controller: ContentController }) {
     [controller],
   );
 
-  // A click anywhere outside the popup and the subtitle words closes it.
+  // A click anywhere outside the popup and the subtitle words closes it. On the player that click
+  // does nothing else: YouTube would toggle playback right after we resumed it.
   useEffect(() => {
     if (!popup) return;
     const onPointerDown = (event: PointerEvent) => {
-      const inside = event
-        .composedPath()
-        .some(
-          (node) =>
-            node instanceof HTMLElement &&
-            (node.classList.contains('phasa-popup') || node.classList.contains('phasa-word')),
-        );
-      if (!inside) close();
+      const path = event.composedPath();
+      const inside = path.some(
+        (node) =>
+          node instanceof HTMLElement &&
+          (node.classList.contains('phasa-popup') || node.classList.contains('phasa-word')),
+      );
+      if (inside) return;
+      const onPlayer = path.some(
+        (node) => node instanceof HTMLElement && node.id === 'movie_player',
+      );
+      if (onPlayer && event.button === 0) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        swallowRestOfClick(window);
+      }
+      close();
     };
     window.addEventListener('pointerdown', onPointerDown, { capture: true });
     return () => window.removeEventListener('pointerdown', onPointerDown, { capture: true });
