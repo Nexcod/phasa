@@ -33,9 +33,14 @@ export const ThaiLine = memo(function ThaiLine({
   lookup,
   settings,
   onAction,
+  selectedFrom,
+  selectedTo,
 }: {
   /** Changes as prefetched lookups arrive, so romanization and labels fill in. */
   revision: number;
+  /** Token range of the open popup's word or phrase in this line; -1 when there is none. */
+  selectedFrom: number;
+  selectedTo: number;
   text: string;
   tokens: readonly Token[] | undefined;
   statuses: Readonly<Record<string, WordStatus>>;
@@ -121,6 +126,7 @@ export const ThaiLine = memo(function ThaiLine({
             data-token={index}
             data-status={statusAttr(statuses[token.text])}
             data-parity={parity}
+            data-selected={(index >= selectedFrom && index <= selectedTo) || undefined}
             data-testid="phasa-word"
             onClick={activate}
           >

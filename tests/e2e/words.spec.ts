@@ -50,6 +50,14 @@ test.describe('words', () => {
     await word(page, 'เรื่อง').click();
     const popup = overlay(page).getByTestId('phasa-popup');
     await expect(popup).toBeVisible();
+    // The word stays marked while its popup is open, also with the mouse elsewhere.
+    await page.mouse.move(5, 300);
+    await expect(word(page, 'เรื่อง')).toHaveAttribute('data-selected', 'true');
+    await expect(overlay(page).locator('[data-selected]')).toHaveCount(1);
+    // A long entry scrolls inside the popup: its head never leaves the top of the player.
+    const popupBox = await popup.boundingBox();
+    const playerBox = await page.locator('#movie_player').boundingBox();
+    expect(popupBox!.y).toBeGreaterThanOrEqual(playerBox!.y);
     await expect(popup).toHaveAttribute('data-open-ms', /^\d+$/);
     const openMs = Number(await popup.getAttribute('data-open-ms'));
     testInfo.annotations.push({ type: 'popup-open-ms', description: String(openMs) });
@@ -65,6 +73,7 @@ test.describe('words', () => {
     await expect(word(page, 'เรื่อง')).toHaveAttribute('data-status', 'learning-1');
     await page.keyboard.press('Escape');
     await expect(popup).toHaveCount(0);
+    await expect(overlay(page).locator('[data-selected]')).toHaveCount(0);
 
     // Saved with its context: visible in the side panel …
     const panel = await context.newPage();
@@ -157,6 +166,8 @@ test.describe('words', () => {
     await expect(popupWord).toHaveText('สวัสดี');
     await page.keyboard.press('e');
     await expect(popupWord).toHaveText('ครับ');
+    await expect(word(page, 'ครับ')).toHaveAttribute('data-selected', 'true');
+    await expect(word(page, 'สวัสดี')).not.toHaveAttribute('data-selected');
     await page.keyboard.press('e');
     await expect(popupWord).toHaveText('วันนี้');
     await page.keyboard.press('q');
@@ -199,6 +210,7 @@ test.describe('words', () => {
 
     const phrase = overlay(page).getByTestId('phasa-phrase-popup');
     await expect(phrase.getByTestId('phasa-popup-word')).toHaveText('อยากจะ');
+    await expect(overlay(page).locator('[data-selected]')).toHaveCount(2);
     await expect(phrase).toContainText('to want');
     await phrase.getByRole('button', { name: 'Make it one word' }).click();
 

@@ -66,10 +66,13 @@ type Popup =
 function Subtitles({
   state,
   controller,
+  popup,
   onAction,
 }: {
   state: ContentState;
   controller: ContentController;
+  /** The open popup: its word or phrase stays highlighted while it is open. */
+  popup: Popup | null;
   onAction: (cueIndex: number, action: LineAction) => void;
 }) {
   const cue = thaiCues(state)[state.activeIndex];
@@ -96,6 +99,7 @@ function Subtitles({
         settings={state.settings}
         onAction={onLineAction}
         revision={state.words.looked}
+        {...selectedRange(popup, index)}
       />
       {english && (
         <p className="phasa-subs__line phasa-subs__en" lang="en" data-testid="phasa-cue-en">
@@ -104,6 +108,17 @@ function Subtitles({
       )}
     </div>
   );
+}
+
+/** Tokens of `popup` in the line of cue `cueIndex`, or none (-1) when it belongs to another line. */
+function selectedRange(
+  popup: Popup | null,
+  cueIndex: number,
+): { selectedFrom: number; selectedTo: number } {
+  if (popup?.cueIndex !== cueIndex) return { selectedFrom: -1, selectedTo: -1 };
+  return popup.kind === 'word'
+    ? { selectedFrom: popup.tokenIndex, selectedTo: popup.tokenIndex }
+    : { selectedFrom: popup.from, selectedTo: popup.to };
 }
 
 const GESTURE_EVENTS = ['mousedown', 'pointerup', 'mouseup', 'click'] as const;
@@ -306,7 +321,7 @@ export function Overlay({ controller }: { controller: ContentController }) {
       data-words={state.words.prefetched ? 'ready' : state.words.tokens ? 'tokenized' : 'none'}
     >
       <StatusChip state={state} onRetry={controller.retry} />
-      <Subtitles state={state} controller={controller} onAction={onAction} />
+      <Subtitles state={state} controller={controller} popup={popup} onAction={onAction} />
       {popupView}
     </div>
   );

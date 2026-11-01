@@ -130,7 +130,8 @@ function PopupFrame({
       aria-label={label}
       data-testid={testId}
       data-open-ms={openMs}
-      style={{ left, bottom: anchor.bottom + 8 }}
+      // Only the space above the word: a long entry scrolls inside, its head stays in view.
+      style={{ left, bottom: anchor.bottom + 8, maxHeight: `calc(100% - ${anchor.bottom + 16}px)` }}
     >
       <button
         type="button"
