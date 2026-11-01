@@ -17,6 +17,8 @@ Do these on 3–4 of the acceptance videos (one manual-Thai, one auto-generated,
 video after installing loads the dictionary into IndexedDB; words become clickable a few seconds
 after the subtitles appear.
 
+All items passed on 2026-11-01, together with the network e2e (Every phase).
+
 - [x] **Gold set.** `tests/fixtures/segmentation.tsv` has ≥ 200 real cues from ≥ 10 videos (manual and asr), captured per its README and reviewed against the convention; `npm test` still passes (F1 ≥ 0.90) and `npm run seg:eval` reports the numbers for the acceptance note. Done 2026-11-01: 249 real cues from 13 videos, F1 0.963 (ADR 0010); native-speaker review open.
 - [x] **Words.** Thai subtitles are split into words: the line reads exactly as before, nothing is
       cut inside a stacked mark (น้ำ, ที่). With side panel → Word boundaries, "Thin gaps" and
@@ -28,9 +30,9 @@ after the subtitles appear.
       rank. For a word the dictionary lacks: "Made of" parts or an "approximate" romanization. The
       🔊 button reads the word with a Thai voice, or says no Thai voice is installed.
 - [x] **Pause.** Clicking a word while the video plays pauses it; Esc, × or a click outside closes the popup and playback continues. A click on the video only closes the popup: playback must not stop again a moment later. With "Pause when I open a word" off, it keeps playing.
-- [ ] **Status keys.** In the popup, 1–4, 5/K and X set learning 1–4, known and ignored; YouTube
+- [x] **Status keys.** In the popup, 1–4, 5/K and X set learning 1–4, known and ignored; YouTube
       doesn't seek (digits) or pause (K). The word's highlight changes in the subtitles at once.
-- [ ] **Context.** Side panel → My words lists the saved words with the line, its translation and
+- [x] **Context.** Side panel → My words lists the saved words with the line, its translation and
       "Open at m:ss"; clicking it seeks in the same video or opens the other video at that time.
       The options page lists them too; changing a status or deleting there updates the subtitles.
 - [x] **Phrases.** Pause the video first (Space), so the line stays on screen.
