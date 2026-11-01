@@ -100,7 +100,7 @@
     "description": "Toggle: pause the video at the end of every subtitle line."
   },
   "sidepanelHotkeys": {
-    "message": "Keys: A / D previous / next line · S repeat · Space pause · T translation · R romanization",
+    "message": "Keys: A / D previous / next line · S repeat · Space pause · T translation · R romanization · W open the first word · Q / E previous / next word",
     "description": "Keyboard shortcut summary in the side panel."
   },
   "sidepanelReloadTab": {
@@ -260,7 +260,7 @@
     "description": "Button that deletes a saved word or phrase."
   },
   "popupKeysHint": {
-    "message": "Keys: 1–4 learning · K known · X ignore · Esc close",
+    "message": "Keys: Q / E previous / next word · 1–4 learning · K known · X ignore · W or Esc close",
     "description": "Keyboard hint in the word popup."
   },
   "popupBoundaries": {

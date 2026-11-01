@@ -2,10 +2,22 @@
  * Player hotkeys (docs/plan.md §2.1). Matched by `KeyboardEvent.code`, the
  * physical key, so they work while a Thai keyboard layout is active (`A` types
  * `ฟ` there).
+ *
+ * Words are reached with Q / W / E, next to A / S / D, instead of Tab and
+ * arrows (plan §10): on youtube.com Tab walks through the player's own
+ * controls first, and arrows seek. YouTube uses none of Q, W, E.
  */
 
 export type HotkeyAction =
-  'prev' | 'next' | 'repeat' | 'toggle-play' | 'toggle-translation' | 'toggle-romanization';
+  | 'prev'
+  | 'next'
+  | 'repeat'
+  | 'toggle-play'
+  | 'toggle-translation'
+  | 'toggle-romanization'
+  | 'word-first'
+  | 'word-prev'
+  | 'word-next';
 
 export const HOTKEYS: Readonly<Record<string, HotkeyAction>> = {
   KeyA: 'prev',
@@ -14,6 +26,9 @@ export const HOTKEYS: Readonly<Record<string, HotkeyAction>> = {
   Space: 'toggle-play',
   KeyT: 'toggle-translation',
   KeyR: 'toggle-romanization',
+  KeyW: 'word-first',
+  KeyQ: 'word-prev',
+  KeyE: 'word-next',
 };
 
 const TEXT_INPUT_TYPES = new Set([

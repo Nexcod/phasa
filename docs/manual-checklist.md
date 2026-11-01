@@ -27,19 +27,27 @@ after the subtitles appear.
       "Pronounced: …" syllables, part of speech, glosses, the classifier of a noun, the frequency
       rank. For a word the dictionary lacks: "Made of" parts or an "approximate" romanization. The
       🔊 button reads the word with a Thai voice, or says no Thai voice is installed.
-- [ ] **Pause.** Clicking a word while the video plays pauses it; Esc, × or a click outside closes the popup and playback continues. A click on the video only closes the popup: playback must not stop again a moment later. With "Pause when I open a word" off, it keeps playing.
+- [x] **Pause.** Clicking a word while the video plays pauses it; Esc, × or a click outside closes the popup and playback continues. A click on the video only closes the popup: playback must not stop again a moment later. With "Pause when I open a word" off, it keeps playing.
 - [ ] **Status keys.** In the popup, 1–4, 5/K and X set learning 1–4, known and ignored; YouTube
       doesn't seek (digits) or pause (K). The word's highlight changes in the subtitles at once.
 - [ ] **Context.** Side panel → My words lists the saved words with the line, its translation and
       "Open at m:ss"; clicking it seeks in the same video or opens the other video at that time.
       The options page lists them too; changing a status or deleting there updates the subtitles.
-- [ ] **Phrases.** Drag over 2–3 words: the phrase popup shows them with their glosses; saving it
-      lists it under My words. "Make it one word" joins them in every line of every video.
-- [ ] **Boundary fixes.** "Wrong word boundaries?" → join with the next word, and split a word by
+- [x] **Phrases.** Pause the video first (Space), so the line stays on screen.
+  1. In the Thai line, press the mouse on the first of 2–3 neighbouring words, drag to the last one
+     and release. A phrase popup opens: the selected text, its romanization and, under "Words", each
+     word with its meaning.
+  2. Press 1 (or click "1"): the phrase is saved. In the subtitles it now shows as one highlighted
+     piece (saved phrases become one unit, plan §5.3), and side panel → My words lists it with the
+     line it came from.
+  3. Select 2–3 other words with no space between them and click "Make it one word": they become
+     one word in this line, in any other line with the same words, and after a page reload. Undo:
+     click that word → "Wrong word boundaries?" → click between the letters where the boundary was.
+- [x] **Boundary fixes.** "Wrong word boundaries?" → join with the next word, and split a word by
       clicking between its letters: the subtitles and the popup follow at once, also after a reload.
-- [ ] **Romanization.** R shows romanization over the words (side panel: above / below, Paiboon+ /
+- [x] **Romanization.** R shows romanization over the words (side panel: above / below, Paiboon+ /
       RTGS); R again hides it. Fullscreen and theater mode keep the popup inside the player.
-- [ ] **Keyboard.** Tab moves through the words of the line; Enter opens the popup.
+- [x] **Keyboard.** W opens the popup of the first word of the line; Q / E move it to the previous / next word; 1–4 / K / X set the status of the word reached; W or Esc closes. YouTube's own keys (J, L, arrows, F, M) still work while no popup is open.
 
 ## Phase 2 — captions and rendering
 

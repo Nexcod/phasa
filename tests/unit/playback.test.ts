@@ -196,6 +196,9 @@ describe('hotkeyFor', () => {
     expect(hotkeyFor(key('Space'))).toBe('toggle-play');
     expect(hotkeyFor(key('KeyT'))).toBe('toggle-translation');
     expect(hotkeyFor(key('KeyR'))).toBe('toggle-romanization');
+    expect(hotkeyFor(key('KeyW'))).toBe('word-first');
+    expect(hotkeyFor(key('KeyQ'))).toBe('word-prev');
+    expect(hotkeyFor(key('KeyE'))).toBe('word-next');
     expect(hotkeyFor(key('KeyF'))).toBeNull();
   });
 

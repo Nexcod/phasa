@@ -1,8 +1,8 @@
-import { memo, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
+import { memo, type MouseEvent } from 'react';
 import type { WordInfo } from '@/src/dictionary/types';
 import type { Settings } from '@/src/settings';
 import type { Token } from '@/src/thai/types';
-import { Romanization, romanizationText } from '@/src/ui/Romanization';
+import { Romanization } from '@/src/ui/Romanization';
 import type { WordStatus } from '@/src/vocab/types';
 
 /** A click on a word, or a selection over several. */
@@ -81,22 +81,6 @@ export const ThaiLine = memo(function ThaiLine({
     onAction({ kind: 'phrase', from, to, anchor, at: performance.now() });
   };
 
-  // Chrome won't start a drag selection on a focusable element: words lose their tabindex while
-  // the mouse button is down, so a phrase can be selected, and get it back for keyboard users.
-  const onPointerDown = (event: PointerEvent<HTMLParagraphElement>) => {
-    if (event.button !== 0) return;
-    const focusable = [...event.currentTarget.querySelectorAll<HTMLElement>('[tabindex]')];
-    for (const element of focusable) element.removeAttribute('tabindex');
-    const restore = () => {
-      for (const element of focusable)
-        if (element.isConnected) element.setAttribute('tabindex', '0');
-    };
-    window.addEventListener('pointerup', () => setTimeout(restore, 0), {
-      once: true,
-      capture: true,
-    });
-  };
-
   let parity = 0;
   return (
     <p
@@ -105,7 +89,6 @@ export const ThaiLine = memo(function ThaiLine({
       data-testid="phasa-cue-thai"
       data-boundaries={settings.wordBoundaries}
       data-romanization={romanization}
-      onPointerDown={onPointerDown}
       onMouseUp={onMouseUp}
     >
       {tokens.map((token, index) => {
@@ -120,7 +103,7 @@ export const ThaiLine = memo(function ThaiLine({
         const info = lookup(token.text);
         const pronunciation = info?.pronunciation;
         parity = 1 - parity;
-        const activate = (event: MouseEvent<HTMLSpanElement> | KeyboardEvent<HTMLSpanElement>) => {
+        const activate = (event: MouseEvent<HTMLSpanElement>) => {
           // A drag that selected text is a phrase, handled on mouseup.
           const root = event.currentTarget.getRootNode() as ShadowRoot & {
             getSelection?: () => Selection | null;
@@ -130,27 +113,16 @@ export const ThaiLine = memo(function ThaiLine({
           open(index, event.currentTarget);
         };
         return (
+          // Not focusable: Chrome won't start a drag selection (a phrase) on a focusable element,
+          // and keyboard users reach words with W / Q / E (src/content/hotkeys.ts).
           <span
             key={index}
             className="phasa-word"
-            role="button"
-            tabIndex={0}
             data-token={index}
             data-status={statusAttr(statuses[token.text])}
             data-parity={parity}
             data-testid="phasa-word"
-            aria-label={
-              pronunciation
-                ? `${token.text}, ${romanizationText(pronunciation, settings.romanizationSystem)}`
-                : token.text
-            }
             onClick={activate}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                activate(event);
-              }
-            }}
           >
             {romanization !== 'off' && (
               <span className="phasa-word__roman" aria-hidden="true">

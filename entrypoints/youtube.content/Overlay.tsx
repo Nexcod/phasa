@@ -190,6 +190,41 @@ export function Overlay({ controller }: { controller: ContentController }) {
     return () => window.removeEventListener('pointerdown', onPointerDown, { capture: true });
   }, [popup, close]);
 
+  // W opens the first word of the line on screen (again: closes), Q / E move to the previous / next.
+  useEffect(
+    () =>
+      controller.onWordKey((key) => {
+        if (key === 'first' && popup) {
+          close();
+          return;
+        }
+        const current = controller.store.get();
+        const cueIndex = current.activeIndex;
+        const words = (current.words.tokens?.[cueIndex] ?? []).flatMap((token, index) =>
+          token.kind === 'thai' ? [index] : [],
+        );
+        const at =
+          popup?.kind === 'word' && popup.cueIndex === cueIndex
+            ? words.indexOf(popup.tokenIndex)
+            : -1;
+        let target: number | undefined;
+        if (key === 'first') target = words[0];
+        else if (at < 0) target = key === 'next' ? words[0] : words.at(-1);
+        else
+          target = words[Math.min(words.length - 1, Math.max(0, at + (key === 'next' ? 1 : -1)))];
+        if (target === undefined || (at >= 0 && target === words[at])) return;
+        const element = overlayRef.current?.querySelector<HTMLElement>(`[data-token="${target}"]`);
+        if (!element) return;
+        onAction(cueIndex, {
+          kind: 'word',
+          tokenIndex: target,
+          anchor: element.getBoundingClientRect(),
+          at: performance.now(),
+        });
+      }),
+    [controller, popup, close, onAction],
+  );
+
   // Tokens change when boundaries change: a popup on the old ones would point at the wrong word.
   const tokens = state.words.tokens;
   const shown = useRef({ tokens, videoId: state.urlVideoId });

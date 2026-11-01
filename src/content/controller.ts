@@ -55,8 +55,12 @@ export interface ContentController {
   beginLookup: () => void;
   /** The popup closed: resume if opening it paused the video. */
   endLookup: () => void;
+  /** W / Q / E: open the first word of the line, move to the previous / next word. */
+  onWordKey: (listener: (key: WordKey) => void) => () => void;
   dispose: () => void;
 }
+
+export type WordKey = 'first' | 'prev' | 'next';
 
 /** Track id of the word data: words follow the Thai track on screen. */
 function trackIdOf(state: ContentState): string | null {
@@ -174,7 +178,14 @@ export function startContentController(deps: {
     if (cue && video) seekToCue(video, cue);
   };
 
+  const wordKeyListeners = new Set<(key: WordKey) => void>();
   const run = (action: HotkeyAction) => {
+    if (action === 'word-first' || action === 'word-prev' || action === 'word-next') {
+      const key: WordKey =
+        action === 'word-first' ? 'first' : action === 'word-prev' ? 'prev' : 'next';
+      for (const listener of wordKeyListeners) listener(key);
+      return;
+    }
     const video = currentVideo();
     if (!video) return;
     const cues = thaiCues(store.get());
@@ -246,6 +257,10 @@ export function startContentController(deps: {
       if (!store.get().settings.pauseOnLookup || !video || video.paused) return;
       video.pause();
       pausedForLookup = true;
+    },
+    onWordKey(listener) {
+      wordKeyListeners.add(listener);
+      return () => wordKeyListeners.delete(listener);
     },
     endLookup() {
       if (!pausedForLookup) return;

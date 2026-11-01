@@ -148,6 +148,29 @@ test.describe('words', () => {
     expect(await paused(page)).toBe(false);
   });
 
+  test('W opens the first word, Q / E move between words, W closes', async ({ context }) => {
+    await routeFakeYouTube(context);
+    const page = await context.newPage();
+    await openCue(page);
+    const popupWord = overlay(page).getByTestId('phasa-popup').getByTestId('phasa-popup-word');
+    await page.keyboard.press('w');
+    await expect(popupWord).toHaveText('สวัสดี');
+    await page.keyboard.press('e');
+    await expect(popupWord).toHaveText('ครับ');
+    await page.keyboard.press('e');
+    await expect(popupWord).toHaveText('วันนี้');
+    await page.keyboard.press('q');
+    await expect(popupWord).toHaveText('ครับ');
+    // Status keys act on the word the keyboard reached.
+    await page.keyboard.press('2');
+    await expect(word(page, 'ครับ')).toHaveAttribute('data-status', 'learning-2');
+    await page.keyboard.press('w');
+    await expect(overlay(page).getByTestId('phasa-popup')).toHaveCount(0);
+    // E with no popup starts at the first word, Q at the last.
+    await page.keyboard.press('q');
+    await expect(popupWord).toHaveText('คุย');
+  });
+
   test('R shows romanization with tone colors', async ({ context }) => {
     await routeFakeYouTube(context);
     const page = await context.newPage();
