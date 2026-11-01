@@ -106,7 +106,8 @@ ffmpeg -f lavfi -i "color=c=0x202020:s=160x90:r=10:d=120" -c:v libvpx -b:v 8k -g
 
 ## levels.csv
 
-Hand-rated videos for calibrating the absolute level estimate (plan §7.3, ADR 0011). Target: 30–50
+Hand-rated videos for calibrating the absolute level estimate (plan §7.3, ADR 0011). Done after
+phase 7, together with the native-speaker review of `segmentation.tsv`. Target: 30–50
 videos across the range — lessons for beginners (A1/A2), vlogs and talk (B1/B2), news, TED talks and
 drama (B2+). A unit test checks that the estimate (src/analysis/levels.ts) is within one level of
 the rating for at least 80 % of the rows; it is skipped while the file has no rows.
