@@ -10,6 +10,8 @@ import {
 import { calibrationRow, parseCalibration, CALIBRATION_COLUMNS } from '@/src/analysis/calibration';
 import {
   comprehensionOf,
+  DELIVERY_CAP,
+  deliveryScore,
   estimateLevel,
   levelScore,
   MIN_TOKENS_FOR_LEVEL,
@@ -290,6 +292,35 @@ describe('levels', () => {
     expect(estimateLevel(easy)).toBe('A1');
     expect(estimateLevel(hard)).toBe('C2');
     expect(estimateLevel(features({}))).toBe('B1');
+  });
+
+  it('keeps a slow word list of rare nouns at A2 at most', () => {
+    // "สัตว์น่ารู้ 40 ชนิด": one animal name per line, long pauses; หมี, สิงโต, แรด rank 3 914,
+    // 5 630, 7 491 in written Thai. Without the cap the vocabulary alone made it B2.
+    const wordList = features({
+      tokens: 81,
+      outside1000: 0.55,
+      outside3000: 0.41,
+      outside10000: 0.15,
+      speechRate: 0.5,
+      avgCueLength: 1.8,
+    });
+    expect(deliveryScore(wordList)).toBe(0);
+    expect(levelScore(wordList)).toBe(DELIVERY_CAP);
+    expect(estimateLevel(wordList)).toBe('A2');
+  });
+
+  it('leaves ordinary speech to the vocabulary', () => {
+    // A talk: 5.5 syllables a second, 9 words a line; the cap (C1) is above the estimate.
+    const talk = features({
+      outside1000: 0.3,
+      outside3000: 0.18,
+      outside10000: 0.1,
+      speechRate: 5.5,
+      avgCueLength: 9,
+    });
+    expect(deliveryScore(talk) + DELIVERY_CAP).toBeGreaterThan(levelScore(talk));
+    expect(estimateLevel(talk)).toBe('B2');
   });
 
   it('is monotonic in every feature', () => {

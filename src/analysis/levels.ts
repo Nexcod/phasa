@@ -3,9 +3,10 @@
  * coverage, and an absolute A1–C2 level from the video alone.
  *
  * The level is a weighted mean of per-feature scores on a 0 (A1) … 5 (C2)
- * scale, each interpolated between two anchor values. The anchors and weights
- * are a first heuristic (ADR 0011): they are to be calibrated on 30–50 videos
- * rated by hand, tests/fixtures/levels.csv.
+ * scale, each interpolated between two anchor values, capped one level above
+ * the delivery alone (ADR 0013). The anchors and weights are a first
+ * heuristic (ADR 0011): they are to be calibrated on 30–50 videos rated by
+ * hand, tests/fixtures/levels.csv.
  */
 import { LEVELS, type Comprehension, type Level, type VideoFeatures } from './types';
 
@@ -42,17 +43,39 @@ export const LEVEL_ANCHORS: readonly Anchor[] = [
 /** Below this many counted tokens the level says more about chance than about the video. */
 export const MIN_TOKENS_FOR_LEVEL = 30;
 
-/** Level score on the 0 (A1) … 5 (C2) scale. */
-export function levelScore(features: VideoFeatures): number {
+/** How the words are delivered: speech rate and line length. */
+const DELIVERY: ReadonlySet<keyof VideoFeatures> = new Set(['speechRate', 'avgCueLength']);
+
+/** The level may be at most this much above the delivery's. */
+export const DELIVERY_CAP = 1;
+
+function weightedScore(features: VideoFeatures, anchors: readonly Anchor[]): number {
   let total = 0;
   let weights = 0;
-  for (const { feature, a1, c2, weight } of LEVEL_ANCHORS) {
+  for (const { feature, a1, c2, weight } of anchors) {
     const value = features[feature];
     const score = Math.min(5, Math.max(0, ((value - a1) / (c2 - a1)) * 5));
     total += score * weight;
     weights += weight;
   }
   return total / weights;
+}
+
+/** Score of the delivery alone, on the 0 (A1) … 5 (C2) scale. */
+export function deliveryScore(features: VideoFeatures): number {
+  return weightedScore(
+    features,
+    LEVEL_ANCHORS.filter((anchor) => DELIVERY.has(anchor.feature)),
+  );
+}
+
+/**
+ * Level score on the 0 (A1) … 5 (C2) scale. Capped by the delivery: a slow word list ("Bear —
+ * หมี — Elephant — ช้าง") is for beginners however rare its nouns are in written Thai, which is
+ * where the frequency ranks come from; a weighted mean alone can't express that.
+ */
+export function levelScore(features: VideoFeatures): number {
+  return Math.min(weightedScore(features, LEVEL_ANCHORS), deliveryScore(features) + DELIVERY_CAP);
 }
 
 export function estimateLevel(features: VideoFeatures): Level | null {
