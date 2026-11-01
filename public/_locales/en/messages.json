@@ -546,8 +546,8 @@
     "description": "Video badge when the analysis failed."
   },
   "analysisBadge": {
-    "message": "$KNOWN$% known · $NEW$ new ($UNIQUE$ unique)",
-    "description": "Video badge: share of word occurrences the learner knows, new word occurrences and distinct new words.",
+    "message": "$KNOWN$% known · $NEW$ new words",
+    "description": "Video badge: share of the words you will hear that the learner knows, and how many distinct words are new.",
     "placeholders": {
       "known": {
         "content": "$1",
@@ -555,11 +555,17 @@
       },
       "new": {
         "content": "$2",
-        "example": "142"
-      },
-      "unique": {
-        "content": "$3",
         "example": "61"
+      }
+    }
+  },
+  "analysisBadgeOne": {
+    "message": "$KNOWN$% known · 1 new word",
+    "description": "Video badge with exactly one distinct new word.",
+    "placeholders": {
+      "known": {
+        "content": "$1",
+        "example": "99"
       }
     }
   },
@@ -614,6 +620,24 @@
         "example": "12"
       }
     }
+  },
+  "analysisNewShare": {
+    "message": "Occurrences of new words: $TIMES$ — $SHARE$% of what you will hear.",
+    "description": "How often the new words occur in the video, and their share of all words.",
+    "placeholders": {
+      "times": {
+        "content": "$1",
+        "example": "142"
+      },
+      "share": {
+        "content": "$2",
+        "example": "13"
+      }
+    }
+  },
+  "analysisDistinct": {
+    "message": "Distinct words",
+    "description": "Heading of the status distribution: each word counted once."
   },
   "analysisDistribution": {
     "message": "Words of this video by status",

@@ -1,6 +1,7 @@
 # 0011. Video analysis, known-word onboarding and the change signal
 
-- Status: Accepted
+- Status: Accepted; badge wording and what counts as a word revised by
+  [0012](0012-badge-counts-and-asr-artifacts.md)
 - Date: 2026-11-01
 - Evidence: `tests/unit/analysis.test.ts`, `tests/unit/analysis-handlers.test.ts`,
   `tests/e2e/analysis.spec.ts` (numbers below)

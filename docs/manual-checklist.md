@@ -7,7 +7,7 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 
 ## Every phase
 
-- [ ] **Network e2e.** `npm run test:e2e:network` passes. Run it from a home connection: YouTube
+- [x] **Network e2e.** `npm run test:e2e:network` passes. Run it from a home connection: YouTube
       shows datacenter IPs, including CI runners, a bot check instead of the video
       ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
 
@@ -16,20 +16,20 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 Start from a fresh install (remove and load the unpacked build again) so the vocabulary is empty.
 Use 3–4 of the acceptance videos, one of them long (`SVj46JwYnB4`).
 
-- [ ] **Badge.** Under the video title: `B1 · 0% known · N new (M unique)`, red border (too hard)
+- [x] **Badge.** Under the video title: `B1 · 0% known · N new words`, red border (too hard)
       on a fresh install. In YouTube's dark theme it is readable too. On `jNQXAC9IVRw` it says "No
       Thai subtitles" in grey. Navigating to another video through recommendations, the badge
       follows without a reload.
-- [ ] **Speed.** On the long video, DevTools → Elements → the badge's `data-analysis-ms`
+- [x] **Speed.** On the long video, DevTools → Elements → the badge's `data-analysis-ms`
       (`phasa-badge` shadow root → `[data-testid="phasa-analysis"]`) is under 500.
-- [ ] **Live.** Mark a word known in the subtitles (click it, K): the badge's percentage goes up at
+- [x] **Live.** Mark a word known in the subtitles (click it, K): the badge's percentage goes up at
       once. Set it back to new (side panel → My words → Delete): it goes down.
-- [ ] **Details.** Click the badge: comprehension sentence, level and measures, the status bar,
+- [x] **Details.** Click the badge: comprehension sentence, level and measures, the status bar,
       "Top new words to learn first" with meanings. "Learn" on one word: it turns yellow in the
       subtitles and side panel → My words lists it with its line. "Add top 10 to learning": 10
       more. "Mark all new words as known" asks first; after confirming, "0 new" and the subtitles
       have no blue underlines left except the learning words.
-- [ ] **Side panel.** The same badge above the tabs; "Only lines with new words" shows only those
+- [x] **Side panel.** The same badge above the tabs; "Only lines with new words" shows only those
       lines and follows status changes.
 - [ ] **Onboarding: particles and top N.** Options → Known words: "Mark these 9 particles as
       known". Then most frequent 1000 → "Review the list": the list shows Thai, romanization,

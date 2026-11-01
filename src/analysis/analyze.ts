@@ -67,6 +67,37 @@ export interface ProfileInput {
   facts: (word: string) => WordFacts;
 }
 
+const graphemes = new Intl.Segmenter('th', { granularity: 'grapheme' });
+
+/**
+ * A sound held long in auto-generated captions: `คือออ` comes out as `คือ|ออ`, `มากกก` as `มาก|กก`.
+ * The token repeats one letter, the one the word right before it ends with; it is part of that
+ * word, like `ๆ`. (`ออ` "to crowd" and `กก` "reed" are dictionary words, so the tokenizer can't
+ * tell; the statistics can.)
+ */
+export function isElongation(previous: Token | undefined, token: Token): boolean {
+  if (previous?.kind !== 'thai' || previous.end !== token.start) return false;
+  // Thai letters are single UTF-16 units.
+  const letter = token.text.charAt(0);
+  return (
+    letter !== '' &&
+    previous.text.endsWith(letter) &&
+    token.text === letter.repeat(token.text.length)
+  );
+}
+
+/**
+ * A lone grapheme cluster the dictionary lacks is a piece of a word, not a word: auto-generated
+ * captions cut words at segment ends (`จ`), and the frequency list has abbreviation letters (`ป`).
+ * One-cluster words such as `ณ` or `ก็` are in the dictionary.
+ */
+export function isFragment(word: string, fact: Pick<WordFacts, 'inDictionary'>): boolean {
+  if (fact.inDictionary) return false;
+  const iterator = graphemes.segment(word)[Symbol.iterator]();
+  iterator.next();
+  return iterator.next().done === true;
+}
+
 /** Total length of the union of the intervals. */
 function unionMs(intervals: { startMs: number; endMs: number }[]): number {
   const sorted = [...intervals].sort((a, b) => a.startMs - b.startMs);
@@ -88,7 +119,9 @@ function unionMs(intervals: { startMs: number; endMs: number }[]): number {
 
 /**
  * What counts (plan §5.4): Thai word tokens, as their normalized form, except names. `ๆ` repeats
- * the word before it — one unit for statistics — but its syllables are spoken.
+ * the word before it — one unit for statistics — but its syllables are spoken. Two artifacts of
+ * auto-generated captions don't count either (ADR 0012): a lengthened sound
+ * ({@link isElongation}) and a lone cluster the dictionary lacks ({@link isFragment}).
  */
 export function buildProfile({ cues, tokens, facts }: ProfileInput): TrackProfile {
   const units: UnitProfile[] = [];
@@ -105,17 +138,19 @@ export function buildProfile({ cues, tokens, facts }: ProfileInput): TrackProfil
     const inCue = new Set<number>();
     let words = 0;
     let previousSyllables = 0;
-    for (const token of tokens[cueIndex] ?? []) {
+    const cueTokens = tokens[cueIndex] ?? [];
+    cueTokens.forEach((token, tokenIndex) => {
       if (token.kind === 'repeat') {
         syllables += previousSyllables;
-        continue;
+        return;
       }
-      if (token.kind !== 'thai') continue;
+      if (token.kind !== 'thai' || isElongation(cueTokens[tokenIndex - 1], token)) return;
       const fact = facts(token.text);
-      words++;
       syllables += fact.syllables;
       previousSyllables = fact.syllables;
-      if (fact.isProperNoun) continue;
+      if (isFragment(token.text, fact)) return;
+      words++;
+      if (fact.isProperNoun) return;
 
       counted++;
       FREQ_BUCKETS.forEach((bucket, i) => {
@@ -140,7 +175,7 @@ export function buildProfile({ cues, tokens, facts }: ProfileInput): TrackProfil
       const unit = units[index];
       if (unit) unit.count++;
       inCue.add(index);
-    }
+    });
     cueUnits.push([...inCue]);
     if (words > 0) {
       thaiWords += words;

@@ -27,19 +27,28 @@ export function percent(share: number): string {
   return String(Math.floor(share * 100 + 1e-9));
 }
 
-/** `87% known · 142 new (61 unique)` (plan §2.1, §7.4). */
+/**
+ * `87% known · 61 new words`: the share of what you will hear, and distinct new words (ADR 0012;
+ * the plan's `142 new (61 unique)` mixed occurrences and distinct words).
+ */
 export function badgeText(analysis: VideoAnalysis): string {
   if (analysis.features.tokens === 0) return t('analysisNoWords');
-  return t('analysisBadge', [
-    percent(analysis.coverage),
-    String(analysis.newTokens),
-    String(analysis.unique.new),
-  ]);
+  const known = percent(analysis.coverage);
+  return analysis.unique.new === 1
+    ? t('analysisBadgeOne', known)
+    : t('analysisBadge', [known, String(analysis.unique.new)]);
+}
+
+/** Share of occurrences of new words; "<1" rather than "0" when there are some. */
+function newShare(analysis: VideoAnalysis): string {
+  const share = analysis.features.tokens === 0 ? 0 : analysis.newTokens / analysis.features.tokens;
+  return share > 0 && share < 0.01 ? '<1' : percent(share);
 }
 
 function Distribution({ unique }: { unique: VideoAnalysis['unique'] }) {
   return (
     <>
+      <h3 className="phasa-analysis__heading">{t('analysisDistinct')}</h3>
       <div className="phasa-analysis__bar" role="img" aria-label={t('analysisDistribution')}>
         {SEGMENTS.map((segment) =>
           unique[segment] > 0 ? (
@@ -148,6 +157,11 @@ function AnalysisDetails({ analysis, markNew }: { analysis: VideoAnalysis; markN
             features.avgCueLength.toFixed(1),
             percent(features.outside3000),
           ])}
+        </p>
+      )}
+      {analysis.newTokens > 0 && (
+        <p className="phasa-analysis__note">
+          {t('analysisNewShare', [String(analysis.newTokens), newShare(analysis)])}
         </p>
       )}
       {total > 0 && <Distribution unique={unique} />}

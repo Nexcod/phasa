@@ -9,7 +9,7 @@ const overlay = (page: Page) =>
 const titleBadge = (page: Page) => page.locator('phasa-badge [data-testid="phasa-title-badge"]');
 const badgeButton = (page: Page) => titleBadge(page).getByTestId('phasa-analysis-badge');
 
-const BADGE_TEXT = /^(?:[ABC][12])?(\d+)% known · (\d+) new \((\d+) unique\)[▾▴]$/;
+const BADGE_TEXT = /^(?:[ABC][12])?(\d+)% known · (\d+) new words?[▾▴]$/;
 
 async function knownPercent(page: Page): Promise<number> {
   const text = (await badgeButton(page).textContent()) ?? '';
@@ -47,10 +47,7 @@ test.describe('video analysis', () => {
 
     await expect(badgeButton(page)).toHaveText(BADGE_TEXT);
     expect(await knownPercent(page)).toBe(0);
-    const [, , newTokens, newUnique] = BADGE_TEXT.exec(
-      (await badgeButton(page).textContent()) ?? '',
-    )!;
-    expect(Number(newTokens)).toBeGreaterThan(Number(newUnique));
+    const [, , newWords] = BADGE_TEXT.exec((await badgeButton(page).textContent()) ?? '')!;
 
     // A word marked known in the subtitles counts at once.
     await expect(overlay(page)).toHaveAttribute('data-words', 'ready', { timeout: 30_000 });
@@ -68,6 +65,13 @@ test.describe('video analysis', () => {
     const details = titleBadge(page).getByTestId('phasa-analysis-details');
     await expect(details).toContainText('Too hard for now');
     await expect(details.getByTestId('phasa-analysis-legend')).toContainText('Known 1');
+    // The badge counts distinct words, like the legend; occurrences have their own line.
+    await expect(details.getByTestId('phasa-analysis-legend')).toContainText(
+      `New ${Number(newWords) - 1}`,
+    );
+    await expect(details).toContainText(
+      /Occurrences of new words: \d+ — \d+% of what you will hear\./,
+    );
     const top = details.getByTestId('phasa-analysis-word');
     await expect(top.first()).toBeVisible();
     const firstTop = await top.first().getAttribute('data-thai');
@@ -87,7 +91,7 @@ test.describe('video analysis', () => {
     const confirm = details.getByTestId('phasa-analysis-confirm');
     await expect(confirm).toContainText('Words you are learning stay as they are.');
     await confirm.getByRole('button', { name: 'Mark as known' }).click();
-    await expect(badgeButton(page)).toContainText('0 new (0 unique)');
+    await expect(badgeButton(page)).toContainText('· 0 new words');
     await expect(details).toContainText('No new words left in this video.');
     await expect(details.getByTestId('phasa-analysis-legend')).toContainText('Learning 10');
   });
@@ -151,7 +155,7 @@ test.describe('video analysis', () => {
     await card.getByRole('button', { name: 'Mark as known' }).click();
     await expect(panel.getByText('No line has a new word.')).toBeVisible();
     // The page's badge heard it too.
-    await expect(badgeButton(page)).toContainText('100% known · 0 new (0 unique)');
+    await expect(badgeButton(page)).toContainText('100% known · 0 new words');
   });
 });
 

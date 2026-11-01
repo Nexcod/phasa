@@ -47,7 +47,7 @@ const FACTS: Record<string, WordFacts> = {
   ที่: { rank: 1, inDictionary: true, isProperNoun: false, syllables: 1 },
   เชียงใหม่: { inDictionary: true, isProperNoun: true, syllables: 2 },
   เร็ว: { rank: 4000, inDictionary: true, isProperNoun: false, syllables: 1 },
-  /** An ICU fragment: neither in the dictionary nor ranked. */
+  /** A piece of a word cut at an ASR segment end: neither in the dictionary nor ranked. */
   จ: { inDictionary: false, isProperNoun: false, syllables: 1 },
 };
 
@@ -189,15 +189,51 @@ describe('analyzeProfile', () => {
   });
 });
 
-describe('newUnits', () => {
-  it('suggests only real words, but "all" includes fragments', () => {
-    const profile = buildProfile({
+describe('artifacts of auto-generated captions', () => {
+  const more: Record<string, WordFacts> = {
+    ...FACTS,
+    คือ: { rank: 30, inDictionary: true, isProperNoun: false, syllables: 1 },
+    ออ: { rank: 2593, inDictionary: true, isProperNoun: false, syllables: 1 },
+    มาก: { rank: 35, inDictionary: true, isProperNoun: false, syllables: 1 },
+    กก: { rank: 9000, inDictionary: true, isProperNoun: false, syllables: 1 },
+    ป: { rank: 3541, inDictionary: false, isProperNoun: false, syllables: 1 },
+    ณ: { rank: 2000, inDictionary: true, isProperNoun: false, syllables: 1 },
+    สตู: { inDictionary: false, isProperNoun: false, syllables: 1 },
+  };
+  const profileOf = (...cue: [string, TokenKind][]) =>
+    buildProfile({
       cues: [{ startMs: 0, endMs: 1000 }],
-      tokens: [tokens(th('จ'), th('ที่'))],
-      facts,
+      tokens: [tokens(...cue)],
+      facts: (word) => more[word] ?? facts(word),
     });
+
+  it('counts a held sound as part of the word before it', () => {
+    // คือ|ออ|ที่ มาก|กก: two lengthened sounds, three words.
+    const profile = profileOf(th('คือ'), th('ออ'), th('ที่'), SPACE, th('มาก'), th('กก'));
+    expect(profile.units.map((unit) => unit.thai)).toEqual(['คือ', 'ที่', 'มาก']);
+    expect(profile.features.tokens).toBe(3);
+    expect(profile.features.avgCueLength).toBe(3);
+    expect(profile.features.speechRate).toBe(3);
+  });
+
+  it('keeps the same letters as a word of their own', () => {
+    // After a space, or after a word ending in another letter, ออ is a word.
+    expect(profileOf(th('คือ'), SPACE, th('ออ')).features.tokens).toBe(2);
+    expect(profileOf(th('ที่'), th('ออ')).features.tokens).toBe(2);
+  });
+
+  it('does not count a lone cluster the dictionary lacks', () => {
+    const profile = profileOf(th('ป'), th('จ'), th('ณ'), th('สตู'), th('ที่'));
+    expect(profile.units.map((unit) => unit.thai)).toEqual(['ณ', 'สตู', 'ที่']);
+    // Fragments are still speech.
+    expect(profile.features.speechRate).toBe(5);
+    expect(profile.features.avgCueLength).toBe(3);
+  });
+
+  it('suggests words in the dictionary or the frequency list, but marks all new ones', () => {
+    const profile = profileOf(th('สตู'), th('ที่'));
     expect(newUnits(profile, {}).map((unit) => unit.thai)).toEqual(['ที่']);
-    expect(newUnits(profile, {}, { all: true }).map((unit) => unit.thai)).toEqual(['ที่', 'จ']);
+    expect(newUnits(profile, {}, { all: true }).map((unit) => unit.thai)).toEqual(['ที่', 'สตู']);
   });
 });
 
