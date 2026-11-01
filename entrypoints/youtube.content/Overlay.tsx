@@ -1,4 +1,4 @@
-import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { t, type MessageKey } from '@/src/i18n';
 import {
   isLive,
@@ -7,6 +7,8 @@ import {
   type ContentState,
 } from '@/src/content/controller';
 import type { SessionError } from '@/src/content/session';
+import { ThaiLine, type LineAction } from './ThaiLine';
+import { PhrasePopup, WordPopup, type PopupActions, type PopupAnchor } from './WordPopup';
 
 export const ERROR_MESSAGES: Readonly<Record<SessionError, MessageKey>> = {
   unavailable: 'captionsErrorUnavailable',
@@ -14,25 +16,7 @@ export const ERROR_MESSAGES: Readonly<Record<SessionError, MessageKey>> = {
   internal: 'captionsErrorInternal',
 };
 
-/** Mouse events on our UI must not reach the player (a click would toggle playback). */
-const SHIELDED_EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'pointerdown', 'pointerup'];
-
-function useShield<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    const stop = (event: Event) => event.stopPropagation();
-    for (const type of SHIELDED_EVENTS) element.addEventListener(type, stop);
-    return () => {
-      for (const type of SHIELDED_EVENTS) element.removeEventListener(type, stop);
-    };
-  });
-  return ref;
-}
-
 function StatusChip({ state, onRetry }: { state: ContentState; onRetry: () => void }) {
-  const ref = useShield<HTMLDivElement>();
   const { session, urlVideoId } = state;
   if (session.status === 'idle' || session.video.videoId !== urlVideoId) return null;
 
@@ -63,7 +47,7 @@ function StatusChip({ state, onRetry }: { state: ContentState; onRetry: () => vo
   if (!persistent && !state.player.controlsVisible) return null;
 
   return (
-    <div ref={ref} className="phasa-chip" data-tone={tone} data-testid="phasa-status" role="status">
+    <div className="phasa-chip" data-tone={tone} data-testid="phasa-status" role="status">
       <span>{text}</span>
       {session.status === 'error' && (
         <button type="button" className="phasa-chip__button" onClick={onRetry}>
@@ -74,27 +58,45 @@ function StatusChip({ state, onRetry }: { state: ContentState; onRetry: () => vo
   );
 }
 
-function Subtitles({ state }: { state: ContentState }) {
-  const ref = useShield<HTMLDivElement>();
+/** An open word or phrase popup, tied to the cue it was opened from. */
+type Popup =
+  | { kind: 'word'; cueIndex: number; tokenIndex: number; anchor: PopupAnchor; at: number }
+  | { kind: 'phrase'; cueIndex: number; from: number; to: number; anchor: PopupAnchor; at: number };
+
+function Subtitles({
+  state,
+  controller,
+  onAction,
+}: {
+  state: ContentState;
+  controller: ContentController;
+  onAction: (cueIndex: number, action: LineAction) => void;
+}) {
   const cue = thaiCues(state)[state.activeIndex];
+  const index = state.activeIndex;
+  const onLineAction = useCallback(
+    (action: LineAction) => onAction(index, action),
+    [onAction, index],
+  );
   if (!isLive(state) || !cue) return null;
   const english =
     state.settings.showTranslation &&
     state.session.status === 'ready' &&
     state.session.english.status === 'ready'
-      ? state.session.english.lines[state.activeIndex]
+      ? state.session.english.lines[index]
       : undefined;
 
   return (
-    <div
-      ref={ref}
-      className="phasa-subs"
-      data-testid="phasa-subtitles"
-      data-index={state.activeIndex}
-    >
-      <p className="phasa-subs__line phasa-subs__thai" lang="th" data-testid="phasa-cue-thai">
-        {cue.text}
-      </p>
+    <div className="phasa-subs" data-testid="phasa-subtitles" data-index={index}>
+      <ThaiLine
+        text={cue.text}
+        tokens={state.words.tokens?.[index]}
+        statuses={state.words.statuses}
+        lookup={controller.cachedLookup}
+        settings={state.settings}
+        onAction={onLineAction}
+        revision={state.words.looked}
+      />
       {english && (
         <p className="phasa-subs__line phasa-subs__en" lang="en" data-testid="phasa-cue-en">
           {english}
@@ -104,24 +106,144 @@ function Subtitles({ state }: { state: ContentState }) {
   );
 }
 
-/** Subtitles over the player plus a small status chip (docs/plan.md §2.1, §4.1). */
+function adjacentWord(
+  tokens: readonly { kind: string; text: string }[],
+  index: number,
+  step: -1 | 1,
+): string | undefined {
+  const neighbour = tokens[index + step];
+  return neighbour?.kind === 'thai' ? neighbour.text : undefined;
+}
+
+/** Subtitles over the player, a status chip and word popups (docs/plan.md §2.1, §4.1, §10). */
 export function Overlay({ controller }: { controller: ContentController }) {
   const state = useSyncExternalStore(controller.store.subscribe, controller.store.get);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const [popup, setPopup] = useState<Popup | null>(null);
+
+  const close = useCallback(() => {
+    setPopup(null);
+    controller.endLookup();
+  }, [controller]);
+
+  const onAction = useCallback(
+    (cueIndex: number, action: LineAction) => {
+      const box = overlayRef.current?.getBoundingClientRect();
+      if (!box) return;
+      const anchor: PopupAnchor = {
+        centerX: action.anchor.left + action.anchor.width / 2 - box.left,
+        bottom: box.bottom - action.anchor.top,
+      };
+      controller.beginLookup();
+      setPopup(
+        action.kind === 'word'
+          ? { kind: 'word', cueIndex, tokenIndex: action.tokenIndex, anchor, at: action.at }
+          : { kind: 'phrase', cueIndex, from: action.from, to: action.to, anchor, at: action.at },
+      );
+    },
+    [controller],
+  );
+
+  // A click anywhere outside the popup and the subtitle words closes it.
+  useEffect(() => {
+    if (!popup) return;
+    const onPointerDown = (event: PointerEvent) => {
+      const inside = event
+        .composedPath()
+        .some(
+          (node) =>
+            node instanceof HTMLElement &&
+            (node.classList.contains('phasa-popup') || node.classList.contains('phasa-word')),
+        );
+      if (!inside) close();
+    };
+    window.addEventListener('pointerdown', onPointerDown, { capture: true });
+    return () => window.removeEventListener('pointerdown', onPointerDown, { capture: true });
+  }, [popup, close]);
+
+  // Tokens change when boundaries change: a popup on the old ones would point at the wrong word.
+  const tokens = state.words.tokens;
+  const shown = useRef({ tokens, videoId: state.urlVideoId });
+  useEffect(() => {
+    if (shown.current.tokens === tokens && shown.current.videoId === state.urlVideoId) return;
+    shown.current = { tokens, videoId: state.urlVideoId };
+    close();
+  }, [tokens, state.urlVideoId, close]);
+
+  // The popup saves the cue it was opened from as the context, even after playback moved on.
+  const popupCue = popup?.cueIndex ?? -1;
+  const actions = useMemo<PopupActions>(
+    () => ({
+      lookup: controller.lookup,
+      cached: controller.cachedLookup,
+      setStatus: (kind, thai, status) => controller.setStatus(kind, thai, status, popupCue),
+      forget: controller.forget,
+      addSegRule: controller.addSegRule,
+      close,
+    }),
+    [controller, close, popupCue],
+  );
+
   if (!state.urlVideoId) return null;
   const { session } = state;
   const current = session.status !== 'idle' && session.video.videoId === state.urlVideoId;
+  const cueTokens = popup ? tokens?.[popup.cueIndex] : undefined;
+  const cueText = popup ? thaiCues(state)[popup.cueIndex]?.text : undefined;
+
+  let popupView = null;
+  if (popup && cueTokens && cueText !== undefined) {
+    if (popup.kind === 'word') {
+      const token = cueTokens[popup.tokenIndex];
+      if (token) {
+        popupView = (
+          <WordPopup
+            key={`${popup.cueIndex}:${popup.tokenIndex}:${popup.at}`}
+            word={token.text}
+            previous={adjacentWord(cueTokens, popup.tokenIndex, -1)}
+            next={adjacentWord(cueTokens, popup.tokenIndex, 1)}
+            status={state.words.statuses[token.text]}
+            anchor={popup.anchor}
+            openedAt={popup.at}
+            settings={state.settings}
+            actions={actions}
+          />
+        );
+      }
+    } else {
+      const first = cueTokens[popup.from];
+      const last = cueTokens[popup.to];
+      if (first && last) {
+        const text = cueText.slice(first.start, last.end).trim();
+        popupView = (
+          <PhrasePopup
+            key={`${popup.cueIndex}:${popup.from}-${popup.to}:${popup.at}`}
+            text={text}
+            tokens={cueTokens.slice(popup.from, popup.to + 1)}
+            status={state.words.statuses[text]}
+            anchor={popup.anchor}
+            openedAt={popup.at}
+            settings={state.settings}
+            actions={actions}
+          />
+        );
+      }
+    }
+  }
 
   return (
     <div
+      ref={overlayRef}
       className="phasa-overlay"
       data-testid="phasa-overlay"
       data-video-id={state.urlVideoId}
       data-status={current ? session.status : 'idle'}
       data-controls={state.player.controlsVisible ? 'shown' : 'hidden'}
       data-load-ms={session.status === 'ready' ? Math.round(session.loadMs) : undefined}
+      data-words={state.words.prefetched ? 'ready' : state.words.tokens ? 'tokenized' : 'none'}
     >
       <StatusChip state={state} onRetry={controller.retry} />
-      <Subtitles state={state} />
+      <Subtitles state={state} controller={controller} onAction={onAction} />
+      {popupView}
     </div>
   );
 }

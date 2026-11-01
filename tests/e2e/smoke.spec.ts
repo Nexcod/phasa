@@ -38,7 +38,7 @@ test('side panel page connects to the service worker and the database', async ({
   await page.goto(`chrome-extension://${extensionId}/sidepanel.html`);
   await expect(page.getByRole('heading', { name: 'Phasa' })).toBeVisible();
   await expect(page.getByTestId('phasa-status')).toHaveAttribute('data-state', 'connected');
-  await expect(page.getByTestId('phasa-status')).toHaveText('Connected · database v1');
+  await expect(page.getByTestId('phasa-status')).toHaveText('Connected · database v2');
   await expect(
     page.getByText('Open a video with Thai subtitles to see its transcript here.'),
   ).toBeVisible();
@@ -48,7 +48,7 @@ test('options page renders its sections', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/options.html`);
   await expect(page).toHaveTitle('Phasa settings');
-  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(3);
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(4);
 });
 
 test('real watch page without Thai captions says so @network', async ({ context }) => {

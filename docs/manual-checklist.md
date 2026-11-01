@@ -11,6 +11,37 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
       shows datacenter IPs, including CI runners, a bot check instead of the video
       ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
 
+## Phase 3 — words
+
+Do these on 3–4 of the acceptance videos (one manual-Thai, one auto-generated, one long). The first
+video after installing loads the dictionary into IndexedDB; words become clickable a few seconds
+after the subtitles appear.
+
+- [x] **Gold set.** `tests/fixtures/segmentation.tsv` has ≥ 200 real cues from ≥ 10 videos (manual and asr), captured per its README and reviewed against the convention; `npm test` still passes (F1 ≥ 0.90) and `npm run seg:eval` reports the numbers for the acceptance note. Done 2026-11-01: 249 real cues from 13 videos, F1 0.963 (ADR 0010); native-speaker review open.
+- [ ] **Words.** Thai subtitles are split into words: the line reads exactly as before, nothing is
+      cut inside a stacked mark (น้ำ, ที่). With side panel → Word boundaries, "Thin gaps" and
+      "Alternating underline" mark the words; "None" doesn't.
+- [ ] **Popup speed.** Click 10 different words: each popup appears at once (< 100 ms; the popup's
+      `data-open-ms` attribute in DevTools shows the time).
+- [ ] **Popup content.** For a common word: Paiboon romanization with tone colors and diacritics,
+      "Pronounced: …" syllables, part of speech, glosses, the classifier of a noun, the frequency
+      rank. For a word the dictionary lacks: "Made of" parts or an "approximate" romanization. The
+      🔊 button reads the word with a Thai voice, or says no Thai voice is installed.
+- [ ] **Pause.** Clicking a word while the video plays pauses it; Esc or a click outside closes the
+      popup and playback continues. With "Pause when I open a word" off, it keeps playing.
+- [ ] **Status keys.** In the popup, 1–4, 5/K and X set learning 1–4, known and ignored; YouTube
+      doesn't seek (digits) or pause (K). The word's highlight changes in the subtitles at once.
+- [ ] **Context.** Side panel → My words lists the saved words with the line, its translation and
+      "Open at m:ss"; clicking it seeks in the same video or opens the other video at that time.
+      The options page lists them too; changing a status or deleting there updates the subtitles.
+- [ ] **Phrases.** Drag over 2–3 words: the phrase popup shows them with their glosses; saving it
+      lists it under My words. "Make it one word" joins them in every line of every video.
+- [ ] **Boundary fixes.** "Wrong word boundaries?" → join with the next word, and split a word by
+      clicking between its letters: the subtitles and the popup follow at once, also after a reload.
+- [ ] **Romanization.** R shows romanization over the words (side panel: above / below, Paiboon+ /
+      RTGS); R again hides it. Fullscreen and theater mode keep the popup inside the player.
+- [ ] **Keyboard.** Tab moves through the words of the line; Enter opens the popup.
+
 ## Phase 2 — captions and rendering
 
 All items passed on 2026-10-28, together with the network e2e (Every phase).

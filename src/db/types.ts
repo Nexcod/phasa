@@ -1,8 +1,8 @@
 import type { ProcessedCue, TrackKind } from '../captions/types';
 import type { DictEntry } from '../dictionary/types';
+import type { SegRuleKind, WordStatus } from '../vocab/types';
 
-export type LearningLevel = 1 | 2 | 3 | 4;
-export type WordStatus = 'new' | LearningLevel | 'known' | 'ignored';
+export type { LearningLevel, WordStatus } from '../vocab/types';
 
 export interface WordRow {
   id: number;
@@ -20,9 +20,11 @@ export interface WordRow {
 /** Multi-word units saved from a selection; same lifecycle as words. */
 export type PhraseRow = Omit<WordRow, 'nextReviewAt'>;
 
+/** Where a saved word or phrase was met. Exactly one of `wordId` and `phraseId` is set. */
 export interface ContextRow {
   id: number;
-  wordId: number;
+  wordId?: number;
+  phraseId?: number;
   videoId: string;
   sentence: string;
   sentenceTranslation?: string;
@@ -65,7 +67,7 @@ export interface SegRuleRow {
   id: number;
   /** Canonical rule key, e.g. `merge:โรง|เรียน`; unique so a rule is stored once. */
   key: string;
-  kind: 'merge' | 'split';
+  kind: SegRuleKind;
   parts: string[];
   createdAt: number;
 }
@@ -80,6 +82,12 @@ export interface AiCacheRow {
 export type DictRow = DictEntry;
 
 export interface SettingRow {
+  key: string;
+  value: unknown;
+}
+
+/** Internal bookkeeping, e.g. the version of the loaded dictionary. */
+export interface MetaRow {
   key: string;
   value: unknown;
 }

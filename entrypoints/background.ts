@@ -2,6 +2,7 @@ import { defineBackground } from '#imports';
 import { browser } from 'wxt/browser';
 import { createHandlers } from '@/src/background/handlers';
 import { getDb } from '@/src/db';
+import { packagedSource } from '@/src/dictionary/store';
 import { PORT_NAME, type ServerEvent } from '@/src/messaging/protocol';
 import { createServer } from '@/src/messaging/server';
 
@@ -15,7 +16,12 @@ export default defineBackground(() => {
   // Handlers broadcast through the server created right below.
   let broadcast: (event: ServerEvent) => void = () => undefined;
   const server = createServer(
-    createHandlers({ db: getDb, swStartedAt, broadcast: (event) => broadcast(event) }),
+    createHandlers({
+      db: getDb,
+      swStartedAt,
+      dictionarySource: packagedSource((path) => browser.runtime.getURL(`/${path}` as '/')),
+      broadcast: (event) => broadcast(event),
+    }),
     {
       extensionOrigin: self.location.origin,
       swStartedAt,

@@ -211,10 +211,14 @@ test.describe('captions and rendering', () => {
       const root = document.querySelector('phasa-overlay')!.shadowRoot!;
       const video = document.querySelector('video')!;
       const lags: number[] = [];
+      const subtitles = () =>
+        root.querySelector<HTMLElement>('[data-testid="phasa-subtitles"]')?.dataset.index;
+      let shown = subtitles();
+      // Word data (tokens, statuses, romanization) also re-renders mid-cue: time only cue switches.
       const observer = new MutationObserver(() => {
-        const index = root.querySelector<HTMLElement>('[data-testid="phasa-subtitles"]')?.dataset
-          .index;
-        if (index === undefined) return;
+        const index = subtitles();
+        if (index === undefined || index === shown) return;
+        shown = index;
         lags.push(video.currentTime * 1000 - cueStarts[Number(index)]!);
       });
       observer.observe(root, {
@@ -233,7 +237,9 @@ test.describe('captions and rendering', () => {
     // 1.5 s → 7.5 s crosses the starts at 2.08, 4.08 and 6.68 s.
     expect(lags.length).toBeGreaterThanOrEqual(3);
     for (const lag of lags) {
-      expect(lag).toBeGreaterThanOrEqual(-1);
+      // The overlay follows the presented frame's mediaTime; currentTime read here can trail it
+      // by a few ms under load (the first video also loads the dictionary). Far under a frame.
+      expect(lag).toBeGreaterThanOrEqual(-10);
       expect(lag).toBeLessThan(100);
     }
   });

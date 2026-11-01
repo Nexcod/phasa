@@ -10,6 +10,9 @@ import { Overlay } from './Overlay';
 import { createVideoIdStore } from './videoId';
 import './style.css';
 
+const SHIELDED_EVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'pointerdown', 'pointerup'];
+const stop = (event: Event) => event.stopPropagation();
+
 export default defineContentScript({
   matches: ['*://www.youtube.com/*'],
   cssInjectionMode: 'ui',
@@ -42,13 +45,18 @@ export default defineContentScript({
       position: 'inline',
       anchor: '#movie_player',
       append: 'last',
-      onMount(container) {
+      onMount(container, _shadow, host) {
+        // Clicks on our UI must not reach the player (a click would toggle playback). Stopped at
+        // the host, after React's listeners inside the shadow root have seen them.
+        for (const type of SHIELDED_EVENTS) host.addEventListener(type, stop);
         const root = ReactDOM.createRoot(container);
         root.render(<Overlay controller={controller} />);
-        return root;
+        return { root, host };
       },
-      onRemove(root) {
-        root?.unmount();
+      onRemove(mounted) {
+        if (!mounted) return;
+        for (const type of SHIELDED_EVENTS) mounted.host.removeEventListener(type, stop);
+        mounted.root.unmount();
       },
     });
     // #movie_player appears after YouTube's SPA boots and survives navigations.

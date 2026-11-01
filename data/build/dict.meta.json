@@ -1,0 +1,25 @@
+{
+  "version": "42b77dc51d65c8b2",
+  "builtAt": "2026-11-01",
+  "entries": 17367,
+  "sources": [
+    {
+      "name": "kaikki.org Thai (wiktextract)",
+      "url": "https://kaikki.org/dictionary/Thai/kaikki.org-dictionary-Thai.jsonl",
+      "retrievedAt": "2026-11-01",
+      "sha256": "a9afaf7191a4e2d9d976a893a58fb68039bce657784ca8af7cab48d35e0a2e66"
+    },
+    {
+      "name": "PyThaiNLP tnc_freq.txt",
+      "url": "https://raw.githubusercontent.com/PyThaiNLP/pythainlp/dev/pythainlp/corpus/tnc_freq.txt",
+      "retrievedAt": "2026-11-01",
+      "sha256": "554984d62e8735e2705bb30b06096d5710d0c9011e340ab717134e10d6dd0dda"
+    },
+    {
+      "name": "PyThaiNLP ttc_freq.txt",
+      "url": "https://raw.githubusercontent.com/PyThaiNLP/pythainlp/dev/pythainlp/corpus/ttc_freq.txt",
+      "retrievedAt": "2026-11-01",
+      "sha256": "add82083660baa939f2103f1dfde74f6de90ce48e7fb94965d55fc785121dc89"
+    }
+  ]
+}

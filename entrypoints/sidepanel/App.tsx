@@ -1,11 +1,15 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { browser } from 'wxt/browser';
 import { t, type MessageKey } from '@/src/i18n';
 import type { Client } from '@/src/messaging/client';
 import type { PanelCue, PanelSession } from '@/src/messaging/panel';
 import type { Settings } from '@/src/settings';
+import { formatTime, watchUrl } from '@/src/ui/labels';
+import { SavedWordList, useSavedWords } from '@/src/ui/SavedWords';
 import { StatusLine } from '@/src/ui/StatusLine';
 import { useBackgroundStatus } from '@/src/ui/useBackgroundStatus';
 import { useSettings } from '@/src/ui/useSettings';
+import type { SavedContext } from '@/src/vocab/types';
 import { isWatchUrl, useActiveTab, useTabSession } from './useTabSession';
 
 const ERROR_MESSAGES: Readonly<Record<string, MessageKey>> = {
@@ -16,16 +20,6 @@ const ERROR_MESSAGES: Readonly<Record<string, MessageKey>> = {
 
 /** Pause auto-scroll this long after the user scrolls the transcript. */
 const MANUAL_SCROLL_HOLD_MS = 4000;
-
-export function formatTime(ms: number): string {
-  const total = Math.floor(ms / 1000);
-  const hours = Math.floor(total / 3600);
-  const minutes = Math.floor((total % 3600) / 60);
-  const seconds = String(total % 60).padStart(2, '0');
-  return hours > 0
-    ? `${hours}:${String(minutes).padStart(2, '0')}:${seconds}`
-    : `${minutes}:${seconds}`;
-}
 
 const CueRow = memo(function CueRow({
   cue,
@@ -133,7 +127,99 @@ function Toggles({
         />
         {t('settingAutoPause')}
       </label>
+      <label className="toggle">
+        <input
+          type="checkbox"
+          checked={settings.pauseOnLookup}
+          onChange={(event) => onChange({ pauseOnLookup: event.target.checked })}
+        />
+        {t('settingPauseOnLookup')}
+      </label>
+      <label className="toggle">
+        <input
+          type="checkbox"
+          checked={settings.showRomanization}
+          onChange={(event) => onChange({ showRomanization: event.target.checked })}
+        />
+        {t('settingShowRomanization')}
+      </label>
+      <label className="select">
+        {t('settingRomanizationPosition')}
+        <select
+          value={settings.romanizationPosition}
+          onChange={(event) =>
+            onChange({ romanizationPosition: event.target.value === 'below' ? 'below' : 'above' })
+          }
+        >
+          <option value="above">{t('positionAbove')}</option>
+          <option value="below">{t('positionBelow')}</option>
+        </select>
+      </label>
+      <label className="select">
+        {t('settingRomanizationSystem')}
+        <select
+          value={settings.romanizationSystem}
+          onChange={(event) =>
+            onChange({ romanizationSystem: event.target.value === 'rtgs' ? 'rtgs' : 'paiboon' })
+          }
+        >
+          <option value="paiboon">{t('systemPaiboon')}</option>
+          <option value="rtgs">{t('systemRtgs')}</option>
+        </select>
+      </label>
+      <label className="select">
+        {t('settingWordBoundaries')}
+        <select
+          value={settings.wordBoundaries}
+          onChange={(event) => {
+            const value = event.target.value;
+            onChange({
+              wordBoundaries: value === 'none' || value === 'underline' ? value : 'gaps',
+            });
+          }}
+        >
+          <option value="none">{t('boundariesNone')}</option>
+          <option value="gaps">{t('boundariesGaps')}</option>
+          <option value="underline">{t('boundariesUnderline')}</option>
+        </select>
+      </label>
     </div>
+  );
+}
+
+function WordsTab({
+  client,
+  videoId,
+  onOpen,
+}: {
+  client: Client;
+  videoId: string | undefined;
+  onOpen: (context: SavedContext) => void;
+}) {
+  const [thisVideo, setThisVideo] = useState(false);
+  const filter = thisVideo && videoId ? { videoId } : {};
+  const { units, total, loaded, more } = useSavedWords(client, filter);
+  return (
+    <section className="words" data-testid="phasa-panel-words">
+      {videoId && (
+        <label className="toggle">
+          <input
+            type="checkbox"
+            checked={thisVideo}
+            onChange={(event) => setThisVideo(event.target.checked)}
+          />
+          {t('wordsThisVideo')}
+        </label>
+      )}
+      <SavedWordList
+        client={client}
+        units={units}
+        total={total}
+        loaded={loaded}
+        onMore={more}
+        onOpen={onOpen}
+      />
+    </section>
   );
 }
 
@@ -205,9 +291,26 @@ export function App({ client }: { client: Client }) {
   );
   const onSeek = useCallback((index: number) => send({ type: 'seek', index }), [send]);
   const onRetry = useCallback(() => send({ type: 'retry' }), [send]);
+  const [tabView, setTabView] = useState<'transcript' | 'words'>('transcript');
+  const shownVideoId =
+    connection.state === 'connected' && connection.session.status !== 'idle'
+      ? connection.session.video.videoId
+      : undefined;
+  const onOpenContext = useCallback(
+    (context: SavedContext) => {
+      if (context.videoId === shownVideoId) {
+        send({ type: 'seekMs', ms: context.cueStartMs });
+      } else if (tab) {
+        void browser.tabs.update(tab.tabId, { url: watchUrl(context.videoId, context.cueStartMs) });
+      }
+    },
+    [send, shownVideoId, tab],
+  );
 
   let body;
-  if (connection.state === 'connected') {
+  if (tabView === 'words') {
+    body = <WordsTab client={client} videoId={shownVideoId} onOpen={onOpenContext} />;
+  } else if (connection.state === 'connected') {
     body = (
       <SessionView
         session={connection.session}
@@ -232,6 +335,21 @@ export function App({ client }: { client: Client }) {
         <h1>{t('sidepanelTitle')}</h1>
         <StatusLine status={status} className="page__status" />
       </header>
+      <div className="tabs" role="tablist">
+        {(['transcript', 'words'] as const).map((view) => (
+          <button
+            key={view}
+            type="button"
+            role="tab"
+            className="tabs__tab"
+            aria-selected={tabView === view}
+            data-testid={`phasa-tab-${view}`}
+            onClick={() => setTabView(view)}
+          >
+            {t(view === 'transcript' ? 'panelTabTranscript' : 'panelTabWords')}
+          </button>
+        ))}
+      </div>
       {body}
     </main>
   );

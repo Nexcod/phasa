@@ -100,7 +100,7 @@
     "description": "Toggle: pause the video at the end of every subtitle line."
   },
   "sidepanelHotkeys": {
-    "message": "Keys: A / D previous / next line · S repeat · Space pause · T translation",
+    "message": "Keys: A / D previous / next line · S repeat · Space pause · T translation · R romanization",
     "description": "Keyboard shortcut summary in the side panel."
   },
   "sidepanelReloadTab": {
@@ -114,5 +114,427 @@
   "fontsTestTitle": {
     "message": "Phasa fonts test",
     "description": "Title of the development page that checks Thai font rendering."
+  },
+  "settingShowRomanization": {
+    "message": "Romanization (R)",
+    "description": "Side panel toggle: romanization over or under each Thai word in the subtitles."
+  },
+  "settingRomanizationPosition": {
+    "message": "Romanization",
+    "description": "Label of the choice between romanization above or below the Thai line."
+  },
+  "positionAbove": {
+    "message": "Above",
+    "description": "Romanization shown above the Thai words."
+  },
+  "positionBelow": {
+    "message": "Below",
+    "description": "Romanization shown below the Thai words."
+  },
+  "settingRomanizationSystem": {
+    "message": "System",
+    "description": "Label of the choice of romanization system."
+  },
+  "systemPaiboon": {
+    "message": "Paiboon+",
+    "description": "Romanization system name (with tone marks and vowel length)."
+  },
+  "systemRtgs": {
+    "message": "RTGS",
+    "description": "Royal Thai General System of transcription (no tones)."
+  },
+  "settingWordBoundaries": {
+    "message": "Word boundaries",
+    "description": "Label of how word boundaries show in Thai subtitles."
+  },
+  "boundariesNone": {
+    "message": "None",
+    "description": "Word boundaries are not marked."
+  },
+  "boundariesGaps": {
+    "message": "Thin gaps",
+    "description": "A thin gap between Thai words."
+  },
+  "boundariesUnderline": {
+    "message": "Alternating underline",
+    "description": "Thai words underlined in alternating colors."
+  },
+  "settingPauseOnLookup": {
+    "message": "Pause when I open a word",
+    "description": "Toggle: clicking a word pauses the video until the popup closes."
+  },
+  "wordStatusNew": {
+    "message": "New",
+    "description": "Status of a word the learner has not saved."
+  },
+  "wordStatusLearning": {
+    "message": "Learning $LEVEL$",
+    "description": "Status of a word being learned, level 1 to 4.",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "wordStatusKnown": {
+    "message": "Known",
+    "description": "Status of a known word."
+  },
+  "wordStatusIgnored": {
+    "message": "Ignored",
+    "description": "Status of a word excluded from learning and statistics (names, noise)."
+  },
+  "popupClose": {
+    "message": "Close",
+    "description": "Button that closes the word popup."
+  },
+  "popupSpeak": {
+    "message": "Listen",
+    "description": "Button that reads the word aloud with text-to-speech."
+  },
+  "popupNoVoice": {
+    "message": "No Thai voice is installed in this browser.",
+    "description": "Shown when text-to-speech has no Thai voice."
+  },
+  "popupLoading": {
+    "message": "Looking up…",
+    "description": "Shown while a word is looked up."
+  },
+  "popupNotFound": {
+    "message": "Not in the dictionary.",
+    "description": "Shown for a word without a dictionary entry."
+  },
+  "popupApproximate": {
+    "message": "approximate",
+    "description": "Badge on romanization guessed from spelling rules."
+  },
+  "popupApproximateHint": {
+    "message": "Romanization from spelling rules: it may be wrong.",
+    "description": "Tooltip of the approximate badge."
+  },
+  "popupMadeOf": {
+    "message": "Made of",
+    "description": "Heading of the dictionary words a compound consists of."
+  },
+  "popupFrequency": {
+    "message": "#$RANK$ most common",
+    "description": "Frequency rank of a word in the Thai National Corpus.",
+    "placeholders": {
+      "rank": {
+        "content": "$1",
+        "example": "523"
+      }
+    }
+  },
+  "popupClassifier": {
+    "message": "classifier: $WORD$",
+    "description": "The classifier (counting word) of a noun.",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ตัว"
+      }
+    }
+  },
+  "popupAltOf": {
+    "message": "Alternative form of $WORD$",
+    "description": "Shown when the word is a spelling variant of another headword.",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ไหม"
+      }
+    }
+  },
+  "popupPronouncedAs": {
+    "message": "Pronounced",
+    "description": "Label before the phonemic respelling of a word, syllable by syllable."
+  },
+  "popupStatus": {
+    "message": "My status",
+    "description": "Heading of the status buttons in the word popup."
+  },
+  "popupForget": {
+    "message": "Remove from my words",
+    "description": "Button that deletes a saved word or phrase."
+  },
+  "popupKeysHint": {
+    "message": "Keys: 1–4 learning · K known · X ignore · Esc close",
+    "description": "Keyboard hint in the word popup."
+  },
+  "popupBoundaries": {
+    "message": "Wrong word boundaries?",
+    "description": "Heading of the controls that fix word segmentation."
+  },
+  "popupJoinPrevious": {
+    "message": "Join with previous word",
+    "description": "Button: merge this word with the previous one everywhere."
+  },
+  "popupJoinNext": {
+    "message": "Join with next word",
+    "description": "Button: merge this word with the next one everywhere."
+  },
+  "popupSplitHint": {
+    "message": "Split it: click where the new boundary goes.",
+    "description": "Explains the split control showing the letters of the word."
+  },
+  "popupSplitAt": {
+    "message": "Split before “$TEXT$”",
+    "description": "Accessible label of a split point button.",
+    "placeholders": {
+      "text": {
+        "content": "$1",
+        "example": "เรียน"
+      }
+    }
+  },
+  "popupError": {
+    "message": "Something went wrong. Try again.",
+    "description": "Shown when saving or a boundary fix fails."
+  },
+  "phraseTitle": {
+    "message": "Phrase",
+    "description": "Heading of the popup for a selection of several words."
+  },
+  "phraseWords": {
+    "message": "Words",
+    "description": "Heading of the list of words in a phrase."
+  },
+  "phraseJoin": {
+    "message": "Make it one word",
+    "description": "Button: treat the selected words as one word everywhere."
+  },
+  "statusButtonLearning": {
+    "message": "$LEVEL$",
+    "description": "Label of a learning-level status button (1 to 4).",
+    "placeholders": {
+      "level": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "statusButtonKnown": {
+    "message": "Known",
+    "description": "Status button: mark as known."
+  },
+  "statusButtonIgnore": {
+    "message": "Ignore",
+    "description": "Status button: ignore this word."
+  },
+  "posNoun": {
+    "message": "noun",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posVerb": {
+    "message": "verb",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posAdj": {
+    "message": "adjective",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posAdv": {
+    "message": "adverb",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posName": {
+    "message": "proper noun",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posPron": {
+    "message": "pronoun",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posIntj": {
+    "message": "interjection",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posClassifier": {
+    "message": "classifier",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posNum": {
+    "message": "numeral",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posPrep": {
+    "message": "preposition",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posConj": {
+    "message": "conjunction",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posParticle": {
+    "message": "particle",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posDet": {
+    "message": "determiner",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posPhrase": {
+    "message": "phrase",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posProverb": {
+    "message": "proverb",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posPrefix": {
+    "message": "prefix",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "posSuffix": {
+    "message": "suffix",
+    "description": "Part of speech label in dictionary entries."
+  },
+  "tagFormal": {
+    "message": "formal",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagInformal": {
+    "message": "informal",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagColloquial": {
+    "message": "colloquial",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagSlang": {
+    "message": "slang",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagArchaic": {
+    "message": "archaic",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagObsolete": {
+    "message": "obsolete",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagDated": {
+    "message": "dated",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagLiterary": {
+    "message": "literary",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagPoetic": {
+    "message": "poetic",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagVulgar": {
+    "message": "vulgar",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagOffensive": {
+    "message": "offensive",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagDerogatory": {
+    "message": "derogatory",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagHumorous": {
+    "message": "humorous",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagRare": {
+    "message": "rare",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagDialectal": {
+    "message": "dialectal",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagInternet": {
+    "message": "Internet",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagIdiomatic": {
+    "message": "idiomatic",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagFigurative": {
+    "message": "figurative",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagAbbreviation": {
+    "message": "abbreviation",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagMisspelling": {
+    "message": "misspelling",
+    "description": "Usage label of a dictionary sense."
+  },
+  "tagRoyal": {
+    "message": "royal vocabulary",
+    "description": "Usage label of a dictionary sense."
+  },
+  "panelTabTranscript": {
+    "message": "Transcript",
+    "description": "Side panel tab with the video transcript."
+  },
+  "panelTabWords": {
+    "message": "My words",
+    "description": "Side panel tab with saved words and phrases."
+  },
+  "wordsEmpty": {
+    "message": "No saved words yet. Click a word in the subtitles to look it up and save it.",
+    "description": "Empty state of the saved words list."
+  },
+  "wordsThisVideo": {
+    "message": "This video only",
+    "description": "Filter: show only words saved from the video in the tab."
+  },
+  "wordsTotal": {
+    "message": "$COUNT$ saved",
+    "description": "Number of saved words and phrases.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "wordsSearch": {
+    "message": "Search Thai",
+    "description": "Placeholder of the saved words search field."
+  },
+  "wordsDelete": {
+    "message": "Delete",
+    "description": "Button that deletes a saved word."
+  },
+  "wordsMore": {
+    "message": "Show more",
+    "description": "Button that loads more saved words."
+  },
+  "wordsStatusLabel": {
+    "message": "Status of $WORD$",
+    "description": "Accessible label of the status menu of a saved word.",
+    "placeholders": {
+      "word": {
+        "content": "$1",
+        "example": "ภาษา"
+      }
+    }
+  },
+  "contextOpen": {
+    "message": "Open at $TIME$",
+    "description": "Link that opens the video at the moment the word was saved.",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "1:23"
+      }
+    }
+  },
+  "optionsSectionWords": {
+    "message": "My words",
+    "description": "Options page section: saved words and phrases with their contexts."
   }
 }

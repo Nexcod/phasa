@@ -160,3 +160,147 @@ body {
   font-size: 13px;
   line-height: 1.4;
 }
+
+/* Tone colors on light and dark extension pages (docs/plan.md §5.1). */
+.phasa-tone[data-tone='mid'] {
+  color: var(--phasa-tone-mid);
+}
+
+.phasa-tone[data-tone='low'] {
+  color: var(--phasa-tone-low);
+}
+
+.phasa-tone[data-tone='falling'] {
+  color: var(--phasa-tone-falling);
+}
+
+.phasa-tone[data-tone='high'] {
+  color: var(--phasa-tone-high);
+}
+
+.phasa-tone[data-tone='rising'] {
+  color: var(--phasa-tone-rising);
+}
+
+.phasa-roman__sep {
+  color: var(--phasa-muted);
+}
+
+/* Side panel tabs. */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--phasa-border);
+}
+
+.tabs__tab {
+  padding: 6px 10px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--phasa-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tabs__tab[aria-selected='true'] {
+  border-bottom-color: var(--phasa-accent);
+  color: var(--phasa-fg);
+}
+
+.select {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.select select,
+.saved__status,
+.search {
+  padding: 2px 4px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 4px;
+  background: var(--phasa-bg);
+  color: var(--phasa-fg);
+  font: inherit;
+}
+
+.search {
+  width: 100%;
+  margin: 8px 0;
+  padding: 6px 8px;
+}
+
+/* Saved words (side panel and options). */
+.saved {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.saved__total {
+  margin: 4px 0;
+  color: var(--phasa-muted);
+  font-size: 12px;
+}
+
+.saved__item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--phasa-border);
+}
+
+.saved__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.saved__thai {
+  font-family: var(--phasa-font-thai);
+  font-size: 18px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.saved__roman {
+  color: var(--phasa-muted);
+}
+
+.saved__status {
+  margin-left: auto;
+}
+
+.saved__gloss {
+  margin: 2px 0;
+}
+
+.saved__contexts {
+  margin: 4px 0 0;
+  padding-left: 12px;
+  list-style: none;
+}
+
+.saved__context {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.saved__sentence {
+  font-family: var(--phasa-font-thai);
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.saved__translation {
+  color: var(--phasa-muted);
+}
+
+.saved__open {
+  align-self: flex-start;
+  font-size: 12px;
+  text-align: left;
+}

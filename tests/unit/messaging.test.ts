@@ -26,6 +26,19 @@ function setup(
     'captions/process': () => ({ tracks: [], failed: [] }),
     'settings/get': () => ({ ...DEFAULT_SETTINGS }),
     'settings/set': ({ patch }) => ({ ...DEFAULT_SETTINGS, ...patch }),
+    'thai/tokenize': () => ({ tokens: [] }),
+    'dict/lookup': () => ({ results: [] }),
+    'vocab/statuses': () => ({ statuses: {} }),
+    'vocab/set': () => {
+      throw new RpcFailure('bad_request', 'not in this test');
+    },
+    'vocab/delete': () => ({ deleted: false }),
+    'vocab/list': () => ({ units: [], total: 0 }),
+    'segrules/list': () => ({ rules: [] }),
+    'segrules/add': () => {
+      throw new RpcFailure('bad_request', 'not in this test');
+    },
+    'segrules/delete': () => ({ deleted: false }),
     ...handlers,
   };
   const server = createServer(all, { extensionOrigin: EXT, swStartedAt: 1 });

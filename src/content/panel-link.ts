@@ -71,6 +71,7 @@ export function servePanel(controller: ContentController): () => void {
     port.onMessage.addListener((raw: unknown) => {
       const message = parsePanelToTab(raw);
       if (message?.type === 'seek') controller.seekToIndex(message.index);
+      else if (message?.type === 'seekMs') controller.seekToMs(message.ms);
       else if (message?.type === 'retry') controller.retry();
       else if (message?.type === 'settings') controller.applySettings(message.settings);
     });

@@ -4,25 +4,51 @@
  * through src/messaging and hear about changes via `settings/changed`.
  */
 
+/** How word boundaries show in Thai subtitles (docs/plan.md §2.1). */
+export type WordBoundaries = 'none' | 'gaps' | 'underline';
+export type RomanizationSystem = 'paiboon' | 'rtgs';
+export type RomanizationPosition = 'above' | 'below';
+
 export interface Settings {
   /** Second subtitle line with the English translation (hotkey T). */
   showTranslation: boolean;
   /** Pause at the end of every cue (docs/plan.md §2.1). */
   autoPause: boolean;
+  /** Romanization over or under each Thai word (hotkey R). */
+  showRomanization: boolean;
+  romanizationPosition: RomanizationPosition;
+  romanizationSystem: RomanizationSystem;
+  wordBoundaries: WordBoundaries;
+  /** Opening a word pauses the video; closing resumes it (docs/plan.md §10). */
+  pauseOnLookup: boolean;
 }
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = {
   showTranslation: true,
   autoPause: false,
+  showRomanization: false,
+  romanizationPosition: 'above',
+  romanizationSystem: 'paiboon',
+  wordBoundaries: 'gaps',
+  pauseOnLookup: true,
 };
 
 type Validators = { [K in keyof Settings]: (value: unknown) => value is Settings[K] };
 
 const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
+const oneOf =
+  <T extends string>(...values: T[]) =>
+  (value: unknown): value is T =>
+    values.includes(value as T);
 
 const VALIDATORS: Validators = {
   showTranslation: isBoolean,
   autoPause: isBoolean,
+  showRomanization: isBoolean,
+  romanizationPosition: oneOf('above', 'below'),
+  romanizationSystem: oneOf('paiboon', 'rtgs'),
+  wordBoundaries: oneOf('none', 'gaps', 'underline'),
+  pauseOnLookup: isBoolean,
 };
 
 function isKey(key: string): key is keyof Settings {

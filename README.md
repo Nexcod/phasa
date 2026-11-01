@@ -11,6 +11,7 @@ estimates, optional AI explanations via Sign in with ChatGPT.
 | 0 — spikes and decisions   | **Accepted 2026-10-16**: captions source (ADR 0002), Sign in with ChatGPT via a DNR redirect (ADR 0003), data sources (ADR 0004), segmentation baseline (ADR 0005) — see [docs/spikes.md](docs/spikes.md)                                                                                                                                                                                            |
 | 1 — scaffold               | **Accepted 2026-10-16**: loads unpacked in Chrome, an empty overlay mounts on youtube.com watch pages, the toolbar button opens the side panel, unit + e2e tests and CI are green; the `dev` script builds and serves the dev extension                                                                                                                                                              |
 | 2 — captions and rendering | **Accepted 2026-10-28** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e (ADR 0009): Thai + English subtitles over the player from the player's own PoToken (ADR 0007), cached per video; Noto Sans Thai Looped; side-panel transcript; hotkeys A/D/S/Space/T; auto-pause. Live run: Thai ready 0.5–1.7 s after the player loads (docs/spikes.md §1 run 3) |
+| 3 — words                  | **In progress.** Done: Wiktionary dictionary + TNC ranks (ADR 0010), tokenizer (F1 0.963 on 249 real cues from 13 videos, 0.966 overall), word popup (15 ms in e2e) with romanization, tones, TTS, statuses, phrases, boundary fixes, saved words with context in the side panel and options. Open: manual checklist and network e2e in Chrome                                                       |
 
 ## Development
 
@@ -29,15 +30,18 @@ Load the build: `chrome://extensions` → Developer mode → **Load unpacked** �
 Live captions can't be tested under automation; [docs/manual-checklist.md](docs/manual-checklist.md)
 lists the checks done by hand.
 
-| Command                           | What it does                                                                                                                |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `npm run lint` / `npm run format` | ESLint (type-aware) / Prettier                                                                                              |
-| `npm run typecheck`               | `tsc --noEmit`                                                                                                              |
-| `npm test`                        | Vitest unit tests                                                                                                           |
-| `npm run test:e2e`                | Build (with dev-only test pages) + Playwright e2e against a fake youtube.com (first run: `npx playwright install chromium`) |
-| `npm run test:e2e:network`        | e2e against real youtube.com (`@network`); run locally, YouTube blocks CI runners (ADR 0009)                                |
-| `npm run spike:seg [file]`        | Segmentation baseline: `Intl.Segmenter` vs a gold file                                                                      |
-| `npm run fonts:fetch`             | Re-download the bundled Thai fonts into `public/fonts/` (committed; see its README)                                         |
+| Command                                           | What it does                                                                                                                |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `npm run lint` / `npm run format`                 | ESLint (type-aware) / Prettier                                                                                              |
+| `npm run typecheck`                               | `tsc --noEmit`                                                                                                              |
+| `npm test`                                        | Vitest unit tests                                                                                                           |
+| `npm run test:e2e`                                | Build (with dev-only test pages) + Playwright e2e against a fake youtube.com (first run: `npx playwright install chromium`) |
+| `npm run test:e2e:network`                        | e2e against real youtube.com (`@network`); run locally, YouTube blocks CI runners (ADR 0009)                                |
+| `npm run spike:seg [file]`                        | Segmentation baseline: `Intl.Segmenter` vs a gold file                                                                      |
+| `npm run seg:eval`                                | The tokenizer with the built dictionary vs `tests/fixtures/segmentation.tsv`, with mismatches                               |
+| `npm run seg:review:export` / `seg:review:import` | Spreadsheet for a native-speaker check of the gold set and applying the result ([guide](docs/segmentation-review/GUIDE.md)) |
+| `npm run data:freq` / `data:dict`                 | Rebuild `data/build/` from the sources (cached in `data/raw/`; `-- --refresh` downloads again; ADR 0010)                    |
+| `npm run fonts:fetch`                             | Re-download the bundled Thai fonts into `public/fonts/` (committed; see its README)                                         |
 
 ## Layout
 
@@ -45,9 +49,12 @@ lists the checks done by hand.
 entrypoints/   background (SW), youtube.content (overlay), youtube-main.content (MAIN world),
                sidepanel, options, fonts-test (dev/test builds only)
 src/           captions (parsers, processing, track choice; main/ = MAIN-world fetcher),
-               content (overlay state, playback sync, hotkeys, panel link), messaging (typed
-               Port protocols), db (Dexie schema + migrations), background (SW handlers),
-               settings, thai, dictionary, i18n, ui (shared components, fonts)
+               content (overlay state, playback sync, hotkeys, panel link, word data),
+               messaging (typed Port protocols), db (Dexie schema + migrations), background
+               (SW handlers, tokenizing and lookups), settings, thai (normalization, tokenizer,
+               segmentation convention, romanization), dictionary (kaikki conversion, store,
+               pronunciation), vocab (saved words, contexts, segmentation rules), i18n, ui
+data/build/    built dictionary and frequency list (committed, CC BY-SA 4.0, ATTRIBUTION.md)
 tests/         unit (Vitest), e2e (Playwright), fixtures
 spikes/        phase-0 experiment kits (not shipped)
 docs/          plan.md, spikes.md, decisions/ (ADRs)

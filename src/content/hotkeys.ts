@@ -1,10 +1,11 @@
 /**
  * Player hotkeys (docs/plan.md §2.1). Matched by `KeyboardEvent.code`, the
  * physical key, so they work while a Thai keyboard layout is active (`A` types
- * `ฟ` there). R (romanization) arrives with romanization in phase 3.
+ * `ฟ` there).
  */
 
-export type HotkeyAction = 'prev' | 'next' | 'repeat' | 'toggle-play' | 'toggle-translation';
+export type HotkeyAction =
+  'prev' | 'next' | 'repeat' | 'toggle-play' | 'toggle-translation' | 'toggle-romanization';
 
 export const HOTKEYS: Readonly<Record<string, HotkeyAction>> = {
   KeyA: 'prev',
@@ -12,6 +13,7 @@ export const HOTKEYS: Readonly<Record<string, HotkeyAction>> = {
   KeyS: 'repeat',
   Space: 'toggle-play',
   KeyT: 'toggle-translation',
+  KeyR: 'toggle-romanization',
 };
 
 const TEXT_INPUT_TYPES = new Set([

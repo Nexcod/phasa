@@ -39,6 +39,8 @@ export type TabToPanel =
 
 export type PanelToTab =
   | { type: 'seek'; index: number }
+  /** Seek to a time, e.g. a saved word's context in the video on screen. */
+  | { type: 'seekMs'; ms: number }
   | { type: 'retry' }
   /** The panel changed settings; the tab may not hear the SW broadcast (its port can be asleep). */
   | { type: 'settings'; settings: Partial<Settings> };
@@ -51,6 +53,14 @@ export function parsePanelToTab(value: unknown): PanelToTab | null {
   if (!isRecord(value)) return null;
   if (value.type === 'seek' && Number.isInteger(value.index)) {
     return { type: 'seek', index: value.index as number };
+  }
+  if (
+    value.type === 'seekMs' &&
+    typeof value.ms === 'number' &&
+    Number.isFinite(value.ms) &&
+    value.ms >= 0
+  ) {
+    return { type: 'seekMs', ms: value.ms };
   }
   if (value.type === 'retry') return { type: 'retry' };
   if (value.type === 'settings') {

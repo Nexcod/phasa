@@ -33,6 +33,7 @@ describe('schema', () => {
         'captions',
         'contexts',
         'dict',
+        'meta',
         'phrases',
         'segRules',
         'settings',

@@ -10,10 +10,26 @@
  */
 
 import type { ProcessedTrack, TrackKind, TrackRef } from '../captions/types';
+import type { WordInfo } from '../dictionary/types';
 import type { Settings } from '../settings';
+import type { Token } from '../thai/types';
+import type {
+  ContextInput,
+  SavedUnit,
+  SegRule,
+  SegRuleKind,
+  UnitKind,
+  VocabChange,
+  WordStatus,
+} from '../vocab/types';
 
 export const PORT_NAME = 'phasa';
-export const PROTOCOL_VERSION = 2;
+export const PROTOCOL_VERSION = 3;
+
+/** Request size limits, checked by the handlers. */
+export const MAX_TOKENIZE_TEXTS = 2000;
+export const MAX_LOOKUP_WORDS = 500;
+export const MAX_STATUS_WORDS = 5000;
 
 /** Where a request comes from. Derived by the SW from `port.sender`, never trusted from the payload. */
 export type Origin = 'content-script' | 'extension-page';
@@ -62,6 +78,48 @@ export interface Methods {
     params: { patch: Partial<Settings> };
     result: Settings;
   };
+  /** Word tokens of normalized Thai texts (cue text + zero-width hints), with the user's rules. */
+  'thai/tokenize': {
+    params: { texts: { text: string; hints?: number[] }[] };
+    result: { tokens: Token[][] };
+  };
+  /** Dictionary entry, pronunciation and parts of each word. */
+  'dict/lookup': {
+    params: { words: string[] };
+    result: { results: WordInfo[] };
+  };
+  /** Statuses of saved words and phrases among `words`; unsaved ones are new and left out. */
+  'vocab/statuses': {
+    params: { words: string[] };
+    result: { statuses: Record<string, WordStatus> };
+  };
+  /** Saves a word or phrase with a status and optionally the context; broadcasts `vocab/changed`. */
+  'vocab/set': {
+    params: { kind: UnitKind; thai: string; status: WordStatus; context?: ContextInput };
+    result: { unit: SavedUnit };
+  };
+  'vocab/delete': {
+    params: { kind: UnitKind; thai: string };
+    result: { deleted: boolean };
+  };
+  /** Saved words and phrases, most recently changed first. */
+  'vocab/list': {
+    params: { kind?: UnitKind; videoId?: string; query?: string; limit?: number; offset?: number };
+    result: { units: SavedUnit[]; total: number };
+  };
+  'segrules/list': {
+    params: Record<string, never>;
+    result: { rules: SegRule[] };
+  };
+  /** Adds a merge or split rule; broadcasts `segmentation/changed`. */
+  'segrules/add': {
+    params: { kind: SegRuleKind; parts: string[] };
+    result: { rule: SegRule };
+  };
+  'segrules/delete': {
+    params: { key: string };
+    result: { deleted: boolean };
+  };
 }
 
 export type Method = keyof Methods;
@@ -79,6 +137,15 @@ export const METHOD_ACCESS: Readonly<Record<Method, readonly Origin[]>> = {
   'captions/process': ['content-script', 'extension-page'],
   'settings/get': ['content-script', 'extension-page'],
   'settings/set': ['content-script', 'extension-page'],
+  'thai/tokenize': ['content-script', 'extension-page'],
+  'dict/lookup': ['content-script', 'extension-page'],
+  'vocab/statuses': ['content-script', 'extension-page'],
+  'vocab/set': ['content-script', 'extension-page'],
+  'vocab/delete': ['content-script', 'extension-page'],
+  'vocab/list': ['content-script', 'extension-page'],
+  'segrules/list': ['content-script', 'extension-page'],
+  'segrules/add': ['content-script', 'extension-page'],
+  'segrules/delete': ['content-script', 'extension-page'],
 };
 
 /** Sent on every new connection; a changed `swStartedAt` means the SW restarted. */
@@ -93,7 +160,19 @@ export interface SettingsChangedEvent {
   settings: Settings;
 }
 
-export type ServerEvent = HelloEvent | SettingsChangedEvent;
+/** Saved words or phrases changed (status set or deleted). */
+export interface VocabChangedEvent {
+  type: 'vocab/changed';
+  changes: VocabChange[];
+}
+
+/** Word boundaries may differ now: user rules or phrases changed. Re-tokenize. */
+export interface SegmentationChangedEvent {
+  type: 'segmentation/changed';
+}
+
+export type ServerEvent =
+  HelloEvent | SettingsChangedEvent | VocabChangedEvent | SegmentationChangedEvent;
 
 export type RequestEnvelope = {
   [M in Method]: { kind: 'request'; id: number; method: M; params: Params<M> };

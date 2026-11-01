@@ -25,7 +25,12 @@
     "spike:seg": "tsx scripts/spikes/segmentation.ts",
     "spike:seg:fetch": "tsx scripts/spikes/fetch-wisesight.ts",
     "spike:cues": "tsx scripts/spikes/cues-to-tsv.ts",
-    "fonts:fetch": "tsx scripts/fetch-fonts.ts"
+    "fonts:fetch": "tsx scripts/fetch-fonts.ts",
+    "data:freq": "tsx scripts/build-frequency.ts",
+    "data:dict": "tsx scripts/build-dictionary.ts",
+    "seg:eval": "tsx scripts/eval-segmentation.ts",
+    "seg:review:export": "tsx scripts/seg-review.ts export",
+    "seg:review:import": "tsx scripts/seg-review.ts import"
   },
   "dependencies": {
     "dexie": "^4.4.6",

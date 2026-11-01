@@ -9,12 +9,12 @@ sources chosen.
 non-blocking follow-ups. Phase 1 (scaffold) was built in parallel at the owner's request and accepted
 the same day (see README → Status).
 
-| #   | Spike                          | Status                           | Blocking item                                        |
-| --- | ------------------------------ | -------------------------------- | ---------------------------------------------------- |
-| 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos | — (pot lifetime > 7 min, logged-out: non-blocking)   |
-| 2   | Sign in with ChatGPT           | **Done** — A1 and A2 work live   | —                                                    |
-| 3   | Segmentation baseline          | **Done (preliminary)**           | Real-subtitle gold set (≥ 200 cues) in phase 3       |
-| 4   | Data licenses                  | **Done** — one item to confirm   | Confirm Volubilis license inside the release archive |
+| #   | Spike                          | Status                           | Blocking item                                       |
+| --- | ------------------------------ | -------------------------------- | --------------------------------------------------- |
+| 1   | Captions (timedtext + PoToken) | **Done** — real Chrome, 6 videos | — (pot lifetime > 7 min, logged-out: non-blocking)  |
+| 2   | Sign in with ChatGPT           | **Done** — A1 and A2 work live   | —                                                   |
+| 3   | Segmentation baseline          | **Done**                         | Real gold set built in phase 3 (249 cues, ADR 0010) |
+| 4   | Data licenses                  | **Done** — one item deferred     | Volubilis license: after v1 (ADR 0010, Deferred)    |
 
 ---
 
@@ -342,10 +342,12 @@ ICU never placed a boundary inside a grapheme cluster (0 violations on both sets
   more than the algorithm does (wisesight vs seed). Decision: [ADR 0005](decisions/0005-segmentation-convention.md).
 - Planned tokenizer = ICU → split `ๆ` → dictionary merge (≤ 4 tokens) → dictionary-guided split of
   unknown ICU tokens → user rules.
-- Open: confirm that Chrome's ICU gives the same segmentation as Node's ICU 78.3 (run the same script
-  in the browser during phase 3; Chrome bundles its own ICU build).
+- ~~Open: confirm that Chrome's ICU gives the same segmentation as Node's ICU 78.3.~~ **Done
+  2026-11-01** (phase 3): Chromium 156 (Playwright) segments all 65 gold lines exactly like Node
+  24 / ICU 78.3 (`tests/e2e/icu.spec.ts`, runs with every offline e2e). Chrome stable bundles the
+  same ICU per release; the test catches a drift when Playwright's Chromium moves.
 - Open: build the real gold set (≥ 200 cues from ≥ 10 videos, manual + asr) with `npm run spike:cues`
-  after the captions spike, then annotate per `tests/fixtures/README.md`.
+  after the captions spike, then annotate per `tests/fixtures/README.md`. **Done 2026-11-01** (phase 3): 249 real cues from 13 videos (8 manual, 5 asr). On them raw ICU scores 0.927 (ๆ split) and the tokenizer 0.963 ([ADR 0010](decisions/0010-dictionary-build-and-tokenizer.md)).
 
 ---
 

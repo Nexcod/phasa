@@ -26,6 +26,15 @@ export const SCHEMA_STEPS: readonly SchemaStep[] = [
       settings: 'key',
     },
   },
+  {
+    // Phase 3: contexts of saved phrases; `meta` holds the loaded dictionary's version and the
+    // tokenizer's lexicon snapshot (src/dictionary/store.ts).
+    version: 2,
+    stores: {
+      contexts: '++id, wordId, phraseId, videoId, [wordId+videoId]',
+      meta: 'key',
+    },
+  },
 ];
 
 export const SCHEMA_VERSION = SCHEMA_STEPS.reduce((max, step) => Math.max(max, step.version), 0);

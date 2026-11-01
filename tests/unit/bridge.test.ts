@@ -93,6 +93,9 @@ describe('panel channel', () => {
     expect(parsePanelToTab({ type: 'seek', index: 3 })).toEqual({ type: 'seek', index: 3 });
     expect(parsePanelToTab({ type: 'seek', index: 1.5 })).toBeNull();
     expect(parsePanelToTab({ type: 'retry' })).toEqual({ type: 'retry' });
+    expect(parsePanelToTab({ type: 'seekMs', ms: 2080 })).toEqual({ type: 'seekMs', ms: 2080 });
+    expect(parsePanelToTab({ type: 'seekMs', ms: -1 })).toBeNull();
+    expect(parsePanelToTab({ type: 'seekMs', ms: 'x' })).toBeNull();
     expect(parsePanelToTab({ type: 'settings', settings: { autoPause: true } })).toEqual({
       type: 'settings',
       settings: { autoPause: true },
@@ -105,6 +108,11 @@ describe('settings', () => {
   it('parses patches strictly and reads rows leniently', () => {
     expect(parseSettingsPatch({ showTranslation: false })).toEqual({ showTranslation: false });
     expect(parseSettingsPatch({ showTranslation: 'no' })).toBeNull();
+    expect(parseSettingsPatch({ wordBoundaries: 'underline', romanizationSystem: 'rtgs' })).toEqual(
+      { wordBoundaries: 'underline', romanizationSystem: 'rtgs' },
+    );
+    expect(parseSettingsPatch({ wordBoundaries: 'dots' })).toBeNull();
+    expect(parseSettingsPatch({ romanizationPosition: 'left' })).toBeNull();
     expect(parseSettingsPatch([])).toBeNull();
     expect(
       settingsFromRows([

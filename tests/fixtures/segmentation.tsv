@@ -11,7 +11,7 @@ s009	seed:assistant	ผม|ไม่|เคย|มา|ที่นี่|มา|
 s010	seed:assistant	คุณแม่|บอก|ว่า|ให้|ใส่|น้ำปลา|นิดหน่อย	
 s011	seed:assistant	ตั้ง|กระทะ|ให้|ร้อน|ก่อน| |แล้ว|ค่อย|ใส่|น้ำมัน|ลง|ไป	cooking
 s012	seed:assistant	ผัด|ไป|เรื่อย|ๆ|จนกว่า|หมู|จะ|สุก	
-s013	seed:assistant	เสร็จ|แล้ว|ค่ะ| |ข้าวผัด|กุ้ง|ของ|เรา|หน้าตา|น่า|กิน|มาก	
+s013	seed:assistant	เสร็จ|แล้ว|ค่ะ| |ข้าวผัด|กุ้ง|ของ|เรา|หน้าตา|น่ากิน|มาก	ADR 0005: น่ากิน "tasty-looking" is a headword
 s014	seed:assistant	ทำไม|เขา|ถึง|ไม่|มา|ล่ะ	
 s015	seed:assistant	ไม่|รู้|เหมือนกัน| |เมื่อวาน|ก็|ไม่|ได้|คุย|กัน	
 s016	seed:assistant	ช่วย|พูด|ช้า|ๆ|หน่อย|ได้|ไหม|คะ	
@@ -21,16 +21,16 @@ s019	seed:assistant	ถ้า|อยาก|เก่ง|ต้อง|ฝึก|�
 s020	seed:assistant	นายกรัฐมนตรี|เดินทาง|ไป|ประชุม|ที่|ญี่ปุ่น|เมื่อ|เช้า|นี้	news
 s021	seed:assistant	พรุ่งนี้|จะ|มี|ฝน|ตก|หนัก|ใน|ภาคใต้	
 s022	seed:assistant	ประชาชน|ควร|เตรียมตัว|และ|ติดตาม|ข่าว|อย่าง|ใกล้ชิด	
-s023	seed:assistant	เธอ|ยัง|รัก|ฉัน|อยู่|หรือ|เปล่า	drama
+s023	seed:assistant	เธอ|ยัง|รัก|ฉัน|อยู่|หรือเปล่า	drama; ADR 0005: question tag หรือเปล่า is a headword
 s024	seed:assistant	ฉัน|ไม่|อยาก|เสียใจ|อีก|แล้ว	
 s025	seed:assistant	อย่า|ไป|นะ| |ได้โปรด	
-s026	seed:assistant	กิน|ข้าว|หรือ|ยัง|จ๊ะ	
+s026	seed:assistant	กินข้าว|หรือยัง|จ๊ะ	ADR 0005: กินข้าว "have a meal", หรือยัง are headwords
 s027	seed:assistant	วันเสาร์|นี้|ว่าง|มั้ย| |ไป|ดู|หนัง|กัน	
-s028	seed:assistant	โอเค|เจอ|กัน|ที่|ห้าง|ตอน|บ่าย|สอง|นะ	
+s028	seed:assistant	โอเค|เจอกัน|ที่|ห้าง|ตอนบ่าย|สอง|นะ	ADR 0005: time word ตอนบ่าย is a headword, like ตอนนี้, เจอกัน "see you" is a headword
 s029	seed:assistant	รถติด|มาก|เลย| |น่าจะ|ไป|สาย|แน่|ๆ	
 s030	seed:assistant	เดี๋ยว|ผม|จะ|ลอง|ใช้|โทรศัพท์|เครื่อง|ใหม่|ให้|ดู	review
 s031	seed:assistant	แบตเตอรี่|อยู่|ได้|ทั้ง|วัน|เลย|ครับ	
-s032	seed:assistant	กล้อง|ถ่ายรูป|ตอน|กลางคืน|ได้|ชัด|มาก	
+s032	seed:assistant	กล้องถ่ายรูป|ตอน|กลางคืน|ได้|ชัด|มาก	ADR 0005: กล้องถ่ายรูป "camera" is a headword
 s033	seed:assistant	ใคร|ที่|สนใจ|สามารถ|สั่งซื้อ|ได้|ที่|ลิงก์|ด้านล่าง	
 s034	seed:assistant	อาจารย์|ครับ| |คำ|นี้|อ่าน|ว่า|อะไร|ครับ	
 s035	seed:assistant	เวลา|พูด|กับ|ผู้ใหญ่|ต้อง|ใช้|คำ|สุภาพ|นะ	
@@ -40,12 +40,261 @@ s038	seed:assistant	แม่ค้า|บอก|ว่า|วันนี้|�
 s039	seed:assistant	เรา|มา|ถึง|สนามบิน|สุวรรณภูมิ|แล้ว|ค่ะ	travel
 s040	seed:assistant	เครื่องบิน|ดีเลย์|ไป|สอง|ชั่วโมง	
 s041	seed:assistant	ห้องพัก|สะอาด|และ|พนักงาน|ก็|ใจดี|มาก	
-s042	seed:assistant	ต้มยำ|กุ้ง|ร้าน|นี้|เด็ด|จริง|ๆ	
+s042	seed:assistant	ต้มยำกุ้ง|ร้าน|นี้|เด็ด|จริง|ๆ	ADR 0005: dish name = one word (headword)
 s043	seed:assistant	ใส่|พริก|เยอะ|ไป|หน่อย|เผ็ด|จน|น้ำตา|ไหล	
 s044	seed:assistant	ช่วง|นี้|งาน|ยุ่ง|มาก|ไม่|ค่อย|มี|เวลา|ทำ|คลิป	
-s045	seed:assistant	ขอบคุณ|ที่|ดู|จน|จบ|นะ|คะ| |แล้ว|เจอ|กัน|คลิป|หน้า|ค่ะ	outro
+s045	seed:assistant	ขอบคุณ|ที่|ดู|จน|จบ|นะ|คะ| |แล้ว|เจอกัน|คลิป|หน้า|ค่ะ	outro; ADR 0005: เจอกัน "see you" is a headword
 s046	seed:assistant	วันนี้|เรา|จะ|มา|สอน|ทำ|แกงเขียวหวาน|ไก่|แบบ|ง่าย|ๆ|ที่|บ้าน	asr-style, no spaces
 s047	seed:assistant	คือ|ว่า|ตอน|แรก|ผม|ก็|ไม่|ได้|คิด|อะไร|มาก|นะ|ครับ	asr-style, filler
 s048	seed:assistant	แต่|พอ|ได้|ลอง|จริง|ๆ|แล้ว|มัน|ไม่|ง่าย|อย่าง|ที่|คิด	asr-style
 s049	seed:assistant	สรุป|ก็|คือ|คุ้มค่า|มาก|ครับ	
 s050	seed:assistant	ฝาก|กด|ซับ|ไว้|ด้วย|นะ|คะ	slang loanword
+iH31BMKBEdU@2080	youtube:iH31BMKBEdU	สวัสดี|ครับ|วันนี้|ผม|มี|เรื่อง|ที่|อยาก|จะ|คุย	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@4080	youtube:iH31BMKBEdU	กับ|ทุก|คน|นะ|ครับ|ตอนนี้|ผม|อยู่|ข้างนอก|นะ|ครับ	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@6680	youtube:iH31BMKBEdU	ว่า|การ|เปลี่ยน|สภาพแวดล้ม|ก็|น่าจะ|ดี|แล้วก็	asr; real cue annotated by the coding assistant; needs native review; asr typo สภาพแวดล้ม for สภาพแวดล้อม, kept as one word
+iH31BMKBEdU@9000	youtube:iH31BMKBEdU	ผม|ก็|ได้รับ|เอ่อ|วิตามิน|ดี|ด้วย|นะ|ครับ|ไป|ด้วย	asr; real cue annotated by the coding assistant; needs native review; วิตามิน|ดี = vitamin D
+iH31BMKBEdU@11519	youtube:iH31BMKBEdU	อ่า|ตอนนี้|ผม|อยู่|จริง|ๆ|เมื่อกี้|เดิน|คลอง|อ่า	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@15400	youtube:iH31BMKBEdU	บางกะปิ|แถว|นี้|นะ|ครับ|แต่ว่า|โอ้โห|ร้อน|มาก	asr; real cue annotated by the coding assistant; needs native review; โอ้โห is one interjection (not in the dictionary)
+iH31BMKBEdU@18439	youtube:iH31BMKBEdU	ไม่|ไว|แล้ว|กล้อง|มัน|ก็|ไม่|ไหว|เหมือนกัน|ก็|เลย	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@20720	youtube:iH31BMKBEdU	มา|นั่ง|ตรงนี้|สัก|แป๊บ|นึง|แล้วก็|อัน|นี้|คือ	asr; real cue annotated by the coding assistant; needs native review; ตรงนี้ is a headword (adverb, like ที่นี่)
+iH31BMKBEdU@23359	youtube:iH31BMKBEdU	ที่|ร่ม|ที่|ผม|เจอ|แล้ว|นั่ง|ตรงนี้|เออ|จะ|มี|อะไร	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@28119	youtube:iH31BMKBEdU	ตก|ใน|น้ำ|หรือเปล่า	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@29960	youtube:iH31BMKBEdU	ก็|เลย|เอา|ถอสับ|ไว้|ตรงนี้|ดี|กว่า|จะ|ได้|ไม่	asr; real cue annotated by the coding assistant; needs native review; asr garble ถอสับ for โทรศัพท์, kept as one word
+iH31BMKBEdU@32759	youtube:iH31BMKBEdU	หลุด|ออก|จาก|กระเป๋า|แล้วก็|ตก|ใน|น้ำ|โอ้โห|แต่	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@35760	youtube:iH31BMKBEdU	นี่|แหละ|เรื่อง|ที่|ผม|อยาก|จะ|มา|คุย|นะ|ครับ|ก็	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@37920	youtube:iH31BMKBEdU	คือ|เรื่อง|ภาษาไทย|นั่นเอง|คือ|แบบ|ว่า|ผม|รู้	asr; real cue annotated by the coding assistant; needs native review
+pxLHURprYuI@15745	youtube:pxLHURprYuI	ร้องเพลง|พยัญชนะ|ไทย	manual; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@36280	youtube:0DVrEKzzYEQ	เห็นใจ|ของ|คน|อื่น|มาก|ขึ้น|เงี้ย	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@103439	youtube:0DVrEKzzYEQ	ดี|ด้วย|นะ|ครับ|ไป|ด้วย|อ่า	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@172519	youtube:0DVrEKzzYEQ	บอก|ว่า|ภาษาไทย|ยาก|เขา|ก็|เลย|ตั้ง|กำแพง|ไว้	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@235560	youtube:0DVrEKzzYEQ	>|>| |คิดถึง|มาก|ครับ|คิดถึง|มาก|ครับ|ที่|ไป|นี้|ที่	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@297440	youtube:0DVrEKzzYEQ	แบบ|ว่า|ไม่|ธรรมดา|ครับ|อ่า|แล้ว|มัน|ก็|ขึ้น|กับ	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@360919	youtube:0DVrEKzzYEQ	ประเด็น|ที่|คุณ|ลิโอ|กำลัง|พูด|อยู่|นี่|คือ|ความ	asr; real cue annotated by the coding assistant; needs native review; ลิโอ = the name Leo
+0DVrEKzzYEQ@424000	youtube:0DVrEKzzYEQ	คือ|แบบ|ผู้|ซับ|ไม่|ได้|อะไร|เกิด|อะไร|ที่|นู่น	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@545959	youtube:0DVrEKzzYEQ	ภาษาไทย|เรา|อาจ|จะ|เห็น|หลัก|ที่|มา|จาก|ภาษาเขมร	asr; real cue annotated by the coding assistant; needs native review; ที่|มา "that come", not ที่มา "origin"; language names like ภาษาไทย
+0DVrEKzzYEQ@613279	youtube:0DVrEKzzYEQ	มั้ย|เกม|ก็|เป็น|เป็น|ตัวอย่าง|ที่|ดี|นะ|คือ|ถ้า	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@689120	youtube:0DVrEKzzYEQ	คลิป|เป็น|ภาษาอังกฤษ|เนาะ|แต่|คุย|เรื่อง|ภาษา	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@774920	youtube:0DVrEKzzYEQ	ลีโอ|ว่า|ยังไง|ทำไม|ไม่|ออกเสียง|รอ	asr; real cue annotated by the coding assistant; needs native review; ออกเสียง "pronounce" is a headword
+0DVrEKzzYEQ@840120	youtube:0DVrEKzzYEQ	เจอ|มา|ใน|ชีวิต|เพื่อน|ผม|อ่า|แฟน|ครอบครัว|อะไร	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@922680	youtube:0DVrEKzzYEQ	ผม|เชื่อ|ว่า|ถ้า|อยาก|รู้จัก|คน|จริง|ๆ|พยายาม|พูด	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@985800	youtube:0DVrEKzzYEQ	อังกฤษ|เหมือนกัน|อ่า|แต่ว่า|ทุกวันนี้|มัน|ก็| |มัน	asr; real cue annotated by the coding assistant; needs native review; ทุกวันนี้ "nowadays" is lexicalized
+0DVrEKzzYEQ@1055919	youtube:0DVrEKzzYEQ	ไทย|คือ|ชีวิต|ผม|นั่น|แหละ|นั่น|แหละ|ครับ|คือ|ทุก	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@1125840	youtube:0DVrEKzzYEQ	ว่า|หลาย|คน|ก็|พูด|ได้|นะ|คือ|น่าจะ|เป็น	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@1197320	youtube:0DVrEKzzYEQ	ภาษา|กุญแจ|เข้า|สู่|ประสบการณ์|เข้า|สู่|สิ่ง	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@1269000	youtube:0DVrEKzzYEQ	เศร้า|นะ|แต่ว่า|แค่|แบบ|ชอบ|กังวล|อย่าง|เงี้ย	asr; real cue annotated by the coding assistant; needs native review
+0DVrEKzzYEQ@1341440	youtube:0DVrEKzzYEQ	กว้าง|ขึ้น|เปิด|ให้|มี|โอกาส|ใหม่|ๆ|มาก|ยิ่ง|ขึ้น	asr; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@30162	youtube:1pRtDpRJZdY	จริง| |ๆ| |วันนี้|คน|ที่|ขึ้น|เวที|นี้| |จะ|เป็น|คน|ที่|มี|ความ|เชี่ยวชาญ|ใน|เรื่อง|ต่าง| |ๆ	manual; real cue annotated by the coding assistant; needs native review; ความ|เชี่ยวชาญ: not a headword
+1pRtDpRJZdY@67993	youtube:1pRtDpRJZdY	โห|!| |อัน|นี้|มี|ปัญหา|ความรัก| |มาก|ขนาด|นี้|เชียว|เหรอ|คะ	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@106869	youtube:1pRtDpRJZdY	แย่|ที่สุด|ของ|คน|โสด| |แค่|หา|วิธี|แก้|เหงา| |ดี|กว่า|หา|วิธี|แก้|เศร้า| |ถ้า|เขา|คน|นั้น|ไม่|ใช่	manual; real cue annotated by the coding assistant; needs native review; คน|โสด: plain sum although Wiktionary has คนโสด
+1pRtDpRJZdY@146471	youtube:1pRtDpRJZdY	ตอน|ที่|ได้|ขึ้น|เวที|นี้| |ตื่นเต้น|และ|ดีใจ| |แล้วก็|คิด|ว่า	manual; real cue annotated by the coding assistant; needs native review; คิด|ว่า: plain sum although Wiktionary has คิดว่า
+1pRtDpRJZdY@198226	youtube:1pRtDpRJZdY	ปัญหา|อีก|อย่าง|หนึ่ง|ที่|ทำให้|คน|ฆ่าตัวตาย| |จาก|เรื่อง|ความรัก| |เพราะ|เรา|ขาด|คน|ฟัง|ค่ะ	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@242392	youtube:1pRtDpRJZdY	"|สวัสดี|ค่ะ| |พี่|อ้อย|พี่|ฉอด|คะ| |หนู|มี|ปัญหา|กับ|แฟน|ค่ะ| |ช่วง|นี้|ติดต่อ|ยาก|จัง|เลย	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@281156	youtube:1pRtDpRJZdY	มัน|เป็น|เรื่อง|แปลก|ที่|คน|ยุค|นี้| |เรา|เห็น|ว่า|การ|นอกใจ|มัน|กลายเป็น|เรื่อง|ปรกติ	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@322912	youtube:1pRtDpRJZdY	พี่|กบ|เล่า|ให้|ฟัง|ว่า|ไป|งานแต่งงาน|งาน|หนึ่ง| |ไป|เจอ|เจ้าบ่าว| |เจ้าบ่าว|ก็|เข้า|มา|จับ|มือ	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@360456	youtube:1pRtDpRJZdY	มัน|เป็น|ความ|แปลก|อย่าง|หนึ่ง| |เวลา|ที่|เรา|ทำ|ผิด|พร้อม| |ๆ| |กัน	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@397261	youtube:1pRtDpRJZdY	ใช่|ไหม|คะ| |เพราะฉะนั้น| |เมื่อไหร่|ก็ตาม|ที่| |มัน|เกิด|ความรู้สึก|แบบ|นี้|ขึ้น|มา	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@424013	youtube:1pRtDpRJZdY	คือ|โพล|นี้| |มี|คน|บอก|ว่า| |"|เฮ้ย|!| |อย่า|ไป|เชื่อ| |ไร้สาระ|"	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@460053	youtube:1pRtDpRJZdY	เขา|แต่งงาน|มา| |10| |ปี|แล้ว| |มี|ลูก|กับ|สามี|คน|นี้|หนึ่ง|คน	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@502720	youtube:1pRtDpRJZdY	ทุก|อย่าง|ก็|ยังคง|วน| |ๆ| |เวียน| |ๆ| |วน| |ๆ| |เวียน| |ๆ	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@551360	youtube:1pRtDpRJZdY	ชีวิต|ก็|ดี| |ดูแล|กัน|ไป| |ดูแล|กัน|มา|แบบ|นี้|ล่ะ|ค่ะ	manual; real cue annotated by the coding assistant; needs native review; ก็|ดี "is good", not the conjunction ก็ดี
+1pRtDpRJZdY@595363	youtube:1pRtDpRJZdY	ก็|เลย|ไป|สารภาพ|รัก|กับ|รุ่นพี่|ผู้ชาย|คน|นั้น|ว่า	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@635501	youtube:1pRtDpRJZdY	แน่นอน|ค่ะ|ว่า|ผู้หญิง|ก็|ต้อง| |มา|ถาม|เนอะ| |น้อง|ผู้ชาย|ตอบ|ว่า	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@665562	youtube:1pRtDpRJZdY	ไป|แอบ|ส่อง|พฤติกรรม|ของ|เขา| |แคป|ฯ| |หน้าจอ|ไลน์|ส่ง|ให้|ผู้หญิง	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@695614	youtube:1pRtDpRJZdY	เรา|อยู่|ข้าง| |ๆ| |ไม่|จำเป็น|ต้อง|เข้าข้าง	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@735067	youtube:1pRtDpRJZdY	อย่า|ให้|การ|รัก|เดียว|ใจ|เดียว|เป็น|เรื่อง| |มหัศจรรย์| |การ|นอกใจ|กัน|เป็น|เรื่อง|ปรกติ	manual; real cue annotated by the coding assistant; needs native review
+1pRtDpRJZdY@769441	youtube:1pRtDpRJZdY	ดูแล|คน|ที่|อยู่|ข้าง| |ๆ| |ตัว|เรา| |ให้|ดี|ที่สุด| |ทำ|ทุก|วัน|ให้|ดี|ที่สุด	manual; real cue annotated by the coding assistant; needs native review; ที่|อยู่ "who is", not ที่อยู่ "address"
+48A9SU6_bQ8@34986	youtube:48A9SU6_bQ8	เพิ่ง|เป็น|แอลกอฮอลิก|นะ|คะ	manual; real cue annotated by the coding assistant; needs native review; loanword "alcoholic" is one word
+48A9SU6_bQ8@72933	youtube:48A9SU6_bQ8	ด้วย|การ|ขูด|คางคก|ไม้| |"|แกรก| |แกรก| |แกรก|"	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@120476	youtube:48A9SU6_bQ8	เรา|เป็น|โรค|เอดส์	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@157520	youtube:48A9SU6_bQ8	แต่|พอ|นาง|ต้อง|ไป|ใส่|ชุด|ไทย|สมัย|อยุธยา| |นาง|จับ|คู่|กับ|รองเท้า|ส้น|ตึก	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@201225	youtube:48A9SU6_bQ8	ว่า|คน|อย่าง|เรา| |คิด|อะไร	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@235214	youtube:48A9SU6_bQ8	คือ|เรา|เลย|อยาก|จะ|เปรียบเทียบ| |เหมือน|เวลา|เรา|ดู|หนัง| |ดู|ละคร	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@273562	youtube:48A9SU6_bQ8	รัก|เพื่อน	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@312736	youtube:48A9SU6_bQ8	เออ| |ถ้า|เรา|เห็น|ฝั่ง|ที่|มี|ไฟ|เป็น|กลม| |ๆ	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@351766	youtube:48A9SU6_bQ8	คน|เรา|แปะ|ป้าย|กัน|ทำไม|ว่ะ	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@401704	youtube:48A9SU6_bQ8	มัน|ไม่|ได้|แย่|อะไร	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@438034	youtube:48A9SU6_bQ8	แต่|การ|แปะ|ป้าย|มัน|คือ|การ|ที่|บอก|ว่า	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@491503	youtube:48A9SU6_bQ8	การกระทำ|ของ|เขา|ก็|จะ|มี|ผลลัพธ์|เป็น| |X	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@533502	youtube:48A9SU6_bQ8	กะเทย| |มี|เพศสัมพันธ์|กับ|คน|มาก|หน้า|หลาย|ตา	manual; real cue annotated by the coding assistant; needs native review; มี|เพศสัมพันธ์: plain sum although Wiktionary has มีเพศสัมพันธ์
+48A9SU6_bQ8@572325	youtube:48A9SU6_bQ8	งาน|ไหน|เสิร์ฟ|ปลา|เต๋าเต้ย| |จะ|ยิ่ง|ยินดี|มาก|ขึ้น|ไป|อีก	manual; real cue annotated by the coding assistant; needs native review; เต๋าเต้ย = fish name
+48A9SU6_bQ8@615233	youtube:48A9SU6_bQ8	อะไร|ใน|โลก|นี้|ได้|เลย	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@652030	youtube:48A9SU6_bQ8	สำคัญ|ที่|คน|ที่|ถูก|แปะ|ป้าย|เนี่ย	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@689454	youtube:48A9SU6_bQ8	มัน|ไม่|นำ|ไป|สู่|การพัฒนา|อะไร	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@731095	youtube:48A9SU6_bQ8	เขา|มี|ลูก| |ที่|เป็น|อย่าง|เรา	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@771527	youtube:48A9SU6_bQ8	เรา|ต้อง|วิ่ง|ไป|บอก| |"|คุณแม่|คะ|"| |อะไร|อย่าง|งี้	manual; real cue annotated by the coding assistant; needs native review
+48A9SU6_bQ8@807127	youtube:48A9SU6_bQ8	(|เสียง|หัวเราะ|)	manual; real cue annotated by the coding assistant; needs native review; เสียง|หัวเราะ: plain sum although Wiktionary has เสียงหัวเราะ
+6FGHJxEx6Ts@34750	youtube:6FGHJxEx6Ts	สอง|ภาพ|นี้|จะ|ต่าง|กัน| |ที่|ฉาก|หลัง	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@83843	youtube:6FGHJxEx6Ts	เป็น|คำถาม|ที่|ผม|ถาม|ตัวเอง|มา|นาน|มาก| |แต่|ไม่|มี|ใคร|ตอบ|ได้	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@130573	youtube:6FGHJxEx6Ts	ก็|คือ| |คลอง|วัด|สามปลื้ม	manual; real cue annotated by the coding assistant; needs native review; สามปลื้ม = place name
+6FGHJxEx6Ts@167075	youtube:6FGHJxEx6Ts	นี่|คือ|ภาพ|เก่า|บริเวณ|ปาก|คลอง	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@210082	youtube:6FGHJxEx6Ts	ผม|ภูมิใจ| |และ|ผม|ก็|คิด|ได้|ว่า	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@255997	youtube:6FGHJxEx6Ts	เหมือน|เฮีย|เซ้ง| |ร้าน|กาแฟ|แถว|บ้าน|ผม	manual; real cue annotated by the coding assistant; needs native review; ร้าน|กาแฟ: plain sum although Wiktionary has ร้านกาแฟ
+6FGHJxEx6Ts@291507	youtube:6FGHJxEx6Ts	อย่าง|นี้|ครับ| |เป็น|ประวัติศาสตร์|บอก|เล่า| |ไม่|มี|หลักฐาน	manual; real cue annotated by the coding assistant; needs native review; อย่าง|นี้ like แบบ|นี้ (classifier + demonstrative)
+6FGHJxEx6Ts@329089	youtube:6FGHJxEx6Ts	ตลาด|ร้อย|ปี|สามชุก| |จังหวัด|สุพรรณบุรี	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@378713	youtube:6FGHJxEx6Ts	ก็|จะ|เห็น|ว่า|ที่นี่|เคย|เป็น|สวน|มา|ก่อน|ครับ	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@419764	youtube:6FGHJxEx6Ts	เป็น|ตัว|ช่วย|ที่|สนุก|มาก	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@479049	youtube:6FGHJxEx6Ts	นอกจาก|จะ|เปรียบเทียบ|สถานที่|นะ|ครับ	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@520354	youtube:6FGHJxEx6Ts	แล้ว|เมื่อก่อน|นี้| |ภาพถ่าย|นะ|ครับ	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@561832	youtube:6FGHJxEx6Ts	ภาพ|เก่า| |เรื่อง|เก่า|ให้|ค้นหา	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@605857	youtube:6FGHJxEx6Ts	ผม|คง|ไม่|ได้|มา|ยืน|อยู่|ตรงนี้| |อาจ|จะ|นั่ง|ขาย|เชือก|อยู่|ที่|บ้าน|ก็ได้|ครับ	manual; real cue annotated by the coding assistant; needs native review; sentence-final ก็ได้ "may as well" is a headword
+6FGHJxEx6Ts@642043	youtube:6FGHJxEx6Ts	ซอย|สมชัย	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@694904	youtube:6FGHJxEx6Ts	เช่น|ตอนนี้|เรา|อยู่|แขวง|ปทุมวัน| |เขต|ปทุมวัน	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@734425	youtube:6FGHJxEx6Ts	และ|นี่|ก็|คือ|ภาพ|ของ|วัด|สระ|ปทุมวัน| |เมื่อ| |70| |ปี|ก่อน|นะ|ครับ	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@784207	youtube:6FGHJxEx6Ts	ผม|บอก|เลย|ว่า| |คุณ|เป็น|คน|บางแค| |คุณ|ก็|ไป|แคร์|บาง| |คุณ	manual; real cue annotated by the coding assistant; needs native review
+6FGHJxEx6Ts@825082	youtube:6FGHJxEx6Ts	อด|ใจ|ไม่|ไหว|จริง| |ๆ| |ครับ| |อยาก|รู้|ว่า|เธอ|ไป|เดินเล่น|แถว|ไหน|นะ|ครับ	manual; real cue annotated by the coding assistant; needs native review; อด|ใจ: no headword
+6FGHJxEx6Ts@864073	youtube:6FGHJxEx6Ts	เรา|ใช้|ฟอร์แมต|เดียวกัน	manual; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@64159	youtube:iH31BMKBEdU	มัน|ก็|จะ|ใช้|เวลา|มัน|ก็|จะ|ใช้|ความ|มุ่งมั่น	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@111759	youtube:iH31BMKBEdU	ภาษาอังกฤษ|เวลา|คน|คุย|กัน|คือ	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@153400	youtube:iH31BMKBEdU	เงี้ย|ไม่|เหมือน|คน|ธรรมดา|ภาษาไทย|ก็|เป็น|ภาษา	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@199120	youtube:iH31BMKBEdU	แบบ|ว่า|เช่น|จีน|เงี้ย|คิด|ว่า|เค้า|ก็|คง|เรียน	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@248239	youtube:iH31BMKBEdU	เช่น|เอ่อ|คน|ที่|สนุก|กับ|การ|เอ่อ|ป่า|ลูกดอก	asr; real cue annotated by the coding assistant; needs native review; asr ป่า for ปา "throw"
+iH31BMKBEdU@293000	youtube:iH31BMKBEdU	ก็|เป็น|ภาษา|ที่|ยาก|มาก|อ่า|โดยเฉพาะ|สำหรับ|คน	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@340919	youtube:iH31BMKBEdU	เอ่อ|เป้าหมาย|ของ|เรา|มัน|คือ|อะไร|แล้ว|สำหรับ	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@390720	youtube:iH31BMKBEdU	ใคร|ก็ได้|ผม|ก็|เห็น|ว่า|จริง|ๆ|เขา|ก็|ออกเสียง	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@442240	youtube:iH31BMKBEdU	จะ|พูด|เหมือน|คอน|ไทย|นะ|คือ|ผม|ก็|จะ|ไม่|ยอม|พูด	asr; real cue annotated by the coding assistant; needs native review; asr คอน for คน
+iH31BMKBEdU@488479	youtube:iH31BMKBEdU	ภาษาไทย|ง่าย|กว่า|เอ่อ|แต่ว่า|ยังไง|ถ้า|มี|ลูก	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@534920	youtube:iH31BMKBEdU	ว่า|พูด|ภาษาอังกฤษ|ได้|เอ่อ|ใน|ระดับ|ที่|แบบ|พอ	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@589800	youtube:iH31BMKBEdU	โอ้โห|กล้า|มาก|ผม|ก็|ไม่|กล้า|หรอก|โอเค|น่าจะ|คุย	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@644600	youtube:iH31BMKBEdU	มา|เยี่ยม|ที่|ไทย|เนาะ|เขา|ก็|มา|เดิน|เส้น|นี้	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@699480	youtube:iH31BMKBEdU	เมื่อก่อน|ผม|ก็|มี|an|อน|xiety|มี|ปัญหา|จะ|ไม่|ใช่	asr; real cue annotated by the coding assistant; needs native review; asr mixes Latin into "anxiety"
+iH31BMKBEdU@751040	youtube:iH31BMKBEdU	เปลี่ยน|แล้ว|ผม|ก็|ไม่|ได้|เป็น|คน|ที่|ผม|เคย	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@803519	youtube:iH31BMKBEdU	เลย|เนาะ|แต่ว่า|ผม|ก็|มัน|ได้|มัน|ได้|ช่วย|แบบ|เบา	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@843440	youtube:iH31BMKBEdU	แต่|วัน|นั้น|ว่า|รู้สึก|ยังไง|อยาก|จะ|คิด|เป็น	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@890680	youtube:iH31BMKBEdU	แบบ|ว่า|อ่า|อวกาศ|ที่|ผม|ก็|ชอบ|คิด|ผม|อาจ|จะ|คิด	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@938519	youtube:iH31BMKBEdU	ภาษาไทย|เท่าไหร่|ใน|เวลา|คิด|หรือ|ว่า|เวลา|ฝัน	asr; real cue annotated by the coding assistant; needs native review
+iH31BMKBEdU@987440	youtube:iH31BMKBEdU	คิด|ยังไง|กับ|ภาษาไทย|ผม|ก็|รู้สึก|ยังไง|กับ	asr; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@64533	youtube:iz-tnQqDN_E	ชั่วโมง|ครึ่ง|!	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@208466	youtube:iz-tnQqDN_E	ฮานอย|ลาเต้|!	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@377366	youtube:iz-tnQqDN_E	น่ากิน|กว่า|ใน|รูป|อีก|ทุก|คน	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@530000	youtube:iz-tnQqDN_E	ตั้งแต่|ฝา|เพดาน	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@672833	youtube:iz-tnQqDN_E	แปลก|มาก|เลย|อะ|!	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@825000	youtube:iz-tnQqDN_E	แต่|อร่อย| |ๆ	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@997233	youtube:iz-tnQqDN_E	นก|โบยบิน	manual; real cue annotated by the coding assistant; needs native review; โบยบิน "soar" is one lexical item (โบย "whip" carries no meaning here); no Wiktionary entry
+iz-tnQqDN_E@1203100	youtube:iz-tnQqDN_E	เฮ้ย| |มัน|ป่วน|มาก|เลย|อะ|!| |/| |จังหวะ|ชุลมุน	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@1331133	youtube:iz-tnQqDN_E	แล้ว|หนู|ขอ|ชิม|ก่อน	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@1481733	youtube:iz-tnQqDN_E	อะ| |ทุก|คน	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@1619100	youtube:iz-tnQqDN_E	ว่า|เรา|ต้อง|ไป|แบบ|เทศกาล|ดนตรี	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@1739633	youtube:iz-tnQqDN_E	เดี๋ยว|เรา|ต้อง|ขับ|ไป|อีก|ร้าน|หนึ่ง	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@1908233	youtube:iz-tnQqDN_E	กะหล่ำปลี|ได้|แบบ|ดี|เลย|อะ	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@2041866	youtube:iz-tnQqDN_E	เอา|ไว้|ใน|รีสอร์ท|เลย|ทุก|คน	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@2185633	youtube:iz-tnQqDN_E	จน|แบบ| |เออ| |มัน|ก็|แบบ|ไม่|ได้|ซื้อ|มา|หรอก	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@2393033	youtube:iz-tnQqDN_E	เขา|บอก|ว่า|มา|ร้าน|นี้|นะ	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@2512766	youtube:iz-tnQqDN_E	มัน|จะ|มี|ความ|นัว| |ๆ| |คลั่ก| |ๆ| |เบา| |ๆ| |อ่อน| |ๆ	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@2691333	youtube:iz-tnQqDN_E	อัน|นี้|คือ|ไม่|ได้|นัด|นะ|ทุก|คน| |ไม่|ได้|นัด|!	manual; real cue annotated by the coding assistant; needs native review
+iz-tnQqDN_E@2860166	youtube:iz-tnQqDN_E	เฮีย|โก๊|เขา|จัด|เต็ม|กับข้า|มาก| |ๆ| |เลย|นะ	manual; real cue annotated by the coding assistant; needs native review; typo กับข้า for กับข้าว "dishes", kept as one word (ICU cut กับ|ข้า)
+iz-tnQqDN_E@3028700	youtube:iz-tnQqDN_E	เรียก|ว่า|เจอ|แน่| |ๆ	manual; real cue annotated by the coding assistant; needs native review; เรียก|ว่า: plain sum although Wiktionary has เรียกว่า
+PoautAigKP8@38815	youtube:PoautAigKP8	จาก|ยูโรเปียน|คัลเจอรัล|ฟาวน์เดชั่น| |ประเทศ|เนเธอแลนด์	manual; real cue annotated by the coding assistant; needs native review; one token per English loanword; เนเธอแลนด์ as spelled in the captions
+PoautAigKP8@107587	youtube:PoautAigKP8	บิดา|ชื่อ|นาย|โฉง| |กลั่นชื่น	manual; real cue annotated by the coding assistant; needs native review; surname กลั่นชื่น
+PoautAigKP8@167643	youtube:PoautAigKP8	มี|หลาย|ๆ| |ท่าน|บอก|ว่า| |ก็|ไม่|จริง|แท้	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@215158	youtube:PoautAigKP8	เรา|ใช้|วัฒนธรรม|ทั้งหมด|ครับ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@267150	youtube:PoautAigKP8	ถูก|ไหม|ครับ| |คำถาม|ก็|คือ|อะไร|ไม่|เหมาะสม|ครับ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@315409	youtube:PoautAigKP8	(|เสียง|หัวเราะ|)	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@368555	youtube:PoautAigKP8	(|เสียง|ปรบมือ|)	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@425779	youtube:PoautAigKP8	เรา|มี|ความเชื่อ|กัน|แบบ|นี้|ครับ| |มัน|เป็น|สิ่ง|ที่|สูง|ครับ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@473154	youtube:PoautAigKP8	(|เสียง|หัวเราะ|)	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@525441	youtube:PoautAigKP8	"|แล้ว|รำไทย|ของ|คุณ|ล่ะ| |คือ|อะไร|?|"	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@575915	youtube:PoautAigKP8	กลับ|มา|ก็|เป็น|อาจารย์| |สอน|อยู่|ที่|กรุงเทพ|ได้|ประมาณ|ปี|กว่า	manual; real cue annotated by the coding assistant; needs native review; ปี|กว่า (ICU cut ปีก|ว่า)
+PoautAigKP8@622801	youtube:PoautAigKP8	ที่|จะ|มี|บำนาญ|แบบ|ยาว| |ๆ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@672390	youtube:PoautAigKP8	อยาก|รำ| |อยาก|รำไทย| |อยาก|อยู่|ต่อ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@717249	youtube:PoautAigKP8	ไม่|เอา| |ผม|ไม่|ทำ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@767694	youtube:PoautAigKP8	ก็|ไม่|เห็น|มี|ปัญหา| |แล้ว|จะ|มา|จำกัด|ความคิด|ผม|ทำไม	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@821137	youtube:PoautAigKP8	มัน|ก็|เหลือ|แค่|มนุษย์	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@863993	youtube:PoautAigKP8	เรา|จะ|เห็น|ว่า|ระบบ|โครงสร้าง|ทั้งหมด| |ใน|นาฏศิลป์|ไทย|มัน|เป็น|เส้น|ครับ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@914539	youtube:PoautAigKP8	ที่|ไม่|มี|ความเชื่อ|ใด| |ๆ| |ซ่อน|อยู่	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@972522	youtube:PoautAigKP8	เรา|ลอง|ดู|สิ|ครับ	manual; real cue annotated by the coding assistant; needs native review
+PoautAigKP8@1022818	youtube:PoautAigKP8	ผม|ไม่|เคย|ปฏิเสธ|ความเชื่อ	manual; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@51280	youtube:SVj46JwYnB4	คู|ด้วยกัน|ครับ|ฤดูหนาว|นี้|แพลน|เที่ยว|มา|ให้	asr; real cue annotated by the coding assistant; needs native review; คู = cut-off fragment
+SVj46JwYnB4@146440	youtube:SVj46JwYnB4	ของกิน|เยอะ|มาก|มาก|เลย|ครับ|เหมือน|วัยรุ่น	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@240360	youtube:SVj46JwYnB4	คิดถึง|ตอน|แบบ|บ้าน|นาม่า|ตอน|เด็ก|ๆ|เหมือน	asr; real cue annotated by the coding assistant; needs native review; นาม่า: unclear asr word, kept whole
+SVj46JwYnB4@415160	youtube:SVj46JwYnB4	เอธิโอเปีย|ครับ	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@489919	youtube:SVj46JwYnB4	มา|มัน|มา|เอา|ชาเขียว|บัง	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@582320	youtube:SVj46JwYnB4	ดื่ม|โซดา|อะไร|อย่าง|งี้|ด้วย|ครับ|แล้วก็|มี	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@692720	youtube:SVj46JwYnB4	ขอ|พา|มา|ดู|ที่พัก|ก่อน|อัน|เนี้ย|จริง|ๆ|อยาก|มา	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@780600	youtube:SVj46JwYnB4	แอบ|ดู|หรอก| |เวลา|เพื่อน|อาบน้ำ	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@875519	youtube:SVj46JwYnB4	>|>| |ที่|ถัด|มา|ครับ|เสก| |MAP| |ขึ้น|มา|ที่นี่|ก็|ยอด	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@959680	youtube:SVj46JwYnB4	>|>| |แล้วก็|ชอบ|มาก|กลม|ๆ|สตูดิโอ|นะ|เนี่ย|คุณ|พี่|เขา	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@1034640	youtube:SVj46JwYnB4	ร้าน|ขาย|ยา|ตอน|เด็ก|ๆ|ที่|เปิด|แล้ว|ต้อง|ระวัง|ไฟ| |ดูด	asr; real cue annotated by the coding assistant; needs native review; ร้าน|ขาย|ยา: plain sum although Wiktionary has ร้านขายยา
+SVj46JwYnB4@1218080	youtube:SVj46JwYnB4	ครับ|ทิ้ง|มูท|เอา|ไว้	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@1320440	youtube:SVj46JwYnB4	>|>| |นี่|คน|เชียงใหม่|หรือ|ว่า|มา|เที่ยว	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@1410840	youtube:SVj46JwYnB4	ให้|ดี|นะ|ครับ|ที่|ตลาด|นี้|ปิด|วันจันทร์|นะ|อย่า	asr; real cue annotated by the coding assistant; needs native review; day names whole, like วันเสาร์
+SVj46JwYnB4@1503080	youtube:SVj46JwYnB4	โฮมเมด|มา|นะ|ครับ|เนี่ย|เมี|เยอะ|มาก|เลย|นะ|แล้ว	asr; real cue annotated by the coding assistant; needs native review; เมี: asr fragment
+SVj46JwYnB4@1602000	youtube:SVj46JwYnB4	เท่าไหร่|เหรอ|ครับ	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@1692480	youtube:SVj46JwYnB4	ก็|สะดุด|จมูก|นะ|ครับ|ด้วย|กลิ่น|ของ|ข้าวซอย|หอม	asr; real cue annotated by the coding assistant; needs native review
+SVj46JwYnB4@1787960	youtube:SVj46JwYnB4	เป็น|แบบ|ต่าง|ๆ|เนาะ|ไม่ว่า|จะ|มา|คนเดียว|พา	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@54140	youtube:uYEW8BeJ0zY	ปี|หลังจาก|นั้น|ก็|จบ|มหาลัย|ธรรมศาสตร์|คณะ|วารสาร|อินเตอร์|นะ|คะ|ก็|เลย|จะ|ได้|ใช้|ภาษาอังกฤษ|ใน|การเรียน|ตั้งแต่|อายุ|แบบ	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@63540	youtube:uYEW8BeJ0zY	แต่|ไม่|เคย|ไป|เรียน|ที่ไหน|มา|ก่อน|เลย|จริง|ไม่|ค่อย|ไป|เรียน|ที่|เรียน|มา|ก่อน|ศึกษา|เอง|ล้วน|ๆ|เลย	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@72509	youtube:uYEW8BeJ0zY	ที่|เรา|รู้สึก|ว่า|เออ|เรา|อยาก|ได้|ภาษา|ใหม่|เพราะว่า|เรียน|ภาษาจีน|ที่|โรงเรียน|แล้ว|คือ|ไม่|เข้า|หัว|เลย|ไม่|รู้เรื่อง|เลย|ลอง	asr; real cue annotated by the coding assistant; needs native review; เพราะว่า whole like แต่ว่า
+uYEW8BeJ0zY@162380	youtube:uYEW8BeJ0zY	Thailand| |Which| |วัคซีน|ควร|ไทย| |USA	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@231420	youtube:uYEW8BeJ0zY	ภาษาอังกฤษ|แล้วก็|มี|สอบ|ไทย|นะ|คะ|อัน|นี้|ก็|แล้วแต่|คน|แล้ว|บาง|คน|จะ|ชอบ|ดู|หนัง|ซาวด์แทร็ค|แบบ|ไม่|มี|ซับ|เค้า|รู้สึก|ว่า|จะ|เรียน|ได้|ไว|กว่า|แต่ว่า|อย่าง|จริง|อ่ะ|รู้สึก|ว่า|การ	asr; real cue annotated by the coding assistant; needs native review; แล้วแต่ "it depends" stays whole: its meaning has nothing to do with its parts
+uYEW8BeJ0zY@246269	youtube:uYEW8BeJ0zY	ถึง|แบบ|เนื้อหา|ที่|เขา|กำลัง|พูด|ถึง|อยู่|เป็น|จริง|ๆ|คิด|ว่า|ตัวเอง|ไม่|สามารถ|เดา	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@282720	youtube:uYEW8BeJ0zY	ได้|การ|ดู|หนัง|ดู|รายการ|ไรตี้|หรือ|ว่า|วีไลน์|ถึง|นี้|เรา|ก็|จะ|ได้|ฟัง|พวก|บท|สนทนา|ใน|ชีวิต|ประจำ|วัน|จริง|ๆ|มาก|กว่า|ไม่ว่า|จะ|เป็น|ทั้ง|แบบ	asr; real cue annotated by the coding assistant; needs native review; asr ไรตี้ (variety), วีไลน์ kept whole
+uYEW8BeJ0zY@422789	youtube:uYEW8BeJ0zY	ช่วง|เนี้ย|เรา|ก็|จะ|อ่าน|เอา|มันส์|เลย|เดี๋ยว|หา|แป๊บ|อย่างเช่น|อัน|นี้	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@477909	youtube:uYEW8BeJ0zY	นะ|คะ|เพราะว่า|ใน|นี้|กัน|นะ|นะ|เวลา|เรา|ซื้อ	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@499000	youtube:uYEW8BeJ0zY	ได้|เรา|สามารถ|รู้|ได้|ว่า|เขา|ใช้|คำ|นั้น|กับ|ประโยค|อะไร|บ้าง|แต่|ถ้า|สมมติ|เรา|ไป|ต่างประเทศ|แล้ว|เห็น|ป้าย|อะไร|ที่|เรา|ไม่|เข้าใจ|จริง|ๆ|เรา|สามารถ|ใช้| |Google| |Translate	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@600399	youtube:uYEW8BeJ0zY	เสพ|สื่อ|ภาษา|นั้น|เยอะ|ๆ|นะ|คะ|ไม่ว่า|จะ|เป็น|ตัวอักษร|ภาพ|เสียง|อย่าง|นี้|จะ|ใช้|โปรแกรม|ใช้	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@608380	youtube:uYEW8BeJ0zY	ปี|เลย|เนี้ย|เรา|ก็|ตั้ง|ค่า|เกม|ของ|เรา|เป็น|ภาษาอังกฤษ|ทั้งหมด|เลย	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@627299	youtube:uYEW8BeJ0zY	3| |ใน|ภาษาไทย|ก็| |1| |2| |3	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@717180	youtube:uYEW8BeJ0zY	ใช้|นะ|คือ|อย่าง|ตอน|ที่|เรา|พยายาม|เรียน|ภาษาเกาหลี|เงี้ย|เรา|จะ|เรียน|ภาษาเกาหลี|เป็น|ภาษาอังกฤษ|นะ|คะ|คือ|ถ้า|อยาก|รู้|อะไร|เรา|จะ	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@745420	youtube:uYEW8BeJ0zY	หมอ|เขา|ยัง|ภาษาอังกฤษ|เงี้ย|เรา|ได้|จาก|การเรียน|โรงเรียน|นานาชาติ|แต่ว่า|ภาษาเกาหลี|เนี้ย|เท่า|ที่|เรา	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@769060	youtube:uYEW8BeJ0zY	แล้ว|อ่ะ|เรา|ก็|เลย|คิด|ว่า|เออ|ของ|ที|เรา|ก็|ไม่|ต้อง|คือ|ทั้งหมด|ก็ได้|ก็|เลย|ยัง|ไม่|ซื้อ|อะไร|มา|สัก|อย่าง|เลย|ก็|ยัง|หา|ความรู้|ทุก|อย่าง|แต่	asr; real cue annotated by the coding assistant; needs native review
+uYEW8BeJ0zY@777459	youtube:uYEW8BeJ0zY	นะ|คะ|ใคร|ที่|ยัง|ไม่|ได้|ทรัพย์|ที่|ฉัน| |Nothing	asr; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@31208	youtube:VbN95rNUh2U	เช่า|มอเตอร์ไซค์	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@87866	youtube:VbN95rNUh2U	บน|รถไฟ| |ไม่|ได้	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@160966	youtube:VbN95rNUh2U	สำหรับ|ใคร|นะ|ที่|ลืม|เอา|เมม|มา|ก็|คือ|ไม่|ต้อง|กังวล	manual; real cue annotated by the coding assistant; needs native review; เมม = memory card
+VbN95rNUh2U@238066	youtube:VbN95rNUh2U	อัน|นี้|เนี่ย|ก็|ถือ|ว่า|คุ้มค่า|มาก|เลย|ค่ะ	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@318900	youtube:VbN95rNUh2U	เงียบ|สงบ|มาก|ๆ	manual; real cue annotated by the coding assistant; needs native review; เงียบ|สงบ: plain sum although Wiktionary has เงียบสงบ
+VbN95rNUh2U@376933	youtube:VbN95rNUh2U	อัน|นี้|ก็|จะ|มี|แบบ|คน|ดูแล|นะ	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@471525	youtube:VbN95rNUh2U	อาหารทะเล|สด|มาก	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@557733	youtube:VbN95rNUh2U	เอ๋ย|จะ|ไป|ที่พัก|โรงแรม	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@635033	youtube:VbN95rNUh2U	แล้วก็|ค่อนข้าง|แบบ	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@684900	youtube:VbN95rNUh2U	โอน|เท่านั้น	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@747453	youtube:VbN95rNUh2U	เฮ้ย| |เอา|จริง|ๆ|คือ|คุ้ม|นะ	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@823766	youtube:VbN95rNUh2U	แต่ว่า|ดัน|หยิบ| |Gopro| |มา|แทน	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@891261	youtube:VbN95rNUh2U	นี่|เขา|มี|แบบ	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@970974	youtube:VbN95rNUh2U	นี่|หาด|ถ้ำพัง	manual; real cue annotated by the coding assistant; needs native review; ถ้ำพัง = beach name
+VbN95rNUh2U@1051684	youtube:VbN95rNUh2U	เรา|เจอ|ท่าน|ไบค์เกอร์	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@1100079	youtube:VbN95rNUh2U	แล้วก็|แบตเตอรี่|เนี่ย|นาน|กว่า	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@1174818	youtube:VbN95rNUh2U	อย่าง|เนิ่นนาน	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@1270886	youtube:VbN95rNUh2U	ตอน|ออก|ไป|หนู|ไม่|ได้|ปิด|ทีวี|เหรอ	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@1372033	youtube:VbN95rNUh2U	เงียบ|กว่า|ตอนเย็น	manual; real cue annotated by the coding assistant; needs native review
+VbN95rNUh2U@1428479	youtube:VbN95rNUh2U	ใน|ช่วง|วันหยุด|ที่|เต็ม|ไป|ด้วย|พลัง|ค่ะ	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@34059	youtube:wD3NSzYtsMc	แต่|จริง|ๆ| |แล้ว|บ้านเกิด| |เมื่อ| |48| |ปี|ที่แล้ว	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@83270	youtube:wD3NSzYtsMc	ส่วน|แม่|หลวงพี่|ถาม|ว่า| |"|ตาม|หา|อะไร|อยู่	manual; real cue annotated by the coding assistant; needs native review; หลวงพี่: term of address, whole like คุณแม่
+wD3NSzYtsMc@133159	youtube:wD3NSzYtsMc	การงาน| |เพื่อนร่วมงาน| |ดี|ใน|ระดับ|ที่|หลวงพี่|พอใจ	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@182437	youtube:wD3NSzYtsMc	วัน|ที่|หลวงพี่|พบ|อยู่|บน|นั้น| |มอง|ลง|มา|แล้ว|หลวงพี่|พบ|ว่า	manual; real cue annotated by the coding assistant; needs native review; วัน|ที่ "the day that", not วันที่ "date"
+wD3NSzYtsMc@228012	youtube:wD3NSzYtsMc	ขับ|รถ|มา|หา|หลวงพี่|ที่|บ้าน	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@273626	youtube:wD3NSzYtsMc	ที่|ปฏิบัติ|ธรรม|อยู่|ที่|ฝรั่งเศส|ด้วย	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@321028	youtube:wD3NSzYtsMc	หลวงพ่อ|ถาม|ว่า	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@360441	youtube:wD3NSzYtsMc	หลวงพี่|พบ|ว่า|มัน|มี| |2| |ส่วน|ผสม|กัน	manual; real cue annotated by the coding assistant; needs native review; ส่วน|ผสม|กัน "parts blend together", not ส่วนผสม "ingredient"
+wD3NSzYtsMc@403891	youtube:wD3NSzYtsMc	คง|ไม่|สวย|ใช่|ไหม| |หลวงพี่|คิด|ว่า|ไม่|สวย|เลย	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@446570	youtube:wD3NSzYtsMc	เวลา|หลวงพี่|เจอ|ปูน|เยอะ|ๆ| |หลวงพี่|มึน	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@498667	youtube:wD3NSzYtsMc	ถือ|ว่า|เป็น|การ|กล่าว|ต้อนรับ|เด็ก|ใหม่|ว่า	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@541482	youtube:wD3NSzYtsMc	(|เสียง|หัวเราะ|)	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@585150	youtube:wD3NSzYtsMc	เพราะฉะนั้น|ศิลปะ|ใน|การมี|ความสุข	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@627540	youtube:wD3NSzYtsMc	วันนี้|หลวงพี่|กลาย|มา|เป็น| |พนักงาน|ก่อสร้าง|ที่|ไม่|มี|ทักษะ	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@669180	youtube:wD3NSzYtsMc	หลวงพี่|พา|เด็ก|เก็บ|อะไร|ต่าง|ๆ	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@722526	youtube:wD3NSzYtsMc	ถ้า|หลวงพี่|ถอย|ออก|มา|นิด|หนึ่ง| |แล้ว|พอใจ|ใน|สิ่ง|ที่|หลวงพี่|มี	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@767360	youtube:wD3NSzYtsMc	ไม่|มี|อะไร|รบกวน|ความสงบสุข|ของ|เรา| |เท่ากับ|ความคิด	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@814226	youtube:wD3NSzYtsMc	หลวงพี่|ได้|พบ|สิ่ง|ใหม่| |ก็|คือ|ตัวเอง	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@866136	youtube:wD3NSzYtsMc	และ|บ้าน|เหล่า|นี้|เป็น|บ้าน| |ใน|มูลนิธิ|ของ|คน|คริสต์|ด้วย	manual; real cue annotated by the coding assistant; needs native review
+wD3NSzYtsMc@910003	youtube:wD3NSzYtsMc	เรา|จะ|พบ|กับ|ความจริง|ของ|ชีวิต| |ว่า|เรา|ไม่|ได้|เป็น|อะไร|เลย	manual; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@23199	youtube:xV8fgU3Hczk	กำลัง|อยู่|ใน|ระบบ|ที่|เก่ง|มาก|ใน|การ|ที่|ให้|เรา	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@66200	youtube:xV8fgU3Hczk	คือ|ภาพ|ใน|หัว|ของ|เรา|เนี่ย|มัน|มา|จาก|ไหน|ส่วน	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@110360	youtube:xV8fgU3Hczk	ไหล|อยาก|แค่|จะ|ไถ|ฟีด|ออก|ไป|นั่ง|คาเฟ่|ซื้อ|ของ	asr; real cue annotated by the coding assistant; needs native review; ซื้อ|ของ: plain sum although Wiktionary has ซื้อของ
+xV8fgU3Hczk@153280	youtube:xV8fgU3Hczk	นะ|คะ|เพราะว่า|ทุก|ๆ|เดือน|นะ|คะ|มี|บิน|รอ|จ่าย	asr; real cue annotated by the coding assistant; needs native review; asr บิน for บิล "bill"
+xV8fgU3Hczk@196400	youtube:xV8fgU3Hczk	รุ่น|ใหม่|ก็|ออก|มา|แล้ว|เซรั่ม|ที่|มี|ใช้|ดี|อยู่	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@238040	youtube:xV8fgU3Hczk	New| |Normal| |หรือ|ว่า|ความ|ปกติ|สำหรับ|เรา	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@276479	youtube:xV8fgU3Hczk	ใน|สังคม|ปัจจุบัน|นี่|แหละ|แต่| |factor| |นะ|คะ	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@321479	youtube:xV8fgU3Hczk	มัน|ราคา|ถูก|ทั้ง|ๆ|ที่|ราคา|มัน|ไม่|ได้|เปลี่ยน	asr; real cue annotated by the coding assistant; needs native review; ราคา|ถูก: plain sum although Wiktionary has ราคาถูก
+xV8fgU3Hczk@361479	youtube:xV8fgU3Hczk	บาง|แอป|คือ|ไม่|ต้อง|มี|สลิป|เงินเดือน|เลย|มัน	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@408960	youtube:xV8fgU3Hczk	คือ|การ| |treat| |yourself| |หรือ|เรา|รู้สึก|ว่า	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@450160	youtube:xV8fgU3Hczk	บ้าง|นะ|คะ|เรา|มี|ประมาณ| |7| |ข้อ|นะ|คะ|ที่|รู้สึก	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@496639	youtube:xV8fgU3Hczk	ปิด|ให้|เร็ว|ที่สุด|ซึ่ง|วิธีการ|โปะ|หนี้|นะ|คะ	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@537800	youtube:xV8fgU3Hczk	การเพิ่ม|ฟิกชั|หรือ|ว่า|แรง|เสียทาน|ใน|การ|ซื้อ	asr; real cue annotated by the coding assistant; needs native review; asr ฟิกชั (friction), typo เสียทาน for เสียดทาน, each kept whole
+xV8fgU3Hczk@582640	youtube:xV8fgU3Hczk	beuty| |ใน|เรื่อง| |text| |แล้วก็|เรา|รู้|ว่า|เขา	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@624440	youtube:xV8fgU3Hczk	list| |เรา|ค่ะ|บอก|ไว้|เลย|ว่า|วิธี|เนี้ย|ทุก|คน	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@668880	youtube:xV8fgU3Hczk	ตัวเลข|ต่อ|เดือน|ให้|ตัวเอง|เลย|ก็|คือ|จะ|ไม่|ใช้	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@711079	youtube:xV8fgU3Hczk	ไม่|มี|หนี้|เลย|แล้ว|ฉัน|กำลัง|จะ|ทำ|พอร์ต|การ|ลง	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@754880	youtube:xV8fgU3Hczk	รู้สึก|ว่า|เรา|ขอ|ปี|ละ|ทริป| |2| |ทริป|พอ|แล้ว|เวลา	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@805120	youtube:xV8fgU3Hczk	ตอนนี้|แบบ|การใช้|เงิน|ของ|เรา|อ่ะ|มัน|ยัง|โอเค	asr; real cue annotated by the coding assistant; needs native review
+xV8fgU3Hczk@847040	youtube:xV8fgU3Hczk	ว่า|จะ|เป็น|อีก|หนึ่ง|คลิป|นะ|ที่|ทำให้|ทุก|คน|ได้	asr; real cue annotated by the coding assistant; needs native review
