@@ -13,6 +13,7 @@ import type {
 import type { Settings } from '../settings';
 import { cacheKey, type AiCache } from './cache';
 import { AiFailure, PLAN_FALLBACK } from './errors';
+import { defaultPlanModel } from './models';
 import { parsePartialJson } from './partial-json';
 import type { Prompt } from './prompts/types';
 import type { AIProvider, StreamRequest } from './providers';
@@ -93,15 +94,15 @@ export function createAiService(deps: AiServiceDeps): AiService {
     return models;
   }
 
-  /** The model to use; the plan's default is the first one OpenAI lists (plan §8.4). */
+  /** The model to use; the plan's default comes from OpenAI's list (ADR 0015). */
   async function model(id: AiProviderId, settings: Settings, cachedOnly: boolean) {
     if (id === 'openai-api-key') return settings.aiModelApiKey || undefined;
     if (settings.aiModelChatGpt) return settings.aiModelChatGpt;
     if (cachedOnly) return deps.models.get(id);
-    const first = (await listModels(id))[0];
-    if (!first) throw new AiFailure('unsupported', 'OpenAI lists no models for this account');
-    await deps.models.set(id, first.slug);
-    return first.slug;
+    const chosen = defaultPlanModel(await listModels(id));
+    if (!chosen) throw new AiFailure('unsupported', 'OpenAI lists no models for this account');
+    await deps.models.set(id, chosen.slug);
+    return chosen.slug;
   }
 
   async function slot(): Promise<() => void> {

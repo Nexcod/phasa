@@ -18,7 +18,8 @@ usually a spike), **Accepted**, **Superseded by NNNN**. Never rewrite an accepte
 | [0011](0011-video-analysis-and-onboarding.md)  | Video analysis in the SW; top-N / import onboarding; change signal         | Accepted (badge wording, ASR artifacts: 0012; level cap: 0013)                |
 | [0012](0012-badge-counts-and-asr-artifacts.md) | Badge counts distinct new words; ASR elongations and fragments don't count | Accepted                                                                      |
 | [0013](0013-level-capped-by-delivery.md)       | The level is capped one above the delivery (speech rate, line length)      | Accepted                                                                      |
-| [0014](0014-ai-and-account.md)                 | AI: credentials in the extension's IndexedDB, requests, streaming, cache   | Accepted                                                                      |
+| [0014](0014-ai-and-account.md)                 | AI: credentials in the extension's IndexedDB, requests, streaming, cache   | Accepted (default model: 0015)                                                |
+| [0015](0015-default-plan-model.md)             | GPT-6-Luna is the ChatGPT plan's default model when listed                 | Accepted                                                                      |
 
 ## Template
 

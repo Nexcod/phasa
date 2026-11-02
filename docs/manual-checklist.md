@@ -29,7 +29,8 @@ All items passed on 2026-11-02, together with the network e2e (Every phase).
       chooser, the agent name ("Phasa"), consent with "Use your ChatGPT plan". Then Phasa's page:
       "Connected ✓ as …", "You're using your ChatGPT plan", and its address bar shows no `code=`.
       "Got it" closes the tab; the options page says "Signed in as …" without a reload, and the
-      model list's default names the first model.
+      model list's default names GPT-6-Luna, or the first model if OpenAI lists no GPT-6-Luna
+      (ADR 0015).
 - [x] **Explain.** On a video with Thai subtitles click a word: under the dictionary part,
       "Explain in context" and "Translate the line" with "Using ChatGPT plan · Manage usage".
       Explain: the meaning appears first and the rest follows within seconds; it fits this line.

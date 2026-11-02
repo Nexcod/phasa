@@ -153,6 +153,8 @@ export interface FakeOpenAi {
     /** Lifetime of new access tokens, seconds. */
     expiresIn: number;
     subject: string;
+    /** The plan's `/v1/models` entries, in OpenAI's order. */
+    planModels: { slug: string; display_name: string; visibility: string }[];
   };
   /** Makes every refresh token unusable (as after a revocation in ChatGPT settings). */
   revokeAll(): void;
@@ -172,6 +174,11 @@ export async function createFakeOpenAi(): Promise<FakeOpenAi> {
     planScope: true,
     expiresIn: 3600,
     subject: SUBJECT,
+    planModels: [
+      { slug: 'gpt-fake-sol', display_name: 'GPT-Fake-Sol', visibility: 'list' },
+      { slug: 'gpt-fake-hidden', display_name: 'Hidden', visibility: 'hide' },
+      { slug: 'gpt-fake-luna', display_name: 'GPT-Fake-Luna', visibility: 'list' },
+    ],
   };
 
   const scopeOf = () =>
@@ -322,13 +329,7 @@ export async function createFakeOpenAi(): Promise<FakeOpenAi> {
         const route = authorized(request);
         if (typeof route !== 'string') return route;
         return route === 'plan'
-          ? json(200, {
-              models: [
-                { slug: 'gpt-fake-sol', display_name: 'GPT-Fake-Sol', visibility: 'list' },
-                { slug: 'gpt-fake-hidden', display_name: 'Hidden', visibility: 'hide' },
-                { slug: 'gpt-fake-luna', display_name: 'GPT-Fake-Luna', visibility: 'list' },
-              ],
-            })
+          ? json(200, { models: options.planModels })
           : json(200, {
               object: 'list',
               data: [

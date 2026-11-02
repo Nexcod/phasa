@@ -1145,18 +1145,18 @@
     "message": "Model",
     "description": "Label of a model picker."
   },
-  "accountModelFirst": {
-    "message": "Default: $NAME$ (first in OpenAI's list)",
-    "description": "Empty choice of the ChatGPT-plan model picker.",
+  "accountModelDefault": {
+    "message": "Default: $NAME$",
+    "description": "Empty choice of the ChatGPT-plan model picker: GPT-6-Luna if listed, else the first model.",
     "placeholders": {
       "name": {
         "content": "$1",
-        "example": "GPT-6.1-Sol"
+        "example": "GPT-6-Luna"
       }
     }
   },
-  "accountModelFirstPlain": {
-    "message": "Default: first in OpenAI's list",
+  "accountModelDefaultPlain": {
+    "message": "Default",
     "description": "Empty choice of the ChatGPT-plan model picker while the list loads."
   },
   "accountModelChoose": {

@@ -44,7 +44,7 @@ describe('AI service', () => {
       status: 'ok',
       cached: false,
       provider: 'chatgpt-plan',
-      // The default model: the first one OpenAI lists.
+      // The default model: the first one OpenAI lists, as GPT-6-Luna isn't among them.
       model: 'gpt-fake-sol',
       value: {
         meaning: WORD_ANSWER.meaning_in_context,
@@ -86,6 +86,24 @@ describe('AI service', () => {
     expect(await h.ai.run(EXPLAIN_WORD, PARAMS, { cachedOnly: true })).toMatchObject({
       status: 'ok',
       cached: true,
+    });
+  });
+
+  it('defaults to GPT-6-Luna when OpenAI lists it, also for cache lookups', async () => {
+    h.openai.options.planModels = [
+      { slug: 'gpt-6.1-sol', display_name: 'GPT-6.1-Sol', visibility: 'list' },
+      { slug: 'GPT-6-Luna', display_name: 'GPT-6-Luna', visibility: 'list' },
+    ];
+    await h.signIn();
+    expect(await h.ai.run(EXPLAIN_WORD, PARAMS)).toMatchObject({
+      status: 'ok',
+      model: 'GPT-6-Luna',
+    });
+    expect(h.openai.responsesBodies[0]).toMatchObject({ model: 'GPT-6-Luna' });
+    expect(await h.ai.run(EXPLAIN_WORD, PARAMS, { cachedOnly: true })).toMatchObject({
+      status: 'ok',
+      cached: true,
+      model: 'GPT-6-Luna',
     });
   });
 

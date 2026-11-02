@@ -24,7 +24,7 @@ export interface Settings {
   /** Opening a word pauses the video; closing resumes it (docs/plan.md §10). */
   pauseOnLookup: boolean;
   aiProvider: AiProviderSetting;
-  /** Model slug for the ChatGPT plan; empty = the first model OpenAI lists (plan §8.4). */
+  /** Model slug for the ChatGPT plan; empty = the default from OpenAI's list (ADR 0015). */
   aiModelChatGpt: string;
   /** Model id for the API key; empty = not chosen yet (the user pays, so no silent default). */
   aiModelApiKey: string;

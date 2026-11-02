@@ -5,6 +5,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { browser } from 'wxt/browser';
+import { defaultPlanModel } from '@/src/ai/models';
 import { t } from '@/src/i18n';
 import type { AccountView, AiModel, AiProviderId } from '@/src/messaging/ai';
 import type { Client } from '@/src/messaging/client';
@@ -92,7 +93,7 @@ function ModelPicker({
   list: ModelList;
   value: string;
   onChange: (slug: string) => void;
-  /** The empty choice: "first in the list" for the plan, "choose one" for the key. */
+  /** The empty choice: the default model for the plan, "choose one" for the key. */
   defaultLabel: string;
   testId: string;
 }) {
@@ -212,7 +213,7 @@ function ChatGptBlock({
       },
     );
   };
-  const first = models.state === 'ready' ? models.models[0] : undefined;
+  const fallback = models.state === 'ready' ? defaultPlanModel(models.models) : undefined;
 
   return (
     <div className="account__block" data-testid="phasa-account-chatgpt" data-state={chatgpt.state}>
@@ -233,7 +234,9 @@ function ChatGptBlock({
                   value={settings.aiModelChatGpt}
                   onChange={(slug) => update({ aiModelChatGpt: slug })}
                   defaultLabel={
-                    first ? t('accountModelFirst', first.displayName) : t('accountModelFirstPlain')
+                    fallback
+                      ? t('accountModelDefault', fallback.displayName)
+                      : t('accountModelDefaultPlain')
                   }
                   testId="phasa-account-model-plan"
                 />
