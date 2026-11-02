@@ -27,7 +27,7 @@ policy in `.npmrc` ([ADR 0008](docs/decisions/0008-npm.md)).
 
 ```sh
 npm install
-npm run dev        # dev build with HMR into .output/chrome-mv3-dev
+npm run dev        # dev build with HMR into .output/chrome-mv3-dev (keep it running: its pages load from the dev server)
 npm run build      # production build into .output/chrome-mv3
 npm run zip        # store-ready zip
 ```

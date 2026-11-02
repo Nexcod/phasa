@@ -14,7 +14,10 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
 ## Phase 5 — AI
 
 Needs a ChatGPT Plus or Pro account. Use a development build (`npm run dev`, load
-`.output/chrome-mv3-dev`) for the token item, the production build for the rest. Keep DevTools
+`.output/chrome-mv3-dev`) for the token item, the production build for the rest. Keep `npm run dev`
+running while you use the development build: its side panel and options page load their code from
+the dev server and stay blank without it. It is a separate extension, so sign in there again and
+turn the production build off meanwhile. Keep DevTools
 of the service worker open (`chrome://extensions` → Phasa → "service worker") on its Network tab:
 requests to OpenAI show there, and nothing should go to OpenAI unless you ask. Write down what
 OpenAI shows at each sign-in: docs and spike disagree (ADR 0014).
