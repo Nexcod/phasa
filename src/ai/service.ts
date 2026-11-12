@@ -284,8 +284,9 @@ export function createAiService(deps: AiServiceDeps): AiService {
         }
         const key = await cacheKey(prompt.name, prompt.version, slug, prompt.cacheInput(params));
         const hit = await deps.cache.get(key);
-        if (hit) {
-          return { status: 'ok', value: hit.value as T, cached: true, provider: id, model: slug };
+        // An answer of another shape (an older app, a hand-edited backup) is asked again.
+        if (hit && prompt.isValue(hit.value)) {
+          return { status: 'ok', value: hit.value, cached: true, provider: id, model: slug };
         }
         if (options.cachedOnly) continue;
         if (rateLimited(options.tabId)) {

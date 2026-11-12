@@ -46,6 +46,11 @@ function setup(
       throw new RpcFailure('bad_request', 'not in this test');
     },
     'segrules/delete': () => ({ deleted: false }),
+    'data/export': () => {
+      throw new RpcFailure('bad_request', 'not in this test');
+    },
+    'data/import': () => ({ summary: { added: 0, updated: 0, unchanged: 0, skipped: 0 } }),
+    'data/export-words': () => ({ text: '', count: 0 }),
     ...handlers,
   };
   const server = createServer(all, { extensionOrigin: EXT, swStartedAt: 1 });

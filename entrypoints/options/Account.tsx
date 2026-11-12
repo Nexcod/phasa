@@ -3,30 +3,16 @@
  * (docs/plan.md §8, §12 phase 5; ADR 0003, ADR 0014). Tokens and the key stay in the service
  * worker: this page sees the email and a key hint only.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { browser } from 'wxt/browser';
+import { useEffect, useRef, useState } from 'react';
 import { defaultPlanModel } from '@/src/ai/models';
 import { t } from '@/src/i18n';
 import type { AccountView, AiModel, AiProviderId } from '@/src/messaging/ai';
 import type { Client } from '@/src/messaging/client';
 import type { Settings } from '@/src/settings';
 import { ManageUsageLink } from '@/src/ui/ai/AiAnswer';
+import { ContinueWithChatGpt } from '@/src/ui/ai/ContinueWithChatGpt';
+import { useAccount } from '@/src/ui/ai/useAccount';
 import { useSettings } from '@/src/ui/useSettings';
-
-function useAccount(client: Client): { view: AccountView | null; reload: () => void } {
-  const [view, setView] = useState<AccountView | null>(null);
-  const reload = useCallback(() => {
-    client.request('account/get', {}).then(setView, () => undefined);
-  }, [client]);
-  useEffect(() => {
-    const unsubscribe = client.onEvent((event) => {
-      if (event.type === 'ai/changed' || event.type === 'sw/hello') reload();
-    });
-    reload();
-    return unsubscribe;
-  }, [client, reload]);
-  return { view, reload };
-}
 
 type ModelList = { state: 'loading' } | { state: 'ready'; models: AiModel[] } | { state: 'error' };
 
@@ -52,35 +38,6 @@ function useModels(client: Client, provider: AiProviderId, enabled: boolean): Mo
     };
   }, [client, provider, enabled]);
   return stored?.provider === provider ? stored.list : { state: 'loading' };
-}
-
-function ContinueWithChatGpt({ onClick, busy }: { onClick: () => void; busy: boolean }) {
-  return (
-    <button
-      type="button"
-      className="phasa-siwc"
-      data-oai-siwc-button=""
-      data-testid="phasa-siwc-button"
-      disabled={busy}
-      onClick={onClick}
-    >
-      <img
-        className="phasa-siwc__logo phasa-siwc__logo--light"
-        src={browser.runtime.getURL('/brand/chatgpt-logo-white.svg')}
-        alt=""
-        width={20}
-        height={20}
-      />
-      <img
-        className="phasa-siwc__logo phasa-siwc__logo--dark"
-        src={browser.runtime.getURL('/brand/chatgpt-logo-black.svg')}
-        alt=""
-        width={20}
-        height={20}
-      />
-      {t('accountContinueWithChatGpt')}
-    </button>
-  );
 }
 
 function ModelPicker({

@@ -282,8 +282,23 @@ export async function listUnits(
 ): Promise<{ units: SavedUnit[]; total: number }> {
   const kinds: UnitKind[] = query.kind ? [query.kind] : ['word', 'phrase'];
   let rows: { kind: UnitKind; row: WordRow | PhraseRow }[] = [];
-  for (const kind of kinds) {
-    for (const row of await tableOf(db, kind).toArray()) rows.push({ kind, row });
+  let total: number | undefined;
+  if (!query.query && !query.videoId) {
+    // The usual list: only the page's rows, from the `updatedAt` index. Onboarding and imports
+    // save thousands of known words, and every status change reloads the list.
+    const take = query.offset + query.limit;
+    total = 0;
+    for (const kind of kinds) {
+      const table = tableOf(db, kind);
+      total += await table.count();
+      for (const row of await table.orderBy('updatedAt').reverse().limit(take).toArray()) {
+        rows.push({ kind, row });
+      }
+    }
+  } else {
+    for (const kind of kinds) {
+      for (const row of await tableOf(db, kind).toArray()) rows.push({ kind, row });
+    }
   }
   if (query.query) rows = rows.filter(({ row }) => row.thai.includes(query.query ?? ''));
   if (query.videoId) {
@@ -302,7 +317,7 @@ export async function listUnits(
       toSavedUnit(kind, row, await contextsOf(db, kind, row.id), entries.get(row.thai)),
     ),
   );
-  return { units, total: rows.length };
+  return { units, total: total ?? rows.length };
 }
 
 /** Saved phrases written without spaces: the tokenizer keeps them as one unit (ADR 0005). */

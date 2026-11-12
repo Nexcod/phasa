@@ -1,5 +1,7 @@
 import 'fake-indexeddb/auto';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Dexie } from 'dexie';
+import { evictCaptions } from '@/src/background/captions';
 import { createHandlers } from '@/src/background/handlers';
 import { PhasaDb, SCHEMA_STEPS, SCHEMA_VERSION, assertExtensionOrigin } from '@/src/db';
 
@@ -62,6 +64,7 @@ describe('schema', () => {
       trackKind: 'asr' as const,
       cues: [],
       fetchedAt: 0,
+      usedAt: 0,
       processingVersion: 1,
     };
     await db.captions.put({ ...row, vssId: 'a.th' });
@@ -69,6 +72,54 @@ describe('schema', () => {
     await db.captions.put({ ...row, vssId: 'a.th', fetchedAt: 1 });
     expect(await db.captions.where('videoId').equals('v1').count()).toBe(2);
     expect((await db.captions.get(['v1', 'a.th']))?.fetchedAt).toBe(1);
+  });
+});
+
+describe('captions cache', () => {
+  const track = (videoId: string, vssId: string, usedAt: number) => ({
+    videoId,
+    vssId,
+    languageCode: 'th',
+    trackKind: 'manual' as const,
+    cues: [],
+    fetchedAt: usedAt,
+    usedAt,
+    processingVersion: 1,
+  });
+
+  it('migrates v3 rows: last used = fetched', async () => {
+    const name = `phasa-test-${crypto.randomUUID()}`;
+    const old = new Dexie(name);
+    for (const step of SCHEMA_STEPS.filter((s) => s.version <= 3)) {
+      old.version(step.version).stores(step.stores);
+    }
+    await old.table('captions').put({ ...track('v1', '.th', 0), fetchedAt: 42, usedAt: undefined });
+    old.close();
+    const db = new PhasaDb(name);
+    opened.push(db);
+    expect((await db.captions.get(['v1', '.th']))?.usedAt).toBe(42);
+  });
+
+  it('keeps the most recently used videos', async () => {
+    const db = freshDb();
+    await db.captions.bulkPut([
+      track('oldVideo', '.th', 1),
+      track('oldVideo', '.th>en', 1),
+      track('midVideo', '.th', 2),
+      track('newVideo', 'a.th', 3),
+      track('newVideo', 'a.th>en', 3),
+    ]);
+    expect(await evictCaptions(db, 2)).toBe(1);
+    expect((await db.captions.toArray()).map((row) => row.videoId).sort()).toEqual([
+      'midVideo',
+      'newVideo',
+      'newVideo',
+    ]);
+    // Watching a video again moves it to the front.
+    const handlers = createHandlers({ db: () => db, swStartedAt: 0, now: () => 10 });
+    await handlers['captions/get']({ videoId: 'midVideo' }, { origin: 'content-script', tabId: 1 });
+    expect(await evictCaptions(db, 1)).toBe(1);
+    expect((await db.captions.toArray()).map((row) => row.videoId)).toEqual(['midVideo']);
   });
 });
 

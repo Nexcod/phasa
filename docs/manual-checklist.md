@@ -11,6 +11,59 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
       shows datacenter IPs, including CI runners, a bot check instead of the video
       ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
 
+## Phase 6 — data and polish
+
+Use the production build in a profile with real data from the earlier phases: learning, known and
+ignored words, a phrase, a boundary fix, a few AI answers, changed settings. For the update items
+keep a build of the previous commit (`git stash`/`git worktree`, `npm run build`) at hand.
+Covered by e2e, not repeated here: the restore cycle on the fake YouTube, Anki/CSV file contents,
+settings reaching the open video, the popup's quick settings, the analysis with 20 000 known words
+(`tests/e2e/data.spec.ts`).
+
+- [ ] **Backup → clean install → restore (acceptance).** Options → Import and export → "Download
+      backup": `phasa-backup-YYYY-MM-DD.json` is saved and "Saved … · words: …" shows. Open the
+      file: no access, refresh or ID token, no `sk-` key. Write down the counts line under Known
+      words. Remove Phasa at `chrome://extensions` and load the unpacked build again: Known words
+      says 0 everywhere. Restore → choose the file: the preview's counts look right; "Restore".
+      Then the counts line is the one written down; My words lists the words with their lines;
+      on a video the statuses, the phrase as one unit and the boundary fix are back; the theme,
+      font, size and colors are back; a word explained before shows its "saved answer" with no
+      `responses` request in the service worker's Network tab. Options → AI still asks to sign
+      in: the sign-in is not part of a backup.
+- [ ] **Merge.** Restore the same file again: every line says "0 added, 0 merged". Set a word that
+      is learning in the backup to Known, restore: it stays Known. Mark a word Ignored, restore:
+      it stays Ignored.
+- [ ] **Anki.** Export for Anki (Learning) and import it in Anki (File → Import): Anki takes tab
+      as the separator, HTML and the tags column by itself; the six fields fill in order; the
+      word is bold in its line; the link opens YouTube at that line. Export as CSV and open it in
+      a spreadsheet: Thai is readable, one word per row.
+- [ ] **Settings on YouTube.** Options → Settings on a second monitor or window while a Thai video
+      plays: "Noto Sans Thai" changes the subtitle letters at once (no loops); subtitle size
+      150 % and 60 % in the default, theater and fullscreen views, no stacked mark cut (น้ำ, ที่);
+      a custom tone color shows in the subtitles' romanization (R), in the word popup and in the
+      side panel; "Use the default colors" brings back the built-in ones.
+- [ ] **Theme.** System dark with "Same as the system", then "Light" and "Dark": the side panel,
+      the options page and the toolbar popup follow at once, also their checkboxes, selects and
+      scrollbars; tone colors and the ChatGPT button are readable on both. On YouTube the badge
+      under the title follows YouTube's own theme, not this setting.
+- [ ] **Toolbar popup.** The toolbar button opens a popup, not the side panel, also right after
+      loading this build over the previous one. On a Thai video: its title and badge; "Open the
+      side panel" opens the panel for this tab and closes the popup; the four quick settings
+      change the subtitles at once; "Settings" opens the options page. With AI off it offers
+      "Set up AI" (or "Continue with ChatGPT" after a sign-out); signed in it says AI is ready.
+      On another site it says to open a YouTube video.
+- [ ] **Update notice.** With a Thai video open, reload Phasa at `chrome://extensions`: the player
+      shows "Phasa was updated. Reload the page to see its subtitles again." with "Reload";
+      clicking it reloads the tab and the subtitles come back. × hides the notice.
+- [ ] **Empty and error states.** Side panel → My words → "This video only" on a video without
+      saved words: "No saved words from this video yet." Options → My words, search for a word
+      you haven't saved: "No saved word contains …". Restore any other JSON file: "This file
+      isn't a Phasa backup." Known words → import a file over
+      10 MB: the size message, not "Couldn't mark the words".
+- [ ] **Speed with the restored data.** On the long video (`SVj46JwYnB4`) the badge's
+      `data-analysis-ms` (see phase 4) stays under 500, and Options → My words shows its first
+      page without a pause.
+
 ## Phase 5 — AI
 
 Needs a ChatGPT Plus or Pro account. Use a development build (`npm run dev`, load

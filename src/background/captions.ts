@@ -17,6 +17,12 @@ import {
 
 const MAX_ITEMS = 6;
 
+/**
+ * Caption tracks of at most this many videos stay cached, about 0.5–1 MB each (ADR 0007, 0016).
+ * Saved words keep their lines in `contexts`, so evicting a video loses nothing but a refetch.
+ */
+export const MAX_CACHED_VIDEOS = 100;
+
 export function rowToTrack(row: CaptionTrackRow): ProcessedTrack {
   const track: ProcessedTrack = {
     videoId: row.videoId,
@@ -31,7 +37,7 @@ export function rowToTrack(row: CaptionTrackRow): ProcessedTrack {
   return track;
 }
 
-export function trackToRow(track: ProcessedTrack): CaptionTrackRow {
+export function trackToRow(track: ProcessedTrack, usedAt = track.fetchedAt): CaptionTrackRow {
   const row: CaptionTrackRow = {
     videoId: track.videoId,
     vssId: track.key,
@@ -39,16 +45,44 @@ export function trackToRow(track: ProcessedTrack): CaptionTrackRow {
     trackKind: track.kind,
     cues: track.cues,
     fetchedAt: track.fetchedAt,
+    usedAt,
     processingVersion: track.processingVersion,
   };
   if (track.translatedFrom !== undefined) row.translatedFrom = track.translatedFrom;
   return row;
 }
 
-export async function getCachedTracks(db: PhasaDb, videoId: unknown): Promise<ProcessedTrack[]> {
+export async function getCachedTracks(
+  db: PhasaDb,
+  videoId: unknown,
+  now: number,
+): Promise<ProcessedTrack[]> {
   if (!isVideoId(videoId)) throw new RpcFailure('bad_request', 'Invalid videoId');
   const rows = await db.captions.where('videoId').equals(videoId).toArray();
-  return rows.filter((row) => row.processingVersion === PROCESSING_VERSION).map(rowToTrack);
+  const current = rows.filter((row) => row.processingVersion === PROCESSING_VERSION);
+  if (current.length > 0) {
+    await db.captions.where('videoId').equals(videoId).modify({ usedAt: now });
+  }
+  return current.map(rowToTrack);
+}
+
+/** Deletes the tracks of the least recently used videos beyond `keep` videos. */
+export async function evictCaptions(db: PhasaDb, keep = MAX_CACHED_VIDEOS): Promise<number> {
+  return db.transaction('rw', db.captions, async () => {
+    // Primary keys in `usedAt` order, newest first: [videoId, vssId].
+    const keys = await db.captions.orderBy('usedAt').reverse().primaryKeys();
+    const videos: string[] = [];
+    const seen = new Set<string>();
+    for (const [videoId] of keys) {
+      if (!seen.has(videoId)) {
+        seen.add(videoId);
+        videos.push(videoId);
+      }
+    }
+    const evicted = videos.slice(keep);
+    if (evicted.length > 0) await db.captions.where('videoId').anyOf(evicted).delete();
+    return evicted.length;
+  });
 }
 
 function badRequest(message: string): never {
@@ -121,7 +155,7 @@ export async function processAndStore(
   }
 
   await db.transaction('rw', db.captions, db.videos, async () => {
-    await db.captions.bulkPut(tracks.map(trackToRow));
+    await db.captions.bulkPut(tracks.map((track) => trackToRow(track, now)));
     const thai = (await db.captions.where('videoId').equals(video.videoId).toArray())
       .filter(
         (row) => row.processingVersion === PROCESSING_VERSION && isThaiLanguage(row.languageCode),
@@ -139,5 +173,6 @@ export async function processAndStore(
       trackKind: chosen.kind,
     });
   });
+  await evictCaptions(db);
   return { tracks, failed };
 }

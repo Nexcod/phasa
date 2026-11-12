@@ -78,7 +78,8 @@ export function useTabSession(tab: ActiveTab | null): {
   connection: TabConnection;
   send: (message: PanelToTab) => void;
 } {
-  const [connection, setConnection] = useState<TabConnection>({ state: 'none' });
+  /** What the port of connection `key` (tab and attempt) reported; other keys are stale. */
+  const [reported, setReported] = useState<{ key: string; connection: TabConnection } | null>(null);
   const portRef = useRef<Browser.runtime.Port | null>(null);
   /** Bumped to reconnect. */
   const [attempt, setAttempt] = useState(0);
@@ -86,20 +87,18 @@ export function useTabSession(tab: ActiveTab | null): {
   const failures = useRef(0);
   const tabId = tab?.tabId;
   const onYouTube = tab?.url?.startsWith('https://www.youtube.com/') ?? false;
+  const key = `${tabId ?? ''}:${String(onYouTube)}:${attempt}`;
 
   useEffect(() => {
     failures.current = 0;
   }, [tabId]);
 
   useEffect(() => {
-    if (tabId === undefined || !onYouTube) {
-      setConnection({ state: 'none' });
-      return;
-    }
+    if (tabId === undefined || !onYouTube) return;
     let disposed = false;
     let heard = false;
     let retry: ReturnType<typeof setTimeout> | undefined;
-    setConnection({ state: 'connecting' });
+    const report = (connection: TabConnection) => setReported({ key, connection });
     const port = browser.tabs.connect(tabId, { name: PANEL_PORT_NAME, frameId: 0 });
     portRef.current = port;
     port.onMessage.addListener((raw: unknown) => {
@@ -107,14 +106,12 @@ export function useTabSession(tab: ActiveTab | null): {
       failures.current = 0;
       const message = raw as TabToPanel;
       if (message.type === 'session') {
-        setConnection({
-          state: 'connected',
-          session: message.session,
-          activeIndex: message.activeIndex,
-        });
+        report({ state: 'connected', session: message.session, activeIndex: message.activeIndex });
       } else {
-        setConnection((current) =>
-          current.state === 'connected' ? { ...current, activeIndex: message.index } : current,
+        setReported((current) =>
+          current?.key === key && current.connection.state === 'connected'
+            ? { key, connection: { ...current.connection, activeIndex: message.index } }
+            : current,
         );
       }
     });
@@ -125,11 +122,11 @@ export function useTabSession(tab: ActiveTab | null): {
       portRef.current = null;
       if (!heard && ++failures.current > MAX_RECONNECTS) {
         console.debug('[phasa] no content script in tab', tabId, reason);
-        setConnection({ state: 'unreachable' });
+        report({ state: 'unreachable' });
         return;
       }
       // The tab reloaded or is still loading: try again shortly.
-      setConnection({ state: 'connecting' });
+      report({ state: 'connecting' });
       retry = setTimeout(() => setAttempt((n) => n + 1), RECONNECT_MS);
     });
     return () => {
@@ -138,7 +135,7 @@ export function useTabSession(tab: ActiveTab | null): {
       portRef.current = null;
       port.disconnect();
     };
-  }, [tabId, onYouTube, attempt]);
+  }, [tabId, onYouTube, key]);
 
   const send = useCallback((message: PanelToTab) => {
     try {
@@ -148,5 +145,8 @@ export function useTabSession(tab: ActiveTab | null): {
     }
   }, []);
 
+  let connection: TabConnection = { state: 'connecting' };
+  if (tabId === undefined || !onYouTube) connection = { state: 'none' };
+  else if (reported?.key === key) connection = reported.connection;
   return { connection, send };
 }

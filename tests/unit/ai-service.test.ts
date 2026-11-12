@@ -79,6 +79,19 @@ describe('AI service', () => {
     expect(await h.ai.run(EXPLAIN_WORD, other, { cachedOnly: true })).toEqual({ status: 'miss' });
   });
 
+  it('asks again when a saved answer no longer has the answer shape', async () => {
+    await h.signIn();
+    await h.ai.run(EXPLAIN_WORD, PARAMS);
+    const [row] = await h.db.aiCache.toArray();
+    await h.db.aiCache.put({
+      ...row!,
+      value: { ...(row!.value as object), value: { meaning: 42 } },
+    });
+    expect(await h.ai.run(EXPLAIN_WORD, PARAMS, { cachedOnly: true })).toEqual({ status: 'miss' });
+    expect(await h.ai.run(EXPLAIN_WORD, PARAMS)).toMatchObject({ status: 'ok', cached: false });
+    expect(responsesCalls(h)).toHaveLength(2);
+  });
+
   it('shows cached answers also after signing out', async () => {
     await h.signIn();
     await h.ai.run(EXPLAIN_WORD, PARAMS);

@@ -43,6 +43,21 @@ export const SCHEMA_STEPS: readonly SchemaStep[] = [
       credentials: 'key',
     },
   },
+  {
+    // Phase 6: least recently used caption tracks are evicted (src/background/captions.ts).
+    version: 4,
+    stores: {
+      captions: '[videoId+vssId], videoId, usedAt',
+    },
+    upgrade: async (tx) => {
+      await tx
+        .table('captions')
+        .toCollection()
+        .modify((row: { fetchedAt: number; usedAt?: number }) => {
+          row.usedAt = row.fetchedAt;
+        });
+    },
+  },
 ];
 
 /** Tables a backup export must leave out (docs/decisions/0014-ai-and-account.md). */

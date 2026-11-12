@@ -2,7 +2,17 @@
 import type { ExplainWordParams, WordExplanation } from '../../messaging/ai';
 import type { Tone } from '../../thai/types';
 import type { JsonSchema } from '../schema';
-import { clean, contextBlock, contextKey, isRecord, str, type Prompt } from './types';
+import {
+  clean,
+  contextBlock,
+  contextKey,
+  isArrayOf,
+  isRecord,
+  isString,
+  isStringOrNull,
+  str,
+  type Prompt,
+} from './types';
 
 const TONES: readonly Tone[] = ['mid', 'low', 'falling', 'high', 'rising'];
 const nullableString = { type: ['string', 'null'] } as const;
@@ -95,6 +105,20 @@ export const EXPLAIN_WORD: Prompt<ExplainWordParams, WordExplanation> = {
       exampleEn: str(value.example_en) ?? '',
       classifier: str(value.classifier) ?? null,
     };
+  },
+  isValue(value): value is WordExplanation {
+    if (!isRecord(value)) return false;
+    return (
+      ['meaning', 'romanization', 'register', 'exampleTh', 'exampleEn'].every((key) =>
+        isString(value[key]),
+      ) &&
+      ['partOfSpeech', 'notes', 'classifier'].every((key) => isStringOrNull(value[key])) &&
+      isArrayOf(
+        value.syllables,
+        (item): item is WordExplanation['syllables'][number] =>
+          isRecord(item) && isString(item.thai) && tone(item.tone) !== undefined,
+      )
+    );
   },
   partial(json) {
     if (!isRecord(json)) return {};

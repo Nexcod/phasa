@@ -4,12 +4,28 @@
  * through src/messaging and hear about changes via `settings/changed`.
  */
 
+import { TONES } from '../thai/tones';
+import type { Tone } from '../thai/types';
+
 /** How word boundaries show in Thai subtitles (docs/plan.md §2.1). */
 export type WordBoundaries = 'none' | 'gaps' | 'underline';
 export type RomanizationSystem = 'paiboon' | 'rtgs';
 export type RomanizationPosition = 'above' | 'below';
 /** Where AI requests go first (docs/plan.md §8.5). */
 export type AiProviderSetting = 'chatgpt-plan' | 'openai-api-key';
+/** Theme of the extension's own pages; UI on youtube.com follows YouTube's theme (plan §10). */
+export type ThemeSetting = 'system' | 'light' | 'dark';
+/** Bundled Thai font (docs/plan.md §5.1): with loops (easier for learners) or without. */
+export type ThaiFontSetting = 'looped' | 'loopless';
+/**
+ * Custom `#rrggbb` colors of some or all tones, shared by every view (docs/plan.md §5.1). Tones
+ * left out keep the built-in colors, which are tuned for each background.
+ */
+export type ToneColors = Readonly<Partial<Record<Tone, string>>>;
+
+/** Subtitle size in percent of the default, which already follows the player's size. */
+export const SUBTITLE_SIZE_MIN = 50;
+export const SUBTITLE_SIZE_MAX = 250;
 
 export interface Settings {
   /** Second subtitle line with the English translation (hotkey T). */
@@ -30,6 +46,12 @@ export interface Settings {
   aiModelApiKey: string;
   /** Use the API key when the ChatGPT plan can't serve a request (plan §8.4: only if enabled). */
   aiFallbackToApiKey: boolean;
+  theme: ThemeSetting;
+  thaiFont: ThaiFontSetting;
+  /** Percent, {@link SUBTITLE_SIZE_MIN}–{@link SUBTITLE_SIZE_MAX}. */
+  subtitleSize: number;
+  /** null: the built-in colors, tuned for each background. */
+  toneColors: ToneColors | null;
 }
 
 export const DEFAULT_SETTINGS: Readonly<Settings> = {
@@ -44,6 +66,10 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
   aiModelChatGpt: '',
   aiModelApiKey: '',
   aiFallbackToApiKey: false,
+  theme: 'system',
+  thaiFont: 'looped',
+  subtitleSize: 100,
+  toneColors: null,
 };
 
 /** Keys whose change can make AI ready or not (`ai/changed`). */
@@ -64,6 +90,26 @@ const oneOf =
 /** A model slug as OpenAI writes them (`gpt-6.1-sol`, `ft:…:org:…`), or empty. */
 const isModelSlug = (value: unknown): value is string =>
   typeof value === 'string' && /^[\w.:/-]{0,100}$/.test(value);
+const isSubtitleSize = (value: unknown): value is number =>
+  Number.isInteger(value) &&
+  (value as number) >= SUBTITLE_SIZE_MIN &&
+  (value as number) <= SUBTITLE_SIZE_MAX;
+
+/** `#rrggbb`, the format of `<input type="color">`. */
+export function isHexColor(value: unknown): value is string {
+  return typeof value === 'string' && /^#[0-9a-f]{6}$/iu.test(value);
+}
+
+/** Some tones, each a hex color, nothing else; or null. */
+const isToneColors = (value: unknown): value is ToneColors | null => {
+  if (value === null) return true;
+  if (typeof value !== 'object' || Array.isArray(value)) return false;
+  const entries = Object.entries(value);
+  return (
+    entries.length > 0 &&
+    entries.every(([tone, color]) => TONES.includes(tone as Tone) && isHexColor(color))
+  );
+};
 
 const VALIDATORS: Validators = {
   showTranslation: isBoolean,
@@ -77,6 +123,10 @@ const VALIDATORS: Validators = {
   aiModelChatGpt: isModelSlug,
   aiModelApiKey: isModelSlug,
   aiFallbackToApiKey: isBoolean,
+  theme: oneOf('system', 'light', 'dark'),
+  thaiFont: oneOf('looped', 'loopless'),
+  subtitleSize: isSubtitleSize,
+  toneColors: isToneColors,
 };
 
 function isKey(key: string): key is keyof Settings {
@@ -92,6 +142,26 @@ export function parseSettingsPatch(value: unknown): Partial<Settings> | null {
     patch[key] = field;
   }
   return patch as Partial<Settings>;
+}
+
+/**
+ * The valid fields of `value`, for settings from elsewhere (a backup): unknown keys and invalid
+ * values are left out and counted instead of failing the whole object.
+ */
+export function pickValidSettings(value: unknown): {
+  settings: Partial<Settings>;
+  skipped: number;
+} {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return { settings: {}, skipped: 0 };
+  }
+  const settings: Partial<Record<keyof Settings, unknown>> = {};
+  let skipped = 0;
+  for (const [key, field] of Object.entries(value)) {
+    if (isKey(key) && VALIDATORS[key](field)) settings[key] = field;
+    else skipped++;
+  }
+  return { settings: settings as Partial<Settings>, skipped };
 }
 
 /** Stored rows over the defaults; unknown or invalid rows are ignored. */

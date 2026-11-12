@@ -13,14 +13,14 @@ import { formatTime, watchUrl } from '@/src/ui/labels';
 import { SavedWordList, useSavedWords } from '@/src/ui/SavedWords';
 import { StatusLine } from '@/src/ui/StatusLine';
 import { useBackgroundStatus } from '@/src/ui/useBackgroundStatus';
-import { useSettings } from '@/src/ui/useSettings';
+import { usePageAppearance, useSettings } from '@/src/ui/useSettings';
 import {
   useVideoAnalysis,
   type AnalysisState,
   type AnalysisTrack,
 } from '@/src/ui/useVideoAnalysis';
 import type { SavedContext } from '@/src/vocab/types';
-import { isWatchUrl, useActiveTab, useTabSession } from './useTabSession';
+import { isWatchUrl, useActiveTab, useTabSession } from '@/src/ui/useTabSession';
 
 const ERROR_MESSAGES: Readonly<Record<string, MessageKey>> = {
   unavailable: 'captionsErrorUnavailable',
@@ -304,6 +304,7 @@ function WordsTab({
         loaded={loaded}
         onMore={more}
         onOpen={onOpen}
+        emptyText={thisVideo && videoId ? t('wordsNoneInVideo') : undefined}
       />
     </section>
   );
@@ -412,7 +413,8 @@ function CalibrationCopy({
 
 export function App({ client }: { client: Client }) {
   const status = useBackgroundStatus(client);
-  const { settings, update } = useSettings(client);
+  const { settings, loaded, update } = useSettings(client);
+  usePageAppearance(settings, loaded);
   const aiStatus = useAiStatus(client);
   const tab = useActiveTab();
   const { connection, send } = useTabSession(tab);

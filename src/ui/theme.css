@@ -1,12 +1,16 @@
 /* Shared tokens for extension pages (side panel, options) and the overlay.
    The bundled Thai fonts are declared by src/ui/fonts.ts in document.head:
-   @font-face inside a shadow root is ignored (docs/plan.md §5.1). */
+   @font-face inside a shadow root is ignored (docs/plan.md §5.1).
+   Appearance settings (font, subtitle size, custom tone colors) override these tokens with inline
+   custom properties on a root element (src/ui/appearance.ts). */
 :root {
+  color-scheme: light dark;
   --phasa-font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --phasa-font-thai:
     'Phasa Noto Sans Thai Looped', 'Phasa Noto Sans Thai', 'Noto Sans Thai', 'Thonburi',
     'Leelawadee UI', sans-serif;
   --phasa-line-height-thai: 1.8;
+  --phasa-subs-scale: 1;
 
   --phasa-bg: #ffffff;
   --phasa-fg: #0f0f0f;
@@ -51,11 +55,17 @@
     --phasa-challenging: #a3e635;
     --phasa-hard: #fbbf24;
     --phasa-too-hard: #f87171;
+    --phasa-tone-mid: #9ca3af;
+    --phasa-tone-low: #60a5fa;
+    --phasa-tone-falling: #f87171;
+    --phasa-tone-high: #4ade80;
+    --phasa-tone-rising: #c084fc;
   }
 }
 
-/* UI on youtube.com follows YouTube's theme (its <html dark> attribute, docs/plan.md §10), not the
-   system's: such roots set data-theme. */
+/* data-theme overrides the system's scheme: on <html> of extension pages from the theme setting,
+   and on roots of the UI on youtube.com, which follows YouTube's theme (its <html dark> attribute,
+   docs/plan.md §10). */
 [data-theme='light'] {
   --phasa-bg: #ffffff;
   --phasa-fg: #0f0f0f;
@@ -70,6 +80,12 @@
   --phasa-challenging: #4d7c0f;
   --phasa-hard: #b45309;
   --phasa-too-hard: #b91c1c;
+  --phasa-tone-mid: #6b7280;
+  --phasa-tone-low: #2563eb;
+  --phasa-tone-falling: #dc2626;
+  --phasa-tone-high: #16a34a;
+  --phasa-tone-rising: #9333ea;
+  color-scheme: light;
 }
 
 [data-theme='dark'] {
@@ -86,4 +102,10 @@
   --phasa-challenging: #a3e635;
   --phasa-hard: #fbbf24;
   --phasa-too-hard: #f87171;
+  --phasa-tone-mid: #9ca3af;
+  --phasa-tone-low: #60a5fa;
+  --phasa-tone-falling: #f87171;
+  --phasa-tone-high: #4ade80;
+  --phasa-tone-rising: #c084fc;
+  color-scheme: dark;
 }

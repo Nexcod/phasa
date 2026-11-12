@@ -14,6 +14,7 @@ estimates, optional AI explanations via Sign in with ChatGPT.
 | 3 — words                   | **Accepted 2026-11-01** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: Wiktionary dictionary + TNC ranks (ADR 0010), tokenizer (F1 0.963 on 249 real cues from 13 videos, 0.966 overall; native-speaker review of the gold set after phase 7), word popup (15 ms in e2e) with romanization, tones, TTS, statuses, phrases, boundary fixes; keys W/Q/E, 1–4/K/X; saved words with context in the side panel and options                                                                                |
 | 4 — analysis and onboarding | **Accepted 2026-11-01** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: badge under the title and in the side panel — level estimate, share of known words, distinct new words (ADR 0011, 0012) — with details, top new words, add top 10 to learning, mark all as known; onboarding with particles, top-N review and TXT/CSV/Anki import. 20-minute video analyzed in 79 ms; level calibration on hand-rated videos after phase 7                                                                     |
 | 5 — AI                      | **Accepted 2026-11-02** after the [manual checklist](docs/manual-checklist.md) in Chrome and the local network e2e: Sign in with ChatGPT through the loopback redirect (ADR 0003) with refresh, sign-out and forget; credentials only in the service worker and the extension's IndexedDB (ADR 0014); "Explain in context" and "Translate the line" in word and phrase popups and on side-panel lines, streamed, validated and cached; usage-limit and error messages with "Manage usage"; own OpenAI API key as an alternative or opt-in fallback |
+| 6 — data and polish         | **Implemented 2026-11-12, awaiting manual acceptance** ([checklist](docs/manual-checklist.md)): JSON backup and merging restore without credentials, tested as export → fresh install → import (ADR 0016); word lists for Anki (TSV with headers and tags) and CSV; settings for theme, Thai font, subtitle size and tone colors, applied live; toolbar popup with the video, quick settings and AI; About section; update notice in open tabs; captions cache limited to 100 videos. 20-minute video analyzed in 208 ms with 20 000 known words   |
 
 **After phase 7**, with the owner's or a native speaker's input: native-speaker review of the
 segmentation gold set ([guide](docs/segmentation-review/GUIDE.md)), level calibration on 30–50
@@ -33,7 +34,8 @@ npm run zip        # store-ready zip
 ```
 
 Load the build: `chrome://extensions` → Developer mode → **Load unpacked** → `.output/chrome-mv3`
-(or `-dev`). Open a YouTube watch page with Thai captions; the toolbar button opens the side panel.
+(or `-dev`). Open a YouTube watch page with Thai captions; the toolbar button opens Phasa's popup,
+which opens the side panel.
 Live captions can't be tested under automation; [docs/manual-checklist.md](docs/manual-checklist.md)
 lists the checks done by hand.
 
@@ -54,8 +56,8 @@ lists the checks done by hand.
 
 ```
 entrypoints/   background (SW), youtube.content (overlay, title badge), youtube-main.content
-               (MAIN world), sidepanel, options, auth-callback (Sign in with ChatGPT redirect),
-               fonts-test (dev/test builds only)
+               (MAIN world), sidepanel, options, popup (toolbar), auth-callback (Sign in with
+               ChatGPT redirect), fonts-test (dev/test builds only)
 src/           captions (parsers, processing, track choice; main/ = MAIN-world fetcher),
                content (overlay state, playback sync, hotkeys, panel link, word data),
                messaging (typed Port protocols), db (Dexie schema + migrations), background
@@ -63,8 +65,9 @@ src/           captions (parsers, processing, track choice; main/ = MAIN-world f
                (normalization, tokenizer, segmentation convention, romanization), dictionary
                (kaikki conversion, store, pronunciation, frequency list), analysis (coverage,
                level, top new words), vocab (saved words, contexts, segmentation rules, bulk
-               changes, word-list import), auth (Sign in with ChatGPT, credentials), ai
-               (Responses API client, providers, prompts, cache), i18n, ui
+               changes, word-list import), backup (backup file, merging restore, Anki/CSV word
+               lists), auth (Sign in with ChatGPT, credentials), ai (Responses API client,
+               providers, prompts, cache), i18n, ui (shared components, appearance settings)
 data/build/    built dictionary and frequency list (committed, CC BY-SA 4.0, ATTRIBUTION.md)
 tests/         unit (Vitest), e2e (Playwright), fixtures
 spikes/        phase-0 experiment kits (not shipped)

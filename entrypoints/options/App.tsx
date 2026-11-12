@@ -6,16 +6,29 @@ import { watchUrl } from '@/src/ui/labels';
 import { SavedWordList, useSavedWords } from '@/src/ui/SavedWords';
 import { StatusLine } from '@/src/ui/StatusLine';
 import { useBackgroundStatus } from '@/src/ui/useBackgroundStatus';
+import { usePageAppearance, useSettings } from '@/src/ui/useSettings';
+import { About } from './About';
 import { Account } from './Account';
+import { Data } from './Data';
 import { KnownWords } from './KnownWords';
+import { Preferences } from './Preferences';
 
-const LATER_SECTIONS: readonly MessageKey[] = ['optionsSectionData'];
+/** Sections in page order, with the anchors other pages link to (`options.html#ai`). */
+const SECTIONS: readonly { id: string; label: MessageKey }[] = [
+  { id: 'known', label: 'optionsSectionOnboarding' },
+  { id: 'settings', label: 'optionsSectionSettings' },
+  { id: 'ai', label: 'optionsSectionAccount' },
+  { id: 'data', label: 'optionsSectionData' },
+  { id: 'words', label: 'optionsSectionWords' },
+  { id: 'about', label: 'optionsSectionAbout' },
+];
 
 function MyWords({ client }: { client: Client }) {
   const [query, setQuery] = useState('');
-  const { units, total, loaded, more } = useSavedWords(client, { query: query.trim() });
+  const trimmed = query.trim();
+  const { units, total, loaded, more } = useSavedWords(client, { query: trimmed });
   return (
-    <section className="page__section" data-testid="phasa-options-words">
+    <section id="words" className="page__section" data-testid="phasa-options-words">
       <h2>{t('optionsSectionWords')}</h2>
       <input
         type="search"
@@ -31,6 +44,7 @@ function MyWords({ client }: { client: Client }) {
         total={total}
         loaded={loaded}
         onMore={more}
+        emptyText={trimmed ? t('wordsNoMatch', trimmed) : undefined}
         onOpen={(context) => {
           void browser.tabs.create({ url: watchUrl(context.videoId, context.cueStartMs) });
         }}
@@ -41,6 +55,8 @@ function MyWords({ client }: { client: Client }) {
 
 export function App({ client }: { client: Client }) {
   const status = useBackgroundStatus(client);
+  const { settings, loaded, update } = useSettings(client);
+  usePageAppearance(settings, loaded);
 
   return (
     <main className="page page--options">
@@ -48,15 +64,19 @@ export function App({ client }: { client: Client }) {
         <h1>{t('optionsTitle')}</h1>
         <StatusLine status={status} className="page__status" />
       </header>
+      <nav className="page__nav" aria-label={t('optionsNavLabel')}>
+        {SECTIONS.map((section) => (
+          <a key={section.id} href={`#${section.id}`}>
+            {t(section.label)}
+          </a>
+        ))}
+      </nav>
       <KnownWords client={client} />
-      <MyWords client={client} />
+      <Preferences settings={settings} update={update} />
       <Account client={client} />
-      {LATER_SECTIONS.map((key) => (
-        <section key={key} className="page__section">
-          <h2>{t(key)}</h2>
-          <p className="page__empty">{t('comingSoon')}</p>
-        </section>
-      ))}
+      <Data client={client} />
+      <MyWords client={client} />
+      <About />
     </main>
   );
 }

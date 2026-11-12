@@ -3,7 +3,7 @@ import { SCHEMA_VERSION } from '../db/schema';
 import type { PhasaDb } from '../db/db';
 import { createFrequencyStore, type FrequencySource } from '../dictionary/frequency';
 import { createDictionaryStore, type DictionarySource } from '../dictionary/store';
-import type { DictEntry } from '../dictionary/types';
+import type { DictEntry, PartOfSpeech } from '../dictionary/types';
 import {
   MAX_EVENT_CHANGES,
   MAX_LOOKUP_WORDS,
@@ -36,6 +36,7 @@ import { FREQUENT_COUNTS, type BulkMode, type VocabChange, type WordStatus } fro
 import { disabledAiHandlers, type AiHandlers } from './ai';
 import { createAnalysisService } from './analysis';
 import { getCachedTracks, processAndStore, validateProcessParams } from './captions';
+import { createDataHandlers } from './data';
 import { createLanguageService, type TokenizeInput } from './language';
 import { frequentWords } from './onboarding';
 
@@ -52,6 +53,10 @@ export interface HandlerDeps {
   ai?: AiHandlers;
   /** An AI setting changed: readiness may differ now. */
   aiChanged?: () => void;
+  /** The extension's version, written into backups. */
+  appVersion?: string;
+  /** Part of speech as the learner reads it, for word-list exports (src/ui/labels.ts). */
+  posLabel?: (pos: PartOfSpeech) => string;
   now?: () => number;
 }
 
@@ -136,6 +141,8 @@ export function createHandlers({
   broadcast = () => undefined,
   ai = disabledAiHandlers(),
   aiChanged = () => undefined,
+  appVersion = '0.0.0',
+  posLabel = (pos) => pos,
   now = Date.now,
 }: HandlerDeps): Handlers {
   const dictionary = createDictionaryStore(db, dictionarySource, now);
@@ -157,8 +164,27 @@ export function createHandlers({
     );
   };
 
+  /** Settings were written: tell every context, and AI readiness may differ. */
+  const settingsChanged = async (patch: Partial<Settings>): Promise<Settings> => {
+    const settings = await readSettings(db());
+    broadcast({ type: 'settings/changed', settings });
+    if (AI_SETTING_KEYS.some((key) => Object.hasOwn(patch, key))) aiChanged();
+    return settings;
+  };
+
   return {
     ...ai,
+
+    ...createDataHandlers({
+      db,
+      language,
+      now,
+      appVersion,
+      posLabel,
+      vocabChanged,
+      segmentationChanged,
+      settingsChanged,
+    }),
 
     ping: ({ sentAt }) => ({ sentAt, swStartedAt }),
 
@@ -173,7 +199,9 @@ export function createHandlers({
       return { schemaVersion: SCHEMA_VERSION, counts };
     },
 
-    'captions/get': async ({ videoId }) => ({ tracks: await getCachedTracks(db(), videoId) }),
+    'captions/get': async ({ videoId }) => ({
+      tracks: await getCachedTracks(db(), videoId, now()),
+    }),
 
     'captions/process': async (params) =>
       processAndStore(db(), validateProcessParams(params), now()),
@@ -187,10 +215,7 @@ export function createHandlers({
       await database.settings.bulkPut(
         Object.entries(valid).map(([key, value]) => ({ key, value })),
       );
-      const settings = await readSettings(database);
-      broadcast({ type: 'settings/changed', settings });
-      if (AI_SETTING_KEYS.some((key) => Object.hasOwn(valid, key))) aiChanged();
-      return settings;
+      return settingsChanged(valid);
     },
 
     'thai/tokenize': async ({ texts }) => ({

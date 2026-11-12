@@ -4,6 +4,8 @@ import { startContentController } from '@/src/content/controller';
 import { connectMainBridge } from '@/src/content/main-bridge';
 import { servePanel } from '@/src/content/panel-link';
 import { TITLE_SELECTOR } from '@/src/content/player-dom';
+import { claimPage, noticeIfOrphaned, type ReloadNoticeText } from '@/src/content/reload-notice';
+import { t } from '@/src/i18n';
 import { getBackgroundClient } from '@/src/messaging/browser';
 import { extensionUrl } from '@/src/ui/extension-url';
 import { injectFontFaces } from '@/src/ui/fonts';
@@ -22,6 +24,7 @@ export default defineContentScript({
   async main(ctx) {
     // @font-face inside a shadow root is ignored: declare the fonts on the page (docs/plan.md §5.1).
     injectFontFaces(document, extensionUrl);
+    const instance = claimPage(document);
 
     const client = getBackgroundClient();
     const bridge = connectMainBridge(window);
@@ -35,11 +38,19 @@ export default defineContentScript({
     });
     urlVideoId.subscribe(() => controller.setUrlVideoId(urlVideoId.get()));
     const stopPanel = servePanel(controller);
+    // Read now: once the extension is updated, its messages can't be read from here.
+    const reloadText: ReloadNoticeText = {
+      message: t('contentUpdated'),
+      reload: t('contentReload'),
+      close: t('popupClose'),
+    };
     ctx.onInvalidated(() => {
+      const wasShowing = controller.store.get().session.status === 'ready';
       stopPanel();
       controller.dispose();
       bridge.dispose();
       client.close();
+      if (wasShowing) noticeIfOrphaned(document, instance, reloadText);
     });
 
     const ui = await createShadowRootUi(ctx, {

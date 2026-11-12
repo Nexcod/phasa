@@ -18,6 +18,8 @@ export interface Prompt<P, T> {
   input(params: P): string;
   /** A validated answer in the app's shape. */
   fromJson(json: unknown): T;
+  /** Whether a stored answer (the cache, a backup) still has the app's shape. */
+  isValue(value: unknown): value is T;
   /** Whatever fields of an unfinished answer are already usable. */
   partial(json: unknown): Partial<T>;
 }
@@ -63,3 +65,13 @@ export function contextKey(context: AiLineContext): unknown {
 
 export const str = (value: unknown): string | undefined =>
   typeof value === 'string' ? value : undefined;
+
+export const isString = (value: unknown): value is string => typeof value === 'string';
+
+export const isStringOrNull = (value: unknown): value is string | null =>
+  value === null || typeof value === 'string';
+
+/** An array whose every item passes `item`. */
+export function isArrayOf<T>(value: unknown, item: (entry: unknown) => entry is T): value is T[] {
+  return Array.isArray(value) && value.every(item);
+}

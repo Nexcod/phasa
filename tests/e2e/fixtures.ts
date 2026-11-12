@@ -22,20 +22,34 @@ interface Fixtures {
   extensionId: string;
 }
 
+/**
+ * A browser with the built extension in a new, empty profile: a fresh install. Bundled Chromium
+ * (channel "chromium") supports extensions, also headless.
+ */
+export function launchWithExtension(): Promise<BrowserContext> {
+  return chromium.launchPersistentContext('', {
+    channel: 'chromium',
+    acceptDownloads: true,
+    args: [
+      `--disable-extensions-except=${EXTENSION_PATH}`,
+      `--load-extension=${EXTENSION_PATH}`,
+      // Tests never reach OpenAI: its hosts point at a closed port, and tests/e2e/ai.spec.ts serves
+      // a fake through routes. (A tab the extension opens loads its first URL unrouted.)
+      '--host-resolver-rules=MAP auth.openai.com 127.0.0.1:9, MAP api.openai.com 127.0.0.1:9',
+    ],
+  });
+}
+
+/** The extension's id in a context from {@link launchWithExtension}. */
+export async function extensionIdOf(context: BrowserContext): Promise<string> {
+  const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  return new URL(worker.url()).host;
+}
+
 export const test = base.extend<Fixtures>({
   // eslint-disable-next-line no-empty-pattern -- Playwright requires object destructuring here
   context: async ({}, use) => {
-    // Bundled Chromium (channel "chromium") supports extensions, also headless.
-    const context = await chromium.launchPersistentContext('', {
-      channel: 'chromium',
-      args: [
-        `--disable-extensions-except=${EXTENSION_PATH}`,
-        `--load-extension=${EXTENSION_PATH}`,
-        // Tests never reach OpenAI: its hosts point at a closed port, and tests/e2e/ai.spec.ts serves
-        // a fake through routes. (A tab the extension opens loads its first URL unrouted.)
-        '--host-resolver-rules=MAP auth.openai.com 127.0.0.1:9, MAP api.openai.com 127.0.0.1:9',
-      ],
-    });
+    const context = await launchWithExtension();
     await use(context);
     await context.close();
   },

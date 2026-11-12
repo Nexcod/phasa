@@ -1,5 +1,5 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
-import { t } from '@/src/i18n';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+import { t, type MessageKey } from '@/src/i18n';
 import type { Client } from '@/src/messaging/client';
 import { MAX_STATUS_WORDS } from '@/src/messaging/protocol';
 import { statusLabel } from '@/src/ui/labels';
@@ -60,7 +60,10 @@ async function markKnown(
 }
 
 type Outcome =
-  { state: 'idle' } | { state: 'busy' } | { state: 'done'; changed: number } | { state: 'error' };
+  | { state: 'idle' }
+  | { state: 'busy' }
+  | { state: 'done'; changed: number }
+  | { state: 'error'; message?: MessageKey };
 
 function OutcomeLine({ outcome }: { outcome: Outcome }) {
   if (outcome.state === 'done') {
@@ -70,7 +73,9 @@ function OutcomeLine({ outcome }: { outcome: Outcome }) {
       </p>
     );
   }
-  if (outcome.state === 'error') return <p className="page__error">{t('knownFailed')}</p>;
+  if (outcome.state === 'error') {
+    return <p className="page__error">{t(outcome.message ?? 'knownFailed')}</p>;
+  }
   return null;
 }
 
@@ -231,20 +236,31 @@ function ImportList({ client }: { client: Client }) {
   const [text, setText] = useState('');
   const [parsed, setParsed] = useState<ParsedWordList | null>(null);
   const [outcome, setOutcome] = useState<Outcome>({ state: 'idle' });
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const read = (value: string) => {
+  const paste = (value: string) => {
     setText(value);
     setParsed(value.trim() ? parseWordList(value) : null);
     setOutcome({ state: 'idle' });
+    if (fileRef.current) fileRef.current.value = '';
   };
   const onFile = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (file.size > MAX_FILE_BYTES) {
-      setOutcome({ state: 'error' });
+      setOutcome({ state: 'error', message: 'knownImportTooLarge' });
       return;
     }
-    file.text().then(read, () => setOutcome({ state: 'error' }));
+    // Parsed straight from the file: a deck of tens of thousands of lines in the text box would
+    // make the page crawl.
+    file.text().then(
+      (content) => {
+        setText('');
+        setParsed(parseWordList(content));
+        setOutcome({ state: 'idle' });
+      },
+      () => setOutcome({ state: 'error', message: 'knownImportUnreadable' }),
+    );
   };
 
   return (
@@ -252,6 +268,7 @@ function ImportList({ client }: { client: Client }) {
       <h3>{t('knownImportTitle')}</h3>
       <p>{t('knownImportText')}</p>
       <input
+        ref={fileRef}
         type="file"
         accept=".txt,.csv,.tsv,text/plain,text/csv,text/tab-separated-values"
         aria-label={t('knownImportFile')}
@@ -264,7 +281,7 @@ function ImportList({ client }: { client: Client }) {
         placeholder={t('knownImportPaste')}
         aria-label={t('knownImportPaste')}
         value={text}
-        onChange={(event) => read(event.target.value)}
+        onChange={(event) => paste(event.target.value)}
       />
       {parsed && (
         <p className="known__found">
@@ -298,7 +315,7 @@ function ImportList({ client }: { client: Client }) {
 export function KnownWords({ client }: { client: Client }) {
   const counts = useVocabCounts(client);
   return (
-    <section className="page__section known" data-testid="phasa-options-known">
+    <section id="known" className="page__section known" data-testid="phasa-options-known">
       <h2>{t('optionsSectionOnboarding')}</h2>
       <p>{t('knownIntro')}</p>
       {counts && (

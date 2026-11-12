@@ -148,6 +148,7 @@ export function SavedWordList({
   loaded,
   onMore,
   onOpen,
+  emptyText,
 }: {
   client: Client;
   units: SavedUnit[];
@@ -155,8 +156,16 @@ export function SavedWordList({
   loaded: boolean;
   onMore: () => void;
   onOpen: (context: SavedContext) => void;
+  /** Shown instead of "No saved words yet" when a filter hides every word. */
+  emptyText?: string | undefined;
 }) {
-  if (loaded && units.length === 0) return <p className="page__empty">{t('wordsEmpty')}</p>;
+  if (loaded && units.length === 0) {
+    return (
+      <p className="page__empty" data-testid="phasa-saved-empty">
+        {emptyText ?? t('wordsEmpty')}
+      </p>
+    );
+  }
   return (
     <>
       <p className="saved__total">{t('wordsTotal', String(total))}</p>

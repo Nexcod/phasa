@@ -1,7 +1,7 @@
 /** `translateCue` (docs/plan.md §8.6): one subtitle line, naturally, literally and word by word. */
 import type { CueTranslation, TranslateCueParams } from '../../messaging/ai';
 import type { JsonSchema } from '../schema';
-import { contextBlock, contextKey, isRecord, str, type Prompt } from './types';
+import { contextBlock, contextKey, isArrayOf, isRecord, isString, str, type Prompt } from './types';
 
 const SCHEMA: JsonSchema = {
   type: 'object',
@@ -57,6 +57,18 @@ export const TRANSLATE_CUE: Prompt<TranslateCueParams, CueTranslation> = {
       literal: str(value.literal_en) ?? '',
       words: words(value.word_by_word, true),
     };
+  },
+  isValue(value): value is CueTranslation {
+    return (
+      isRecord(value) &&
+      isString(value.natural) &&
+      isString(value.literal) &&
+      isArrayOf(
+        value.words,
+        (item): item is CueTranslation['words'][number] =>
+          isRecord(item) && isString(item.thai) && isString(item.en),
+      )
+    );
   },
   partial(json) {
     if (!isRecord(json)) return {};

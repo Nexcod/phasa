@@ -3,6 +3,7 @@ import type { ContentController } from '@/src/content/controller';
 import { t } from '@/src/i18n';
 import type { Client } from '@/src/messaging/client';
 import { AnalysisCard } from '@/src/ui/AnalysisCard';
+import { appearanceStyle } from '@/src/ui/appearance';
 import { useVideoAnalysis, type AnalysisTrack } from '@/src/ui/useVideoAnalysis';
 
 type Theme = 'light' | 'dark';
@@ -36,6 +37,7 @@ export function TitleBadge({
   const state = useSyncExternalStore(controller.store.subscribe, controller.store.get);
   const theme = useYouTubeTheme(document);
   const { session, urlVideoId } = state;
+  const style = appearanceStyle(state.settings);
   const current = session.status !== 'idle' && session.video.videoId === urlVideoId;
   let track: AnalysisTrack | null = null;
   if (current && session.status === 'ready') {
@@ -47,7 +49,12 @@ export function TitleBadge({
   if (!current) return null;
   if (session.status === 'no-thai') {
     return (
-      <div className="phasa-title-badge" data-theme={theme} data-testid="phasa-title-badge">
+      <div
+        className="phasa-title-badge"
+        data-theme={theme}
+        style={style}
+        data-testid="phasa-title-badge"
+      >
         <div className="phasa-analysis" data-state="no-thai">
           <span className="phasa-analysis__badge" data-comprehension="none">
             {t('captionsNoThai')}
@@ -58,7 +65,12 @@ export function TitleBadge({
   }
   if (!track) return null;
   return (
-    <div className="phasa-title-badge" data-theme={theme} data-testid="phasa-title-badge">
+    <div
+      className="phasa-title-badge"
+      data-theme={theme}
+      style={style}
+      data-testid="phasa-title-badge"
+    >
       <AnalysisCard
         key={`${track.videoId}/${track.trackKey}`}
         state={analysis.state}

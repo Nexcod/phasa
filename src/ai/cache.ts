@@ -30,7 +30,8 @@ export async function cacheKey(
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-function isAnswer(value: unknown): value is CachedAnswer {
+/** The shape of a stored answer; its `value` is checked by the prompt (`Prompt.isValue`). */
+export function isCachedAnswer(value: unknown): value is CachedAnswer {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -45,7 +46,7 @@ export function dbAiCache(db: () => PhasaDb, now: () => number = Date.now): AiCa
   return {
     async get(key) {
       const row = await db().aiCache.get(key);
-      return isAnswer(row?.value) ? row.value : undefined;
+      return isCachedAnswer(row?.value) ? row.value : undefined;
     },
     async put(key, answer) {
       const database = db();

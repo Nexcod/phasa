@@ -13,6 +13,13 @@
   pointer-events: none;
   container-type: size;
   font-family: var(--phasa-font-ui);
+  /* Tone colors, brightened for the dark subtitle background. Custom colors from the settings
+     replace them inline (src/ui/appearance.ts). */
+  --phasa-tone-mid: #d1d5db;
+  --phasa-tone-low: #93c5fd;
+  --phasa-tone-falling: #fca5a5;
+  --phasa-tone-high: #86efac;
+  --phasa-tone-rising: #d8b4fe;
 }
 
 .phasa-chip {
@@ -86,14 +93,23 @@
    น้ำ, ที่, ปู่ inside the line box. */
 .phasa-subs__thai {
   font-family: var(--phasa-font-thai);
-  font-size: clamp(16px, 5.4cqh, 56px);
+  /* --phasa-subs-scale: the subtitle size setting. */
+  font-size: clamp(
+    calc(16px * var(--phasa-subs-scale)),
+    calc(5.4cqh * var(--phasa-subs-scale)),
+    calc(56px * var(--phasa-subs-scale))
+  );
   font-synthesis: none;
   line-height: var(--phasa-line-height-thai);
 }
 
 .phasa-subs__en {
   color: #ececec;
-  font-size: clamp(12px, 3.6cqh, 36px);
+  font-size: clamp(
+    calc(12px * var(--phasa-subs-scale)),
+    calc(3.6cqh * var(--phasa-subs-scale)),
+    calc(36px * var(--phasa-subs-scale))
+  );
   line-height: 1.35;
 }
 
@@ -173,25 +189,25 @@
   white-space: nowrap;
 }
 
-/* Tone colors, brightened for the dark subtitle background. */
+/* Tone colors (docs/plan.md §5.1), from the tokens on .phasa-overlay. */
 .phasa-overlay .phasa-tone[data-tone='mid'] {
-  color: #d1d5db;
+  color: var(--phasa-tone-mid);
 }
 
 .phasa-overlay .phasa-tone[data-tone='low'] {
-  color: #93c5fd;
+  color: var(--phasa-tone-low);
 }
 
 .phasa-overlay .phasa-tone[data-tone='falling'] {
-  color: #fca5a5;
+  color: var(--phasa-tone-falling);
 }
 
 .phasa-overlay .phasa-tone[data-tone='high'] {
-  color: #86efac;
+  color: var(--phasa-tone-high);
 }
 
 .phasa-overlay .phasa-tone[data-tone='rising'] {
-  color: #d8b4fe;
+  color: var(--phasa-tone-rising);
 }
 
 /* Word and phrase popup (docs/plan.md §2.1, §10). */
@@ -216,6 +232,7 @@
   transform: translateX(-50%);
   user-select: text;
   /* The popup is a dark card on any theme: AI answers (src/ui/ai.css) use these tokens. */
+  color-scheme: dark;
   --phasa-fg: #f4f4f5;
   --phasa-muted: #a1a1aa;
   --phasa-border: #52525b;

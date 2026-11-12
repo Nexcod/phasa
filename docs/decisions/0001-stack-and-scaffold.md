@@ -1,7 +1,8 @@
 # 0001. Stack, repository layout, permissions policy
 
 - Status: Accepted; package manager superseded by [0008](0008-npm.md), nightly `@network` e2e by
-  [0009](0009-network-e2e-runs-locally.md)
+  [0009](0009-network-e2e-runs-locally.md), the toolbar button by
+  [0016](0016-data-settings-and-polish.md) (it opens a popup)
 - Date: 2026-10-16
 - Evidence: docs/plan.md §3, §11; phase 1 scaffold
 

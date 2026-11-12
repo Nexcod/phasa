@@ -8,8 +8,8 @@
     "description": "Extension description in the manifest."
   },
   "actionTitle": {
-    "message": "Open Phasa side panel",
-    "description": "Tooltip of the toolbar button."
+    "message": "Phasa",
+    "description": "Tooltip of the toolbar button, which opens the popup."
   },
   "statusConnecting": {
     "message": "Connecting…",
@@ -58,10 +58,6 @@
   "optionsSectionAccount": {
     "message": "AI",
     "description": "Options page section: Sign in with ChatGPT, own OpenAI API key, models."
-  },
-  "comingSoon": {
-    "message": "Coming in a later version.",
-    "description": "Placeholder for sections that are not implemented yet."
   },
   "captionsLoading": {
     "message": "Loading Thai subtitles…",
@@ -1352,5 +1348,495 @@
   "callbackNetwork": {
     "message": "Couldn't reach OpenAI. Check your connection and try again.",
     "description": "Sign-in failure: network."
+  },
+  "optionsSectionSettings": {
+    "message": "Settings",
+    "description": "Options section: subtitles, romanization, appearance."
+  },
+  "optionsSectionAbout": {
+    "message": "About",
+    "description": "Options section: version, license, data sources."
+  },
+  "optionsNavLabel": {
+    "message": "Sections of the settings page",
+    "description": "aria-label of the options page navigation."
+  },
+  "settingsSubtitlesTitle": {
+    "message": "Subtitles",
+    "description": "Settings block heading."
+  },
+  "settingsRomanizationTitle": {
+    "message": "Romanization",
+    "description": "Settings block heading."
+  },
+  "settingsAppearanceTitle": {
+    "message": "Appearance",
+    "description": "Settings block heading: theme, font, size, colors."
+  },
+  "settingSubtitleSize": {
+    "message": "Subtitle size",
+    "description": "Label of the subtitle size slider."
+  },
+  "settingPercent": {
+    "message": "$PERCENT$%",
+    "description": "A percentage.",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "120"
+      }
+    }
+  },
+  "settingReset": {
+    "message": "Reset",
+    "description": "Link that puts a setting back to its default."
+  },
+  "settingPosition": {
+    "message": "Position",
+    "description": "Label: romanization above or below the Thai words."
+  },
+  "settingRomanizationHint": {
+    "message": "R shows or hides it while you watch. Paiboon+ marks tones and vowel length; RTGS, the official Thai system, marks neither.",
+    "description": "Help under the romanization settings."
+  },
+  "settingTheme": {
+    "message": "Theme of Phasa's pages",
+    "description": "Label of the theme choice."
+  },
+  "themeSystem": {
+    "message": "Same as the system",
+    "description": "Theme option."
+  },
+  "themeLight": {
+    "message": "Light",
+    "description": "Theme option."
+  },
+  "themeDark": {
+    "message": "Dark",
+    "description": "Theme option."
+  },
+  "settingThemeHint": {
+    "message": "The side panel, this page and the popup. On YouTube, the subtitles keep their dark background and the badge under the title follows YouTube's theme.",
+    "description": "Help under the theme choice."
+  },
+  "settingThaiFont": {
+    "message": "Thai font",
+    "description": "Label of the Thai font choice."
+  },
+  "fontLooped": {
+    "message": "Noto Sans Thai Looped: with loops, easier to read while learning",
+    "description": "Font option."
+  },
+  "fontLoopless": {
+    "message": "Noto Sans Thai: without loops, like most signs and websites",
+    "description": "Font option."
+  },
+  "settingToneColors": {
+    "message": "Tone colors",
+    "description": "Label of the tone color pickers."
+  },
+  "settingToneColorsHint": {
+    "message": "Romanization shows each tone in its color and, in Paiboon+, with a tone mark too.",
+    "description": "Help over the tone color pickers."
+  },
+  "settingToneColorsReset": {
+    "message": "Use the default colors",
+    "description": "Link that drops the custom tone colors."
+  },
+  "settingTonesOnPages": {
+    "message": "On pages",
+    "description": "Label of the tone color preview on a page background."
+  },
+  "settingTonesOverVideo": {
+    "message": "Over the video",
+    "description": "Label of the tone color preview on the subtitle background."
+  },
+  "toneMid": {
+    "message": "Mid",
+    "description": "Thai tone name."
+  },
+  "toneLow": {
+    "message": "Low",
+    "description": "Thai tone name."
+  },
+  "toneFalling": {
+    "message": "Falling",
+    "description": "Thai tone name."
+  },
+  "toneHigh": {
+    "message": "High",
+    "description": "Thai tone name."
+  },
+  "toneRising": {
+    "message": "Rising",
+    "description": "Thai tone name."
+  },
+  "dataBackupTitle": {
+    "message": "Back up everything",
+    "description": "Data block heading."
+  },
+  "dataBackupText": {
+    "message": "One JSON file with your words and phrases, the lines you saved them from, word-boundary fixes, settings, analyzed videos and saved AI answers. Your ChatGPT sign-in and API key are never in it.",
+    "description": "What a backup contains."
+  },
+  "dataBackupButton": {
+    "message": "Download backup",
+    "description": "Button that saves the backup file."
+  },
+  "dataWorking": {
+    "message": "Working…",
+    "description": "Button label while an export runs."
+  },
+  "dataBackupSaved": {
+    "message": "Saved $NAME$ · words: $WORDS$ · phrases: $PHRASES$",
+    "description": "After the backup was saved.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "phasa-backup-2026-11-12.json"
+      },
+      "words": {
+        "content": "$2",
+        "example": "1250"
+      },
+      "phrases": {
+        "content": "$3",
+        "example": "12"
+      }
+    }
+  },
+  "dataBackupFailed": {
+    "message": "Couldn't create the backup. Try again.",
+    "description": "Backup export failed."
+  },
+  "dataRestoreTitle": {
+    "message": "Restore from a backup",
+    "description": "Data block heading."
+  },
+  "dataRestoreText": {
+    "message": "Restoring adds what this browser doesn't have yet. A word you have in both keeps the more advanced status, and its lines are combined. Nothing is deleted.",
+    "description": "How a restore merges."
+  },
+  "dataRestoreFile": {
+    "message": "Backup file",
+    "description": "aria-label of the backup file input."
+  },
+  "dataRestoreNotJson": {
+    "message": "This file can't be a Phasa backup: it isn't JSON.",
+    "description": "Chosen file is not JSON."
+  },
+  "dataRestoreNotBackup": {
+    "message": "This file isn't a Phasa backup.",
+    "description": "Chosen JSON is not a backup."
+  },
+  "dataRestoreNewer": {
+    "message": "This backup comes from a newer version of Phasa. Update Phasa, then restore it.",
+    "description": "Backup format is newer than this version."
+  },
+  "dataRestoreTooLarge": {
+    "message": "This file is too large for a Phasa backup.",
+    "description": "Chosen file is too large."
+  },
+  "dataRestoreUnreadable": {
+    "message": "Couldn't read the file.",
+    "description": "The file could not be read."
+  },
+  "dataRestoreFrom": {
+    "message": "$NAME$, saved on $DATE$:",
+    "description": "Header of the backup preview.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "phasa-backup-2026-11-12.json"
+      },
+      "date": {
+        "content": "$2",
+        "example": "November 12, 2026"
+      }
+    }
+  },
+  "dataRestoreCounts": {
+    "message": "Words: $WORDS$ · phrases: $PHRASES$ · lines: $LINES$ · word-boundary fixes: $RULES$ · analyzed videos: $VIDEOS$ · AI answers: $ANSWERS$",
+    "description": "What the chosen backup contains.",
+    "placeholders": {
+      "words": {
+        "content": "$1",
+        "example": "1250"
+      },
+      "phrases": {
+        "content": "$2",
+        "example": "12"
+      },
+      "lines": {
+        "content": "$3",
+        "example": "340"
+      },
+      "rules": {
+        "content": "$4",
+        "example": "4"
+      },
+      "videos": {
+        "content": "$5",
+        "example": "57"
+      },
+      "answers": {
+        "content": "$6",
+        "example": "120"
+      }
+    }
+  },
+  "dataRestoreSettings": {
+    "message": "Restore the settings too",
+    "description": "Checkbox: also replace the settings with the backup's."
+  },
+  "dataRestoreButton": {
+    "message": "Restore",
+    "description": "Button that starts the restore."
+  },
+  "dataRestoreProgress": {
+    "message": "Restoring… $PERCENT$%",
+    "description": "Restore progress.",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "40"
+      }
+    }
+  },
+  "dataRestoreFailed": {
+    "message": "Restoring stopped after $DONE$ of $TOTAL$ parts. Try again: what is restored already isn't added twice.",
+    "description": "Restore failed midway.",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "3"
+      },
+      "total": {
+        "content": "$2",
+        "example": "8"
+      }
+    }
+  },
+  "dataRestoreDone": {
+    "message": "Restored.",
+    "description": "Restore finished."
+  },
+  "dataRestoreSection": {
+    "message": "$SECTION$: $ADDED$ added, $UPDATED$ merged, $UNCHANGED$ already here",
+    "description": "One line of the restore summary.",
+    "placeholders": {
+      "section": {
+        "content": "$1",
+        "example": "Words"
+      },
+      "added": {
+        "content": "$2",
+        "example": "1200"
+      },
+      "updated": {
+        "content": "$3",
+        "example": "34"
+      },
+      "unchanged": {
+        "content": "$4",
+        "example": "16"
+      }
+    }
+  },
+  "dataRestoreSkipped": {
+    "message": "Invalid entries left out: $COUNT$",
+    "description": "Restore summary: entries that failed validation.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "dataUnknownDate": {
+    "message": "an unknown date",
+    "description": "Backup without a valid date."
+  },
+  "dataSectionWords": {
+    "message": "Words",
+    "description": "Restore summary section."
+  },
+  "dataSectionPhrases": {
+    "message": "Phrases",
+    "description": "Restore summary section."
+  },
+  "dataSectionSegRules": {
+    "message": "Word-boundary fixes",
+    "description": "Restore summary section."
+  },
+  "dataSectionSettings": {
+    "message": "Settings",
+    "description": "Restore summary section."
+  },
+  "dataSectionVideos": {
+    "message": "Analyzed videos",
+    "description": "Restore summary section."
+  },
+  "dataSectionAiAnswers": {
+    "message": "AI answers",
+    "description": "Restore summary section."
+  },
+  "dataWordsTitle": {
+    "message": "Export words",
+    "description": "Data block heading."
+  },
+  "dataWordsText": {
+    "message": "For flashcards in Anki or a spreadsheet: each word or phrase with its romanization, meaning and the newest line you saved it from, linked to that moment of the video.",
+    "description": "What the word export contains."
+  },
+  "dataScope": {
+    "message": "Words:",
+    "description": "Label of the word export choice."
+  },
+  "dataScopeLearning": {
+    "message": "Learning (1–4)",
+    "description": "Word export choice."
+  },
+  "dataScopeLearningKnown": {
+    "message": "Learning and known",
+    "description": "Word export choice."
+  },
+  "dataScopeAll": {
+    "message": "All saved words and phrases",
+    "description": "Word export choice."
+  },
+  "dataAnkiButton": {
+    "message": "Export for Anki",
+    "description": "Button: save an Anki import file."
+  },
+  "dataCsvButton": {
+    "message": "Export as CSV",
+    "description": "Button: save a CSV file."
+  },
+  "dataAnkiHint": {
+    "message": "In Anki: File → Import, choose the file and map its fields (Thai, Romanization, Meaning, Sentence, Translation, Video link) to your note type. Tags such as phasa::learning-2 go to the Tags field.",
+    "description": "How to import into Anki."
+  },
+  "dataWordsSaved": {
+    "message": "Saved $NAME$ · entries: $COUNT$",
+    "description": "After a word list was saved.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "phasa-anki-2026-11-12.txt"
+      },
+      "count": {
+        "content": "$2",
+        "example": "85"
+      }
+    }
+  },
+  "dataWordsEmpty": {
+    "message": "No saved words match this choice.",
+    "description": "Nothing to export."
+  },
+  "dataWordsFailed": {
+    "message": "Couldn't export the words. Try again.",
+    "description": "Word export failed."
+  },
+  "aboutVersion": {
+    "message": "Phasa $VERSION$",
+    "description": "Name and version.",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "aboutLicense": {
+    "message": "Phasa is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. It is distributed WITHOUT ANY WARRANTY; see the license for details.",
+    "description": "AGPL notice (ADR 0006)."
+  },
+  "aboutSource": {
+    "message": "Source code",
+    "description": "Link to the repository."
+  },
+  "aboutLicenseLink": {
+    "message": "GNU AGPL v3",
+    "description": "Link to the license text."
+  },
+  "aboutAttributionLink": {
+    "message": "Data sources and licenses",
+    "description": "Link to data/build/ATTRIBUTION.md."
+  },
+  "aboutData": {
+    "message": "Dictionary: English Wiktionary, © Wiktionary contributors, CC BY-SA 4.0, via kaikki.org. Word frequencies: Thai National Corpus via PyThaiNLP, CC0 1.0. Fonts: Noto Sans Thai and Noto Sans Thai Looped, SIL Open Font License 1.1.",
+    "description": "Data and font credits."
+  },
+  "aboutPrivacy": {
+    "message": "Your words, settings and the subtitles Phasa loads stay in this browser. Text goes to OpenAI only when you ask for an AI answer.",
+    "description": "What leaves the browser."
+  },
+  "aboutNotAffiliated": {
+    "message": "Phasa is not affiliated with YouTube or OpenAI.",
+    "description": "Trademark notice."
+  },
+  "popupTitle": {
+    "message": "Phasa",
+    "description": "Heading of the toolbar popup."
+  },
+  "popupOptions": {
+    "message": "Settings",
+    "description": "Popup link to the options page."
+  },
+  "popupNoVideo": {
+    "message": "Open a YouTube video with Thai subtitles to use Phasa.",
+    "description": "Popup on a tab without a video."
+  },
+  "popupOpenPanel": {
+    "message": "Open the side panel",
+    "description": "Popup button."
+  },
+  "popupPanelFailed": {
+    "message": "Couldn't open the side panel. Open it from Chrome's side panel menu instead.",
+    "description": "sidePanel.open failed."
+  },
+  "popupQuickSettings": {
+    "message": "Quick settings",
+    "description": "aria-label of the popup settings."
+  },
+  "popupAiOff": {
+    "message": "AI explanations are off.",
+    "description": "Popup: AI is not set up."
+  },
+  "popupAiSetUp": {
+    "message": "Set up AI",
+    "description": "Popup button to the AI settings."
+  },
+  "contentUpdated": {
+    "message": "Phasa was updated. Reload the page to see its subtitles again.",
+    "description": "Notice in a tab whose content script was cut off by an update."
+  },
+  "contentReload": {
+    "message": "Reload",
+    "description": "Button of that notice."
+  },
+  "wordsNoMatch": {
+    "message": "No saved word contains “$QUERY$”.",
+    "description": "Search found nothing.",
+    "placeholders": {
+      "query": {
+        "content": "$1",
+        "example": "ภาษา"
+      }
+    }
+  },
+  "wordsNoneInVideo": {
+    "message": "No saved words from this video yet.",
+    "description": "\"This video only\" found nothing."
+  },
+  "knownImportTooLarge": {
+    "message": "The file is too large: a word list can be at most 10 MB.",
+    "description": "Word list file over the limit."
+  },
+  "knownImportUnreadable": {
+    "message": "Couldn't read the file.",
+    "description": "The word list file could not be read."
   }
 }

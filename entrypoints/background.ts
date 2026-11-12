@@ -15,6 +15,7 @@ import { packagedSource } from '@/src/dictionary/store';
 import { CHANGE_SIGNAL_KEY, PORT_NAME, type ServerEvent } from '@/src/messaging/protocol';
 import { createServer } from '@/src/messaging/server';
 import { settingsFromRows } from '@/src/settings';
+import { posLabel } from '@/src/ui/labels';
 
 /** The ChatGPT plan's default model, kept for cache lookups that must not go to the network. */
 const modelMemory: ModelMemory = {
@@ -30,8 +31,10 @@ const modelMemory: ModelMemory = {
 export default defineBackground(() => {
   const swStartedAt = Date.now();
 
+  // The toolbar button opens the popup, which opens the side panel (ADR 0016). Chrome keeps this
+  // behavior across updates, so versions before phase 6 left it on: turn it off explicitly.
   browser.sidePanel
-    .setPanelBehavior({ openPanelOnActionClick: true })
+    .setPanelBehavior({ openPanelOnActionClick: false })
     .catch((error: unknown) => console.error('[phasa] sidePanel.setPanelBehavior failed', error));
 
   // Handlers broadcast through the server created right below.
@@ -86,6 +89,8 @@ export default defineBackground(() => {
         aiChanged,
       }),
       aiChanged,
+      appVersion: browser.runtime.getManifest().version,
+      posLabel,
     }),
     {
       extensionOrigin: self.location.origin,

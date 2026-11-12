@@ -1,6 +1,6 @@
 # 0007. Captions runtime: fetch, choose, cache, render, sync
 
-- Status: Accepted
+- Status: Accepted; cache eviction added by [0016](0016-data-settings-and-polish.md)
 - Date: 2026-10-16
 - Evidence: docs/plan.md §4, §5.1–5.2, §12 phase 2; docs/spikes.md §1 run 3; unit and e2e tests
 

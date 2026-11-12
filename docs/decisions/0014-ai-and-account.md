@@ -1,6 +1,7 @@
 # 0014. AI and the account: credentials, requests, streaming, cache
 
-- Status: Accepted; the plan's default model revised by [0015](0015-default-plan-model.md)
+- Status: Accepted; the plan's default model revised by [0015](0015-default-plan-model.md); cache
+  hits checked against the answer's shape by [0016](0016-data-settings-and-polish.md)
 - Date: 2026-11-01
 - Evidence: docs/plan.md §8, §12 phase 5; [ADR 0003](0003-chatgpt-oauth-redirect.md);
   docs/spikes.md §2; OpenAI's Sign in with ChatGPT pages re-read on 2026-11-01;

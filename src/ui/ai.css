@@ -184,18 +184,33 @@
   display: none;
 }
 
+/* The white variant on dark pages: the system's dark mode, unless the theme setting says light. */
 @media (prefers-color-scheme: dark) {
-  .phasa-siwc {
+  :root:not([data-theme='light']) .phasa-siwc {
     border-color: #ffffff;
     background: #ffffff;
     color: #0d0d0d;
   }
 
-  .phasa-siwc__logo--light {
+  :root:not([data-theme='light']) .phasa-siwc__logo--light {
     display: none;
   }
 
-  .phasa-siwc__logo--dark {
+  :root:not([data-theme='light']) .phasa-siwc__logo--dark {
     display: inline;
   }
+}
+
+[data-theme='dark'] .phasa-siwc {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #0d0d0d;
+}
+
+[data-theme='dark'] .phasa-siwc__logo--light {
+  display: none;
+}
+
+[data-theme='dark'] .phasa-siwc__logo--dark {
+  display: inline;
 }

@@ -60,6 +60,8 @@ export interface CaptionTrackRow {
   translatedFrom?: string;
   cues: ProcessedCue[];
   fetchedAt: number;
+  /** Last time a page loaded the track from the cache; the oldest videos are evicted. */
+  usedAt: number;
   /** Rows from an older captions pipeline are ignored and refetched. */
   processingVersion: number;
 }

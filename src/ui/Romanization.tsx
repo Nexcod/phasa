@@ -35,8 +35,4 @@ export function Romanization({
   );
 }
 
-/** Plain-text romanization, for aria-labels and lists. */
-export function romanizationText(pronunciation: Pronunciation, system: RomanizationSystem): string {
-  if (system === 'rtgs' && pronunciation.rtgs) return pronunciation.rtgs;
-  return pronunciation.syllables.map((syllable) => syllable.paiboon).join('-');
-}
+export { romanizationText } from '../dictionary/pronunciation';

@@ -551,3 +551,264 @@ body {
   font-size: 12px;
   overflow-wrap: anywhere;
 }
+
+/* Options: section links, kept in view. */
+.page__nav {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0 -16px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--phasa-border);
+  background: var(--phasa-bg);
+}
+
+.page__nav a {
+  color: var(--phasa-accent);
+  text-decoration: none;
+}
+
+.page__nav a:hover {
+  text-decoration: underline;
+}
+
+.page__section {
+  scroll-margin-top: 48px;
+}
+
+/* Options: settings (docs/plan.md §12 phase 6). */
+.prefs__block,
+.data__block {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 10px;
+}
+
+.prefs__block h3,
+.data__block h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.data__block p {
+  margin: 0 0 8px;
+}
+
+.prefs__column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.prefs__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.prefs__range {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.prefs__range output {
+  min-width: 3.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.prefs__label {
+  margin: 12px 0 4px;
+  font-weight: 600;
+}
+
+.prefs__block > .prefs__label:first-of-type {
+  margin-top: 0;
+}
+
+.prefs__hint {
+  margin: 4px 0 0;
+  color: var(--phasa-muted);
+  font-size: 12px;
+}
+
+.prefs__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prefs__choice {
+  flex-wrap: wrap;
+}
+
+.prefs__font-sample {
+  margin-left: 4px;
+  font-size: 20px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+.prefs__tones {
+  margin-top: 12px;
+}
+
+.prefs__tone-pickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.prefs__tone-picker {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.prefs__tone-picker input {
+  width: 32px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--phasa-border);
+  border-radius: 4px;
+  background: none;
+}
+
+.prefs__tones-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  align-items: baseline;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--phasa-border);
+  border-radius: 8px;
+}
+
+/* The subtitle background (entrypoints/youtube.content/style.css). */
+.prefs__tones-preview--video {
+  border-color: transparent;
+  background: rgb(8 8 8 / 0.92);
+  color: #fff;
+}
+
+.prefs__preview-label {
+  min-width: 7em;
+  color: var(--phasa-muted);
+  font-size: 12px;
+}
+
+.prefs__tones-preview--video .prefs__preview-label {
+  color: #a1a1aa;
+}
+
+.prefs__tone-sample {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.prefs__tone-thai {
+  font-family: var(--phasa-font-thai);
+  font-size: 18px;
+  font-synthesis: none;
+  line-height: var(--phasa-line-height-thai);
+}
+
+/* Options: import and export. */
+.data__preview {
+  margin-top: 8px;
+}
+
+.data__preview .toggle {
+  margin-bottom: 8px;
+}
+
+.data__result {
+  color: var(--phasa-ok);
+}
+
+.data__result p,
+.data__summary {
+  margin: 0 0 4px;
+}
+
+.data__summary {
+  padding-left: 18px;
+  color: var(--phasa-fg);
+}
+
+/* Options: about. */
+.about__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.about a {
+  color: var(--phasa-accent);
+}
+
+/* The toolbar popup (docs/plan.md §10). */
+.page--popup {
+  width: 360px;
+  padding: 12px 14px 14px;
+}
+
+.popup__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.popup__header h1 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.popup__video {
+  margin-bottom: 10px;
+}
+
+.popup__title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 6px;
+  font-weight: 600;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.popup__panel {
+  width: 100%;
+  margin: 4px 0 10px;
+  padding: 6px 10px;
+}
+
+.popup__settings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  border-top: 1px solid var(--phasa-border);
+}
+
+.popup__ai {
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--phasa-border);
+}
+
+.popup__ai p {
+  margin: 0 0 6px;
+}

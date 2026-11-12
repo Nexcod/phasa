@@ -9,6 +9,7 @@ import {
 import type { SessionError } from '@/src/content/session';
 import type { Client } from '@/src/messaging/client';
 import { useAiStatus } from '@/src/ui/ai/useAi';
+import { appearanceStyle } from '@/src/ui/appearance';
 import type { PopupAi } from './PopupAi';
 import { ThaiLine, type LineAction } from './ThaiLine';
 import { PhrasePopup, WordPopup, type PopupActions, type PopupAnchor } from './WordPopup';
@@ -326,6 +327,7 @@ export function Overlay({ controller, client }: { controller: ContentController;
     <div
       ref={overlayRef}
       className="phasa-overlay"
+      style={appearanceStyle(state.settings)}
       data-testid="phasa-overlay"
       data-video-id={state.urlVideoId}
       data-status={current ? session.status : 'idle'}

@@ -13,6 +13,8 @@
  */
 
 import type { VideoAnalysis } from '../analysis/types';
+import type { Backup, BackupSection, SectionSummary } from '../backup/format';
+import type { WordExportFormat, WordExportScope } from '../backup/word-export';
 import type {
   AccountView,
   AiModel,
@@ -44,7 +46,7 @@ import type {
 } from '../vocab/types';
 
 export const PORT_NAME = 'phasa';
-export const PROTOCOL_VERSION = 5;
+export const PROTOCOL_VERSION = 6;
 
 /**
  * `chrome.storage.local` key the SW bumps with every broadcast. A context whose port closed while
@@ -249,6 +251,24 @@ export interface Methods {
     params: Record<string, never>;
     result: Record<string, never>;
   };
+  /** The whole backup (src/backup/format.ts); never includes credentials. */
+  'data/export': {
+    params: Record<string, never>;
+    result: { backup: Backup };
+  };
+  /**
+   * Merges one section of a backup, at most `MAX_IMPORT_ROWS` rows per request (`settings`: one
+   * object). Broadcasts what changed.
+   */
+  'data/import': {
+    params: { section: BackupSection; rows?: unknown[]; settings?: unknown };
+    result: { summary: SectionSummary };
+  };
+  /** Saved words of `scope` as an Anki TSV or a CSV file. */
+  'data/export-words': {
+    params: { format: WordExportFormat; scope: WordExportScope };
+    result: { text: string; count: number };
+  };
 }
 
 export type Method = keyof Methods;
@@ -295,6 +315,9 @@ export const METHOD_ACCESS: Readonly<Record<Method, readonly Origin[]>> = {
   'account/set-api-key': ['extension-page'],
   'account/models': ['extension-page'],
   'account/expire-token': ['extension-page'],
+  'data/export': ['extension-page'],
+  'data/import': ['extension-page'],
+  'data/export-words': ['extension-page'],
 };
 
 /** Sent on every new connection; a changed `swStartedAt` means the SW restarted. */

@@ -38,7 +38,7 @@ test('side panel page connects to the service worker and the database', async ({
   await page.goto(`chrome-extension://${extensionId}/sidepanel.html`);
   await expect(page.getByRole('heading', { name: 'Phasa' })).toBeVisible();
   await expect(page.getByTestId('phasa-status')).toHaveAttribute('data-state', 'connected');
-  await expect(page.getByTestId('phasa-status')).toHaveText('Connected · database v3');
+  await expect(page.getByTestId('phasa-status')).toHaveText('Connected · database v4');
   await expect(
     page.getByText('Open a video with Thai subtitles to see its transcript here.'),
   ).toBeVisible();
@@ -48,7 +48,24 @@ test('options page renders its sections', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/options.html`);
   await expect(page).toHaveTitle('Phasa settings');
-  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(4);
+  await expect(page.getByRole('heading', { level: 2 })).toHaveText([
+    'Known words',
+    'Settings',
+    'AI',
+    'Import and export',
+    'My words',
+    'About',
+  ]);
+  // Every section has its link in the navigation.
+  const links = page.getByRole('navigation').getByRole('link');
+  await expect(links).toHaveCount(6);
+  await links.filter({ hasText: 'About' }).click();
+  await expect(page).toHaveURL(/#about$/);
+  await expect(page.getByTestId('phasa-options-about')).toContainText('WITHOUT ANY WARRANTY');
+  await expect(page.getByRole('link', { name: 'Source code' })).toHaveAttribute(
+    'href',
+    'https://github.com/Nexcod/phasa',
+  );
 });
 
 test('real watch page without Thai captions says so @network', async ({ context }) => {

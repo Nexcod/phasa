@@ -223,3 +223,21 @@ describe('vocabulary', () => {
     ).rejects.toThrow(/Invalid videoId/);
   });
 });
+
+describe('vocab/list paging', () => {
+  it('lists the most recently changed words and phrases first, with the total', async () => {
+    const { handlers } = setup();
+    for (const thai of ['ภาษา', 'ไทย', 'ไม่', 'มี']) {
+      await handlers['vocab/set']({ kind: 'word', thai, status: 1 }, CTX);
+    }
+    await handlers['vocab/set']({ kind: 'phrase', thai: 'ภาษาไทย', status: 2 }, CTX);
+    await handlers['vocab/set']({ kind: 'word', thai: 'ไทย', status: 'known' }, CTX);
+    const first = await handlers['vocab/list']({ limit: 2 }, CTX);
+    expect(first.total).toBe(5);
+    expect(first.units.map((unit) => unit.thai)).toEqual(['ไทย', 'ภาษาไทย']);
+    const next = await handlers['vocab/list']({ limit: 2, offset: 2 }, CTX);
+    expect(next.units.map((unit) => unit.thai)).toEqual(['มี', 'ไม่']);
+    const words = await handlers['vocab/list']({ kind: 'word', limit: 10 }, CTX);
+    expect(words.total).toBe(4);
+  });
+});

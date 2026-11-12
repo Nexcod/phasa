@@ -4,6 +4,7 @@
  * a compound the dictionary lacks, else spelling rules (approximate). AI
  * pronunciations (source 3) arrive with phase 5.
  */
+import type { RomanizationSystem } from '../settings';
 import { romanizeByRules } from '../thai/romanize';
 import type { Tone } from '../thai/types';
 import type { DictEntry } from './types';
@@ -90,4 +91,10 @@ export function pronounce(
     }
   }
   return fromRules(word);
+}
+
+/** Plain-text romanization in the chosen system, for labels, lists and exports. */
+export function romanizationText(pronunciation: Pronunciation, system: RomanizationSystem): string {
+  if (system === 'rtgs' && pronunciation.rtgs) return pronunciation.rtgs;
+  return pronunciation.syllables.map((syllable) => syllable.paiboon).join('-');
 }
