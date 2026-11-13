@@ -27,4 +27,5 @@ Files:
   `npm run data:freq`. Shipped with the extension since phase 4 for the video analysis and the
   known-word onboarding (ADR 0011).
 
-All three files ship in the extension package under `data/`.
+All three files ship in the extension package under `data/`, with this file as
+`data/ATTRIBUTION.md` (ADR 0017).

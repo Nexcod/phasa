@@ -66,6 +66,10 @@ test('options page renders its sections', async ({ context, extensionId }) => {
     'href',
     'https://github.com/Nexcod/phasa',
   );
+  await expect(page.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
+    'href',
+    'https://github.com/Nexcod/phasa/blob/main/PRIVACY.md',
+  );
 });
 
 test('real watch page without Thai captions says so @network', async ({ context }) => {

@@ -24,6 +24,8 @@ interface FakeTrack {
 interface FakeVideo {
   videoId: string;
   title: string;
+  /** The player response's author; 'Fake channel' when left out. */
+  channel?: string;
   tracks: FakeTrack[];
 }
 
@@ -48,7 +50,19 @@ const LONG_THAI = JSON.stringify({
   })),
 });
 
+/** The store screenshots' video (tests/store): lines written for Phasa, manual Thai and English. */
+export const SHOWCASE_VIDEO_ID = 'phasaDemo01';
+
 export const FAKE_VIDEOS: Record<string, FakeVideo> = {
+  [SHOWCASE_VIDEO_ID]: {
+    videoId: SHOWCASE_VIDEO_ID,
+    title: 'พาเที่ยวตลาดน้ำ กินข้าวเหนียวมะม่วง',
+    channel: 'Phasa demo',
+    tracks: [
+      { vssId: '.th', languageCode: 'th', bodies: { '': caption('showcase.th.json3.json') } },
+      { vssId: '.en', languageCode: 'en', bodies: { '': caption('showcase.en.json3.json') } },
+    ],
+  },
   /** Thai auto-generated only; English comes from YouTube's translation (tlang=en). */
   iH31BMKBEdU: {
     videoId: 'iH31BMKBEdU',
@@ -95,7 +109,7 @@ export const THAI_CUES = processTrack({
 export const PRESET_STICKY_LANGUAGE = '{"data":"en","expiration":1,"creation":1}';
 
 /** The fake player, injected as a page (MAIN-world) script. */
-function playerScript(captionsOn: boolean): string {
+export function playerScript(captionsOn: boolean): string {
   const videos = Object.fromEntries(
     Object.values(FAKE_VIDEOS).map((video) => [
       video.videoId,
@@ -137,7 +151,7 @@ function playerScript(captionsOn: boolean): string {
     const v = VIDEOS[state.videoId];
     if (!v || !state.loaded) return null;
     return {
-      videoDetails: { videoId: v.videoId, title: v.title, author: 'Fake channel', lengthSeconds: '120' },
+      videoDetails: { videoId: v.videoId, title: v.title, author: v.channel || 'Fake channel', lengthSeconds: '120' },
       captions: {
         playerCaptionsTracklistRenderer: {
           captionTracks: v.tracks.map((t) => ({
@@ -263,10 +277,13 @@ function fulfillMedia(route: Route): Promise<void> {
   });
 }
 
-/** Routes www.youtube.com to the fake; returns the log of timedtext requests. */
+/**
+ * Routes www.youtube.com to the fake; returns the log of timedtext requests. `watchPage` replaces
+ * the bare watch page (the store screenshots use a styled one around the same player script).
+ */
 export async function routeFakeYouTube(
   context: BrowserContext,
-  options: { captionsOn?: boolean } = {},
+  options: { captionsOn?: boolean; watchPage?: string } = {},
 ): Promise<TimedtextLogEntry[]> {
   const log: TimedtextLogEntry[] = [];
   await context.route('https://www.youtube.com/**', (route) => {
@@ -285,7 +302,10 @@ export async function routeFakeYouTube(
       const body = hasPot ? (track?.bodies[params.get('tlang') ?? ''] ?? '') : '';
       return route.fulfill({ status: 200, contentType: 'application/json', body });
     }
-    return route.fulfill({ contentType: 'text/html', body: fakeWatchPage(options) });
+    return route.fulfill({
+      contentType: 'text/html',
+      body: options.watchPage ?? fakeWatchPage(options),
+    });
   });
   return log;
 }

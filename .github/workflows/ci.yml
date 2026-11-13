@@ -25,6 +25,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run zip
+      # Version, permissions, icons, license files (ADR 0017).
+      - run: npm run package:check
       - uses: actions/upload-artifact@v4
         with:
           name: phasa-chrome-zip

@@ -11,6 +11,38 @@ docs/spikes.md §1), so these checks run by hand in a normal Chrome profile with
       shows datacenter IPs, including CI runners, a bot check instead of the video
       ([ADR 0009](decisions/0009-network-e2e-runs-locally.md)).
 
+## Phase 7 — release
+
+The release pass of plan §13 on the package users get. Push main, tag `v1.0.0` and push the tag
+(docs/store/README.md); download the zip from the draft GitHub release, unzip it into an empty
+folder and load that folder unpacked in a normal Chrome profile, with the other Phasa builds turned
+off. Its data starts empty: it is a new install.
+
+- [ ] **Package.** The release workflow is green. `chrome://extensions` shows the ภ icon, "Phasa —
+      learn Thai from videos", version 1.0.0 and no "Errors" button. The toolbar icon is sharp in
+      a light and in a dark Chrome theme.
+- [ ] **Release pass.** On the 10 videos of `tests/e2e/videos.ts`: subtitles appear in the
+      default view, theater mode and fullscreen; clicking through recommendations without a reload
+      switches them; YouTube's dark theme; the badge, a word popup, the side panel. Sign in with
+      ChatGPT, explain a word, sign out. Anything that differs from the phase 2–6 checklists is a
+      blocker.
+- [ ] **Update in place.** Save a word, unzip the same zip again over the folder and click reload
+      on `chrome://extensions` (what the README tells release users to do): the word is still
+      there.
+- [ ] **About and legal files.** Options → About says "Phasa 1.0.0"; "Source code", "GNU AGPL v3",
+      "Data sources and licenses" and "Privacy policy" open the right pages (PRIVACY.md and the
+      README with its screenshots render on GitHub). The unzipped folder has `LICENSE`,
+      `THIRD_PARTY_NOTICES.txt` (react, dexie with its NOTICE, jose, …), `data/ATTRIBUTION.md` and
+      `fonts/OFL.txt`.
+- [ ] **Store images.** `docs/store/screenshots/*.png`, the promo tiles and `public/icon/128.png`:
+      nothing cut off, no stale UI, readable at half size (the store shows 640×400).
+- [ ] **Listing and policy are true.** Read `docs/store/listing.md` and `PRIVACY.md` against this
+      build: every feature, key, stored item and request they mention exists, and nothing else
+      leaves the browser (service worker DevTools → Network while using AI).
+- [ ] **Submitted.** Chrome Web Store developer dashboard: new item, upload the zip, fill every
+      tab from `docs/store/listing.md`, submit for review. Write down the date and, later, the
+      outcome; once published, add the store link to the README.
+
 ## Phase 6 — data and polish
 
 Use the production build in a profile with real data from the earlier phases: learning, known and

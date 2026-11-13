@@ -1,0 +1,33 @@
+name: Release
+
+# A version tag (vX.Y.Z, equal to package.json's version) builds the store zip and attaches it to a
+# draft GitHub release. Uploading to the Chrome Web Store stays a manual step (docs/store/README.md,
+# ADR 0017). Tag only a commit whose CI run on main is green: this workflow skips the e2e tests.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run zip
+      - run: npm run package:check -- --tag "$GITHUB_REF_NAME"
+      - name: Draft a release with the zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "$GITHUB_REF_NAME" .output/phasa-*-chrome.zip
+          --draft --verify-tag --generate-notes --title "Phasa ${GITHUB_REF_NAME#v}"

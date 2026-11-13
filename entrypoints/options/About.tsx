@@ -8,6 +8,7 @@ import { t } from '@/src/i18n';
 export const SOURCE_URL = 'https://github.com/Nexcod/phasa';
 const LICENSE_URL = 'https://www.gnu.org/licenses/agpl-3.0.html';
 const ATTRIBUTION_URL = `${SOURCE_URL}/blob/main/data/build/ATTRIBUTION.md`;
+const PRIVACY_URL = `${SOURCE_URL}/blob/main/PRIVACY.md`;
 
 function Link({ href, children }: { href: string; children: string }) {
   return (
@@ -30,6 +31,7 @@ export function About() {
         <Link href={SOURCE_URL}>{t('aboutSource')}</Link>
         <Link href={LICENSE_URL}>{t('aboutLicenseLink')}</Link>
         <Link href={ATTRIBUTION_URL}>{t('aboutAttributionLink')}</Link>
+        <Link href={PRIVACY_URL}>{t('aboutPrivacyLink')}</Link>
       </p>
       <p>{t('aboutData')}</p>
       <p>{t('aboutPrivacy')}</p>

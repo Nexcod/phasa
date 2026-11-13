@@ -1765,6 +1765,10 @@
     "message": "Data sources and licenses",
     "description": "Link to data/build/ATTRIBUTION.md."
   },
+  "aboutPrivacyLink": {
+    "message": "Privacy policy",
+    "description": "Link in Options → About to PRIVACY.md in the source repository."
+  },
   "aboutData": {
     "message": "Dictionary: English Wiktionary, © Wiktionary contributors, CC BY-SA 4.0, via kaikki.org. Word frequencies: Thai National Corpus via PyThaiNLP, CC0 1.0. Fonts: Noto Sans Thai and Noto Sans Thai Looped, SIL Open Font License 1.1.",
     "description": "Data and font credits."

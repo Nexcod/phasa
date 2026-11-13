@@ -155,6 +155,9 @@ export interface FakeOpenAi {
     subject: string;
     /** The plan's `/v1/models` entries, in OpenAI's order. */
     planModels: { slug: string; display_name: string; visibility: string }[];
+    /** What `explainWord` / `translateCue` answer (the store screenshots set their own). */
+    wordAnswer: object;
+    lineAnswer: object;
   };
   /** Makes every refresh token unusable (as after a revocation in ChatGPT settings). */
   revokeAll(): void;
@@ -179,6 +182,8 @@ export async function createFakeOpenAi(): Promise<FakeOpenAi> {
       { slug: 'gpt-fake-hidden', display_name: 'Hidden', visibility: 'hide' },
       { slug: 'gpt-fake-luna', display_name: 'GPT-Fake-Luna', visibility: 'list' },
     ],
+    wordAnswer: WORD_ANSWER,
+    lineAnswer: LINE_ANSWER,
   };
 
   const scopeOf = () =>
@@ -271,7 +276,7 @@ export async function createFakeOpenAi(): Promise<FakeOpenAi> {
       }
     }
     const format = (body.text as { format?: { name?: string } } | undefined)?.format?.name;
-    const answer = format === 'thai_line_translation' ? LINE_ANSWER : WORD_ANSWER;
+    const answer = format === 'thai_line_translation' ? options.lineAnswer : options.wordAnswer;
     const text = JSON.stringify(answer);
     const stream = (content: string): FakeResponse => ({
       status: 200,
